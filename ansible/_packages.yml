@@ -1,23 +1,35 @@
-
 ---
 - name: _PACKAGE_MANAGEMENT
-  hosts: cortez magellan
+  hosts: localhost
   become: yes
 
   tasks:
-  - name: LOOP INSTALL -> DEPRICATED
-    dnf: name={{item}} state=present
-    with_items:
-    - htop
-    - nano
-    - nmap
+    - name: LOOP INSTALL -> DEPRICATED
+      dnf: name={{item}} state=present
+      with_items:
+        - htop
+        - nano
+        - nmap
 
-  - name: INSTALL SOFTWARE -> CURRENT BEST-PRACTICE
-    dnf: 
-      name: ['htop', 'nmap', 'nano']
+    - name: INSTALL SOFTWARE -> CURRENT BEST-PRACTICE
+      dnf:
+        name: ["htop", "nmap", "nano"]
 
-  - name: UNINSTALL 
-    dnf: 
-      name: ['htop', 'nmap', 'nano']
-      state: absent
-    
+    - name: UNINSTALL
+      dnf:
+        name: ["htop", "nmap", "nano"]
+        state: absent
+
+    # get a list of installed packages:
+    - name: get the rpm package facts
+      package_facts:
+        manager: "auto"
+      tags: list-only
+
+    - name: show them
+      debug: var=ansible_facts.packages
+      tags: list-only
+
+    - name: show a single one
+      debug: var=ansible_facts.packages.nano
+      tags: list-only
