@@ -21,6 +21,9 @@
         state: absent
 
     # get a list of installed packages:
+    # run with:
+    # ansible-playbook ambient-lights/ansible/_packages.yml --ask-become-pass --tags=list-only
+
     - name: get the rpm package facts
       package_facts:
         manager: "auto"
