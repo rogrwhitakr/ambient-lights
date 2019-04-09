@@ -1,5 +1,11 @@
 ---
 # tasks file for server_common
+
+- name: Install (local) monitoring software
+  dnf: 
+    name: ['htop','sysstat','iotop','dmidecode']
+    state: present
+
 - name: update all packages
   dnf:
     name: "*"
@@ -15,10 +21,6 @@
     name: ['nano','python3','python']
     state: present
 
-- name: Install monitoring software
-  dnf: 
-    name: ['htop','sysstat','iotop','dmidecode']
-    state: present
     
 - name: "Install Powerline for pleasant commandline operation"
   dnf: 

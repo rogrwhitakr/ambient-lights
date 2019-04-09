@@ -1,0 +1,5 @@
+---
+- name: install samba
+  dnf:
+    name: ['samba', 'samba-dc']
+    state: latest

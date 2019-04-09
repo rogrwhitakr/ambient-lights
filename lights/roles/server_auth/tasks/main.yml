@@ -1,0 +1,4 @@
+---
+# tasks file for server_auth
+- include: "{{ playbook_dir }}/tasks/samba.yml"
+- include: "samba.yml"
