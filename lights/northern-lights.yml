@@ -2,24 +2,12 @@
 # This Playbook would deploy the whole northernlights infra. 
 # may also be named site.yml, as it is more neutral?
 
-- hosts: database_server
+# - hosts: northernlights -> this references the group defined in inventory -> all servers are for example in the "nothernlights" group
+- hosts: arbitrary_group_name
   roles:
-  - role: common
-  - role: mariadb
+  - role: server_common
 
-- hosts: auth_server
+- hosts: server_auth
   roles:
-  - role: common
-  - role: postgresql
-# not workable yet, but obvi:
-#  - role: samba
-#  - role: ldap
-#  - role: kerberos -> would be in the ldap role....
-
-- hosts: file_server
-  roles:
-#  - role: common
-  - role: mariadb
-# not workable yet, but obvi:
-#  - role: smb
-#  - role: ftp
+  - role: server_common
+  - role: server_auth
