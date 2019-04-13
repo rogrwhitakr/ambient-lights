@@ -7,7 +7,7 @@
   roles:
   - role: server_common
 
-- hosts: server_auth
+- hosts: authentication-servers
   roles:
   - role: server_common
-  - role: server_auth
+  - role: authentication

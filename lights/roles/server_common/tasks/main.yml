@@ -1,5 +1,4 @@
 ---
-# tasks file for server_common
 
 - name: Install (local) monitoring software
   dnf: 
@@ -27,16 +26,16 @@
     name: ['powerline','powerline-fonts'] 
     state: present
 
-- name: "edit .bashrc to enable powerline usage"
-  blockinfile:
-    path: /etc/bashrc.d/powerline.sh
-    block: |
-      if [ -f `which powerline-daemon` ]; then
-        powerline-daemon -q
-        POWERLINE_BASH_CONTINUATION=1
-        POWERLINE_BASH_SELECT=1
-        . /usr/share/powerline/bash/powerline.sh
-      fi
+# - name: "edit .bashrc to enable powerline usage"
+#   blockinfile:
+#     path: /etc/bashrc.d/powerline.sh
+#     block: |
+#       if [ -f `which powerline-daemon` ]; then
+#         powerline-daemon -q
+#         POWERLINE_BASH_CONTINUATION=1
+#         POWERLINE_BASH_SELECT=1
+#         . /usr/share/powerline/bash/powerline.sh
+#       fi
 
 - name: Remove unwanted default packages 
   dnf: 
@@ -48,8 +47,11 @@
     name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
     state: latest
 
-- name: Download script to provide a predefined bashrc
-  unarchive:
-    src: "https://raw.githubusercontent.com/rogrwhitakr/northern-lights/master/script/setup-profile-on-new-box.sh"
-    dest: ~
-    remote_src: yes     
+
+# bashrc
+- name: 'do stuff to the bashrc'
+  import_tasks: roles/server_common/tasks/bashrc.yml    
+
+# tasks file for server_common
+- name: added in 2.4, previously you used 'include'
+  import_tasks: roles/server_common/tasks/harden-ssh.yml    

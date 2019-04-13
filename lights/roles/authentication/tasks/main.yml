@@ -1,0 +1,9 @@
+---
+- name: Install and Configure samba
+  import_tasks: roles/authentication/tasks/samba.yml
+
+- name: Install and Configure dnsmasq
+  import_tasks: roles/authentication/tasks/dnsmasq.yml
+
+- name: Install and Configure zabbix
+  import_tasks: roles/authentication/tasks/zabbix.yml

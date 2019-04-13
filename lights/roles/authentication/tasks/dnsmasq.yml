@@ -1,0 +1,10 @@
+---
+- name: install dnsmasq
+  dnf:
+    name: ['dnsmasq']
+    state: latest
+
+- name: remove named
+  dnf:
+    name: ['named']
+    state: absent

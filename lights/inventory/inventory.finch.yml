@@ -2,15 +2,19 @@
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 
-
-
 ---
 all:
 northernlights:
   hosts:
-    samba.northern-lights.one
-    redmine.northern-lights.one
-    sql.northern-lights.one
+    samba.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
+    redmine.northern-lights.one:
+      ansible_user: redmine
+      ansible_become: yes
+    sql.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
 
 server_common:        
   hosts:
@@ -19,9 +23,11 @@ server_common:
     
 arbitrary_group_name:        
   hosts:
-    samba.northern-lights.one
+    samba.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
  #   console.northern-lights.one # aka localhost
 
-server_auth:
+authentication-servers:
   hosts:
     samba.northern-lights.one
