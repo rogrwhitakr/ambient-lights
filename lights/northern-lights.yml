@@ -3,11 +3,13 @@
 # may also be named site.yml, as it is more neutral?
 
 # - hosts: northernlights -> this references the group defined in inventory -> all servers are for example in the "nothernlights" group
-- hosts: arbitrary_group_name
+#- hosts: arbitrary_group_name
+#  roles:
+#  - role: common
+- hosts: all
   roles:
-  - role: server_common
+  - role: common
 
 - hosts: authentication-servers
   roles:
-  - role: server_common
   - role: authentication

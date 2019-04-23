@@ -30,4 +30,6 @@ arbitrary_group_name:
 
 authentication-servers:
   hosts:
-    samba.northern-lights.one
+    samba.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
