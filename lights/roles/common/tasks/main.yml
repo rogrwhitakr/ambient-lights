@@ -50,8 +50,8 @@
 
 # bashrc
 - name: 'do stuff to the bashrc'
-  import_tasks: roles/server_common/tasks/bashrc.yml    
+  import_tasks: roles/common/tasks/bashrc.yml    
 
 # tasks file for server_common
 - name: added in 2.4, previously you used 'include'
-  import_tasks: roles/server_common/tasks/harden-ssh.yml    
+  import_tasks: roles/common/tasks/harden-ssh.yml    

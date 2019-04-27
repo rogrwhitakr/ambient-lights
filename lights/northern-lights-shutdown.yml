@@ -1,0 +1,6 @@
+---
+# This Playbook is used to cleanly shutdown all vms before pysical hardware shutdown 
+
+- hosts: all-dem-servers
+  roles:
+  - role: offline
