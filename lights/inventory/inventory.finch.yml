@@ -21,12 +21,14 @@ server_common:
     samba.northern-lights.one
     console.northern-lights.one # aka localhost
     
-arbitrary_group_name:        
+all-dem-servers:        
   hosts:
     samba.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
- #   console.northern-lights.one # aka localhost
+    console.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
 
 authentication-servers:
   hosts:
