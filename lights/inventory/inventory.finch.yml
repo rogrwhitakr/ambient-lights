@@ -4,7 +4,7 @@
 
 ---
 all:
-northernlights:
+northern-lights:
   hosts:
     samba.northern-lights.one:
       ansible_user: admin
@@ -21,7 +21,7 @@ server_common:
     samba.northern-lights.one
     console.northern-lights.one # aka localhost
     
-all-dem-servers:        
+all-servers:        
   hosts:
     samba.northern-lights.one:
       ansible_user: admin
@@ -29,7 +29,7 @@ all-dem-servers:
     console.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
-
+    
 authentication-servers:
   hosts:
     samba.northern-lights.one:

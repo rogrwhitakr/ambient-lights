@@ -1,6 +1,7 @@
 ---
 # This Playbook is used to cleanly shutdown all vms before pysical hardware shutdown 
 
-- hosts: all-dem-servers
+- hosts: northern-lights
+  gather_facts: no
   roles:
   - role: offline
