@@ -6,7 +6,7 @@
 #- hosts: arbitrary_group_name
 #  roles:
 #  - role: common
-- hosts: all
+- hosts: all-dem-servers
   roles:
   - role: common
 
