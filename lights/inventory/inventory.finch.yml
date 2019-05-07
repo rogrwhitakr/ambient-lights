@@ -16,7 +16,7 @@ northern-lights:
       ansible_user: admin
       ansible_become: yes
 
-server_common:        
+commons:        
   hosts:
     samba.northern-lights.one
     console.northern-lights.one # aka localhost
