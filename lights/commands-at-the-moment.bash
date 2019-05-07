@@ -10,3 +10,6 @@ ansible -i inventory/inventory.finch.yml server_auth -m setup --ask-become-pass
 
 # this dont work
 ansible-playbook -i inventory/inventory.finch.yml northern-lights.yml --extra-vars "ansible_become_pass=vasques"
+
+# shutdown of all VMs on FINCH
+ansible-playbook -i inventory/inventory.finch.yml northern-lights-shutdown.yml --ask-become-pass
