@@ -11,6 +11,7 @@ northernlights:
     cortez.northernlights.io
     magellan.northernlights.io
     dortmunder.northernlights.io
+    openstack.internal.northern-lights.one
 
 serenity:
   hosts:
