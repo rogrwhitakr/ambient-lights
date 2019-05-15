@@ -26,16 +26,9 @@
     name: ['powerline','powerline-fonts'] 
     state: present
 
-# - name: "edit .bashrc to enable powerline usage"
-#   blockinfile:
-#     path: /etc/bashrc.d/powerline.sh
-#     block: |
-#       if [ -f `which powerline-daemon` ]; then
-#         powerline-daemon -q
-#         POWERLINE_BASH_CONTINUATION=1
-#         POWERLINE_BASH_SELECT=1
-#         . /usr/share/powerline/bash/powerline.sh
-#       fi
+- name: "Linux version info"
+  debug: 
+    var: 'ansible_facts.distribution_major_version'
 
 - name: Remove unwanted default packages 
   dnf: 
