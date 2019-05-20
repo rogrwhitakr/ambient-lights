@@ -13,3 +13,6 @@ ansible-playbook -i inventory/inventory.finch.yml northern-lights.yml --extra-va
 
 # shutdown of all VMs on FINCH
 ansible-playbook -i inventory/inventory.finch.yml northern-lights-shutdown.yml --ask-become-pass
+
+# query system information and save to file
+ansible -i inventory/inventory.finch.yml all-dem-servers -m setup --ask-become-pass > ansible-facts.json
