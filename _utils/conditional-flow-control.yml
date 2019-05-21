@@ -1,0 +1,26 @@
+---
+- name: CONDITIONAL FLOW CONTROL
+  hosts: localhost
+  remote_user: admin
+
+  tasks:
+  - name: "return information from system"
+    debug: 
+      var: ansible_facts['distribution_major_version']
+
+  - name: "do flow control"
+    block:
+    - name: "1st"
+      shell: /usr/bin/echo "yaY"
+    - name: "2nd"
+      shell: /usr/bin/echo "more yaY"
+    - name: "3rd"
+      shell: /usr/bin/echo "more yaY"
+    - name: "the 4th shall fail"
+      shell: /usr/bin/false  
+    when: 
+    - ansible_facts['distribution_major_version'] is version('30', '==')
+    - ansible_facts['distribution'] == "Fedora"
+    rescue:
+    - debug:
+        msg: "GAAAYY"
