@@ -1,8 +1,8 @@
 ---
 
-  - name: "Linux version info"
+  - name: "This Machine runs:"
     debug: 
-      var: 'ansible_facts.distribution_major_version'
+      var: 'Distro: ansible_facts[distribution] :: Version: ansible_facts[distribution_major_version]'
 
   - name: "Install the DNF plugin"
     dnf:
@@ -16,5 +16,3 @@
       shell: /usr/bin/dnf upgrade --refresh -y
     - name: "Start the update with the download of packages"
       shell: /usr/bin/dnf system-upgrade download --allowerasing --assumeyes --releasever=30     
-
-    when: ansible_facts[distribution_major_version] =! "30" 

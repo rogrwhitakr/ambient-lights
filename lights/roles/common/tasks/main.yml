@@ -1,27 +1,26 @@
 ---
 
-- name: Allow editing on an SELinux enforced system
+- name: "Allow editing on an SELinux enforced system"
   dnf:
     name: libselinux-python
     state: latest
 
-- name: Install monitoring software
+- name: "Install monitoring software"
   dnf: 
     name: ['htop','sysstat','iotop','dmidecode']
     state: present
 
-- name: Install basics
+- name: "Install basics"
   dnf: 
     name: ['nano','python3','python']
     state: present
-
     
 - name: "Install Powerline for pleasant commandline operation"
   dnf: 
     name: ['powerline','powerline-fonts'] 
     state: present
 
-- name: Remove unwanted default packages 
+- name: "Remove unwanted default packages" 
   dnf: 
     name: ['rhythmbox','shotwell','builder']
     state: absent
@@ -31,20 +30,23 @@
     name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
     state: latest
 
-# tasks file for fedora upgrades
-- name: fedora upgrades
-  import_tasks: roles/common/tasks/upgrade.yml    
-  when: ansible_facts['distribution'] == "Fedora"
-
-# bashrc
-- name: 'do stuff to the bashrc'
-  import_tasks: roles/common/tasks/bashrc.yml    
-
-# tasks file for common
-- name: added in 2.4, previously you used 'include'
-  import_tasks: roles/common/tasks/harden-ssh.yml    
-
-- name: update all packages
+# update all packages
+- name: "update all packages"
   dnf:
     name: "*"
     state: latest
+
+# bashrc
+- name: "create a decent bashrc"
+  import_tasks: roles/common/tasks/bashrc.yml    
+
+# tasks file for common
+- name: "harden the ssh daemon"
+  import_tasks: roles/common/tasks/harden-ssh.yml    
+
+# tasks file for fedora upgrades
+- name: "fedora upgrades"
+  import_tasks: roles/common/tasks/upgrade.yml    
+  when: 
+  - ansible_facts['distribution_major_version'] is version('30', '!=')
+  - ansible_facts['distribution'] == "Fedora"
