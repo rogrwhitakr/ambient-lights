@@ -39,6 +39,6 @@ file_server:
   hosts:
     cortez.northernlights.io
 
-auth_server:
+authentication-servers:
   hosts:
     cortez.northernlights.io
