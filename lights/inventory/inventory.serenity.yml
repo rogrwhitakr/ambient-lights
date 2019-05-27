@@ -8,30 +8,36 @@
 all:
 northernlights:
   hosts:
-    cortez.northernlights.io
-    magellan.northernlights.io
-    dortmunder.northernlights.io
-    openstack.internal.northern-lights.one
-
+    cortez.northernlights.io:
+      ansible_user: admin
+      ansible_become: yes
+    magellan.northernlights.io:
+      ansible_user: admin
+      ansible_become: yes
+    dortmunder.northernlights.io:
+      ansible_user: admin
+      ansible_become: yes
+    alexander.northernlights.io:
+      ansible_user: admin
+      ansible_become: yes
 serenity:
   hosts:
-    serenity.northernlights.io # aka localhost
+    serenity.northernlights.io: # aka localhost
+      ansible_user: admin
+      ansible_become: yes
 
-server_common:        
+validators:        
   hosts:
-    cortez.northernlights.io
     magellan.northernlights.io
-    dortmunder.northernlights.io
+    alexander.northernlights.io
 
-database_server:        
+database:        
   hosts:
     magellan.northernlights.io
 
 file_server:        
   hosts:
-    cortez.northernlights.io:
-      remote_user: admin
-      become: yes
+    cortez.northernlights.io
 
 auth_server:
   hosts:
