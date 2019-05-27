@@ -6,7 +6,18 @@
 #- hosts: arbitrary_group_name
 #  roles:
 #  - role: common
+
 - hosts: all-dem-servers
+  roles:
+  - role: common
+
+# checking, if the group name must be present:
+# group "all-dem-servers" exists only on finch,
+# group "validators" will exist only on serenity
+# "validators" being a group of hosts used to validate playbooks, duh...
+
+# serenity
+- hosts: validators
   roles:
   - role: common
 
