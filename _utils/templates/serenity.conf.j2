@@ -1,0 +1,12 @@
+# virtual host (added by rogrwhitakr)
+
+<VirtualHost *:80>
+    DocumentRoot {{ core_path }}
+    Redirect permanent "/" "https://{{ domain }}.one"
+    ServerAdmin webmaster@localhost
+    ServerName {{ domain }}.one
+    ServerAlias www.{{ domain }}.one
+    <Directory "{{ core_path }}">
+        Options FollowSymLinks Indexes
+        AllowOverride All
+</VirtualHost>

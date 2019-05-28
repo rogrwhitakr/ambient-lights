@@ -1,0 +1,24 @@
+---
+- name: "how to use templates" 
+  hosts: localhost
+  remote_user: admin
+  become: yes
+
+  vars:
+    - domain: "serenity"
+    - core_path: "/var/www/html"
+
+  tasks:
+  - name: "copy some files to the conf.d directory of the apache web server"
+    template:
+     src: "templates/serenity.conf.j2"
+     dest: "/etc/httpd/conf.d/001-{{ domain }}.conf" # not that the 001 is required or anything. just for kicks
+     owner: root
+     group: root
+     mode: 0644
+    notify: restart httpd
+
+  - name: "restart httpd"
+    service:
+      name: httpd
+      state: restarted  
