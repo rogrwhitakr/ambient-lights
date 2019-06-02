@@ -1,9 +1,5 @@
 ---
 
-  - name: "This Machine runs:"
-    debug: 
-      var: 'Distro: ansible_facts[distribution] :: Version: ansible_facts[distribution_major_version]'
-
   - name: "Install the DNF plugin"
     dnf:
       name: dnf-plugin-system-upgrade
@@ -14,5 +10,12 @@
 
     - name: "Update software and back up your system"
       shell: /usr/bin/dnf upgrade --refresh -y
+
+    - name: "Remove any that may be incomplete from before"
+      shell: /usr/bin/dnf clean packages     
+
     - name: "Start the update with the download of packages"
       shell: /usr/bin/dnf system-upgrade download --allowerasing --assumeyes --releasever=30     
+
+    - name: "Do the Upgrade"
+      shell: /usr/bin/dnf system-upgrade reboot
