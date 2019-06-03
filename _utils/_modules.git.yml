@@ -1,0 +1,11 @@
+---
+- name: How to install directly using git
+  hosts: localhost
+  remote_user: admin
+
+  tasks:
+  - name: Check out something directly from github.
+    git:
+      repo: http://github.org/project/somesin.git
+      version: 
+      dest: 
