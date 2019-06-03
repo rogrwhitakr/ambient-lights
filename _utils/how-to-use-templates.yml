@@ -18,8 +18,42 @@
      mode: 0644
     notify: restart httpd
 
+  - name: do anything and call a double handler
+    file:
+      path: /tmp/double-handler-{{ ansible_facts['nodename'] }}.txt
+      state: touch
+      mode: 0644
+    notify:
+      - restart httpd
+      - restart postgresql
+
+  - name: do anything and call a chained handler
+    file:
+      path: /tmp/chained-handler-{{ ansible_facts['nodename'] }}.txt
+      state: touch
+      mode: 0644
+    notify:
+      - restart chained
+
+  # handlers will only be run at the end of any playbook, 
+  # this is default behaviour may be changed using the meta module
+
   handlers:
   - name: restart httpd
     service:
       name: httpd
       state: restarted  
+
+  - name: restart postgresql
+    service:
+      name: postgresql
+      state: restarted  
+
+  - name: "restart chained"
+    service:
+      name: httpd
+      state: restarted
+    notify: restart postgresql  
+
+
+

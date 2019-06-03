@@ -1,0 +1,9 @@
+---
+- name: "how to use handlers" 
+  hosts: localhost
+  remote_user: admin
+  become: yes
+
+  tasks:
+   - name: see -> how to use templates !!
+     
