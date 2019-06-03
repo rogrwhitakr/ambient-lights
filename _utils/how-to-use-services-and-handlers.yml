@@ -1,5 +1,5 @@
 ---
-- name: HOW TO HANDLE SERVICES
+- name: how to use services and handlers 
   hosts: cortez magellan
   remote_user: admin
   become: yes
@@ -10,13 +10,9 @@
         name: "httpd"
         state: latest
       notify:
-        - name: Restart Apache
-      handlers:
-        - name: Restart Apache
-          service:
-            name: httpd
-            state: restarted
+        - name: restart Apache
 
+  handlers:
     - name: restart apache
       service:
         name: httpd
