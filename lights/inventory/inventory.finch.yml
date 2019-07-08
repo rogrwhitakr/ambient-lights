@@ -35,3 +35,12 @@ authentication-servers:
     samba.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
+
+workstations:
+  hosts:
+    console.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes    
+    silverblue.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes    
