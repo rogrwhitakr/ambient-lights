@@ -1,0 +1,10 @@
+---
+# tasks file for workstation_common
+# - name: "Determine Build"
+#   debug: 
+#    var: ansible_facts
+
+ - name: "Determine package Manager"
+   debug: 
+    var: ansible_facts.pkg_mgr
+    

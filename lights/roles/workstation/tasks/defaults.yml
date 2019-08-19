@@ -1,0 +1,4 @@
+---
+- name: Install basic software
+  dnf: 
+    name: ['htop', 'nmap', 'nano']
