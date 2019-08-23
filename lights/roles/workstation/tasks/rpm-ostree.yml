@@ -1,0 +1,9 @@
+---
+- name: rpm-ostree house-keeping
+  shell: |                           
+    rpm-ostree cleanup -m && rpm-ostree upgrade
+
+- name: Install basic software
+  shell: |                           
+    rpm-ostree install --idempotent \
+        nano \
