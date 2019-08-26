@@ -5,7 +5,3 @@
 # - "nano"
 # - "htop"
 
-- name: "get the packages as vars"
-  include_vars:
-    file: "packages.yml"
-    name: "packages"

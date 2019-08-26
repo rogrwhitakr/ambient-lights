@@ -1,2 +1,6 @@
 ---
 # defaults file for workstation_common
+
+basic:
+  - nano
+  - htop

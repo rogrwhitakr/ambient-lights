@@ -2,8 +2,6 @@
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 
-
-
 ---
 all:
   hosts:
@@ -18,4 +16,4 @@ workstations:
   hosts:
     hankscorpio:
       ansible_user: benno
-      ansible_become: yes      
+      ansible_become: yes
