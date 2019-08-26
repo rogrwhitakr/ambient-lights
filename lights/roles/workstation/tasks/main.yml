@@ -3,7 +3,7 @@
 # - name: "Determine Build"
 #   debug: 
 #    var: ansible_facts
-    
+
  - name: "run the dnf playbook"
    include: "dnf.yml"
    when: 

@@ -6,4 +6,7 @@
 - name: Install basic software
   shell: |                           
     rpm-ostree install --idempotent \
-        nano \
+        {{ basic }} \
+  include_vars:
+    file: main.yml
+    name: packages

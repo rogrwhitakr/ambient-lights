@@ -1,2 +1,11 @@
 ---
 # vars file for workstation_common
+# name: "get dem things"
+# simple:
+# - "nano"
+# - "htop"
+
+- name: "get the packages as vars"
+  include_vars:
+    file: "packages.yml"
+    name: "packages"

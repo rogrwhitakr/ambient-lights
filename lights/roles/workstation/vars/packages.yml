@@ -1,4 +1,5 @@
 ---
-- basic:
+packet:
+  basic:
   - nano
   - htop
