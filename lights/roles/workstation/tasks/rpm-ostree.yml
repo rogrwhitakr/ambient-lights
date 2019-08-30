@@ -1,9 +1,14 @@
 ---
 - name: rpm-ostree house-keeping
   shell: |
-      rpm-ostree cleanup -m && rpm-ostree upgrade
+        rpm-ostree cleanup -m && rpm-ostree upgrade
 
 - name: Install basic software
   shell: |
-      rpm-ostree install --idempotent \
-          {{ basic }} \
+        rpm-ostree install --idempotent \
+            {{ basic[0] }} \
+
+- name: Install dev software
+  shell: |
+        rpm-ostree install --idempotent \
+            {{ dev | flatten }} \

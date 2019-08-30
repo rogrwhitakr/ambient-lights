@@ -4,3 +4,7 @@
 basic:
   - nano
   - htop
+
+dev:
+  - tig
+  - git
