@@ -1,0 +1,22 @@
+---
+- name: "how to manipulate variables"
+  hosts: localhost
+  remote_user: benno
+  become: no
+
+  tasks:
+    - name: "include the variables"
+      include_vars:
+        file: /home/benno/ambient-lights/_vars/externalised_yaml_var.yml
+#          - /home/benno/ambient-lights/_vars/externalised_var.yml
+        name: variables
+
+    - name: "get the contents of variables"
+      debug:
+        msg: "{{ variables }}"
+    - name: "do stuff to it"
+      debug:
+        msg: "{{ variables | flatten }}"
+    - name: "do stuff to it"
+      debug:
+        msg: "{{ variables | list }}"
