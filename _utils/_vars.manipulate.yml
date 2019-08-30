@@ -7,13 +7,14 @@
   tasks:
     - name: "include the variables"
       include_vars:
-        file: /home/benno/ambient-lights/_vars/externalised_yaml_var.yml
+        file: /home/benno/ambient-lights/_vars/list.yml
 #          - /home/benno/ambient-lights/_vars/externalised_var.yml
         name: variables
 
     - name: "get the contents of variables"
       debug:
         msg: "{{ variables }}"
+
     - name: "do stuff to it"
       debug:
         msg: "{{ variables | flatten }}"
@@ -24,3 +25,13 @@
     - name: "do stuff to it"
       debug:
         msg: "{{ variables | list }}"
+    - name: "do stuff to it"
+      debug:
+        msg: "{{ variables | to_nice_json }}"
+
+    - name: "do semi-raw stuff to it"
+      command: echo "{{ variables | list }}"
+
+    - name: "echo to thingy"
+      shell: |
+        echo "dis gon be gud. {{ variables.serenity | join(" ") }}" >> /home/benno/ambient-lights/_utils/_vars.txt

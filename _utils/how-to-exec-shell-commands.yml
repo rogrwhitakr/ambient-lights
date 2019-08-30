@@ -1,10 +1,17 @@
 ---
-- name: _EXECUTE_SHELL_COMMANDS
-  hosts: dortmunder magellan
+- name: "_EXECUTE_SHELL_COMMANDS"
+  hosts: localhost
+  remote_user: benno
   become: yes
 
   tasks:
-  - name: get startup times 
-    shell: /usr/bin/systemd-analyze blame
-    debug:
-      msg: "{{  }}"
+    - name: "get startup times"
+      shell: /usr/bin/systemd-analyze blame
+      register: startup
+
+    - name: print that
+      debug:
+        msg: "{{ startup | flatten }}"
+
+    - name: exec a command
+      command: cat /etc/motd

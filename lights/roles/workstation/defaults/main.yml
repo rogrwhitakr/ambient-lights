@@ -5,6 +5,7 @@ basic:
   - nano
   - htop
   - chromium
+  - nmap
 
 dev:
   - tig
@@ -25,3 +26,8 @@ flatpak:
   - org.gnome.Platform
   - org.inkscape.Inkscape
   - org.libreoffice.LibreOffice
+
+virtualisation:
+  - libvirt
+  - libvirt-client
+  - libvirt-viewer
