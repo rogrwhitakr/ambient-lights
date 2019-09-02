@@ -6,9 +6,9 @@
 - name: Install basic software
   shell: |
         rpm-ostree install --idempotent \
-            {{ basic[0] }} \
+            {{ basic | join(" ") }} \
 
 - name: Install dev software
   shell: |
         rpm-ostree install --idempotent \
-            {{ dev | flatten }} \
+            {{ dev | join(" ") }} \

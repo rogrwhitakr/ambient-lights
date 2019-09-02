@@ -1,0 +1,5 @@
+---
+- name: Install flatpaks
+  flatpak:
+    name: "{{ flatpak }}"
+    state: present

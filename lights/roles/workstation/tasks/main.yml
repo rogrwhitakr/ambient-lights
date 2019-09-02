@@ -7,13 +7,18 @@
 - name: "run the dnf playbook"
   include: "dnf.yml"
   when:
-    - ansible_facts['pkg_mgr'] == "dnf"
+      - ansible_facts['pkg_mgr'] == "dnf"
 
 - name: "run the atomic playbook"
   include: "rpm-ostree.yml"
   when:
-    - ansible_facts['pkg_mgr'] == "atomic_container"
+      - ansible_facts['pkg_mgr'] == "atomic_container"
 
-- name: "Determine package Manager"
-  debug:
-    var: ansible_facts.pkg_mgr
+- name: "Add the flathub flatpak repository remote to the system installation"
+  flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+- name: "Install GUI applications as Flatpaks"
+  include: "flatpak.yml"
