@@ -20,3 +20,7 @@
     - name: "do stuff to it"
       debug:
         msg: "{{ variables | list }}"
+
+    - name: "do stuff to it"
+      debug:
+        msg: "{{ variables | list }}"

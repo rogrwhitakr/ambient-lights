@@ -4,10 +4,14 @@
 basic:
   - nano
   - htop
+  - chromium
 
 dev:
   - tig
   - git
+
+flutpuk:
+  - "ca.desrt.dconf-editor"
 
 flatpak:
   - ca.desrt.dconf-editor
