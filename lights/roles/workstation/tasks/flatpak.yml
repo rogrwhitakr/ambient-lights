@@ -1,5 +1,46 @@
 ---
-- name: Install flatpaks
+- name: "Install flatpak 1-9"
   flatpak:
-    name: "{{ flutpuk }}"
+    name: "{{ flatpak[0] }}"
+    state: present
+
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[1] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[2] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[3] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[4] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[5] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[6] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[7] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[8] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[9] }}"
+    state: present
+- name: "Install flatpak 1-9"
+  flatpak:
+    name: "{{ flatpak[10] }}"
     state: present

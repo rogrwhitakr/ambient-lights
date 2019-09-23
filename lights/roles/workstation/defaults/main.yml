@@ -11,21 +11,20 @@ dev:
   - tig
   - git
 
-flutpuk:
-  - "ca.desrt.dconf-editor"
-
 flatpak:
   - ca.desrt.dconf-editor
   - com.jetbrains.PyCharm-Community
   - com.mattermost.Desktop
   - com.visualstudio.code
-  - org.fedoraproject.Platform
-  - org.freedesktop.Platform
+  - com.github.donadigo.appeditor
+ # - org.freedesktop.Platform
   - org.freedesktop.Platform.html5-codecs
   - org.freedesktop.Sdk
   - org.gnome.Platform
   - org.inkscape.Inkscape
   - org.libreoffice.LibreOffice
+  - org.videolan.VLC
+  - com.calibre_ebook.calibre
 
 virtualisation:
   - libvirt
