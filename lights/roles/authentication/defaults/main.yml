@@ -1,2 +1,2 @@
 ---
-# defaults file for server_auth
+ansible_python_interpreter: /usr/bin/python3
