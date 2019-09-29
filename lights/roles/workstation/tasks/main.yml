@@ -7,4 +7,6 @@
  - name: "Determine package Manager"
    debug: 
     var: ansible_facts.pkg_mgr
-    
+
+# update and basics 
+ - include: "defaults.yml"    
