@@ -1,12 +1,33 @@
 ---
 # tasks file for workstation_common
 # - name: "Determine Build"
-#   debug: 
+#   debug:
 #    var: ansible_facts
 
+<<<<<<< HEAD
  - name: "Determine package Manager"
    debug: 
     var: ansible_facts.pkg_mgr
 
 # update and basics 
  - include: "defaults.yml"    
+=======
+- name: "run the dnf playbook"
+  include: "dnf.yml"
+  when:
+      - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: "run the atomic playbook"
+  include: "rpm-ostree.yml"
+  when:
+      - ansible_facts['pkg_mgr'] == "atomic_container"
+
+- name: "Add the flathub flatpak repository remote to the system installation"
+  flatpak_remote:
+      name: flathub
+      state: present
+      flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+- name: "Install GUI applications as Flatpaks"
+  include: "flatpak.yml"
+>>>>>>> 3d31aba43d3ca4dd57ba64c6c74994ba03334c0e

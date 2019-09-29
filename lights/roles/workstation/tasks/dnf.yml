@@ -1,0 +1,10 @@
+---
+- name: "dnf : Install basic software"
+  dnf:
+      name: "{{ basic }}"
+      state: present
+
+- name: "dnf : Install dev software"
+  dnf:
+      name: "{{ dev }}"
+      state: present

@@ -1,0 +1,14 @@
+---
+- name: "rpm-ostree : house-keeping"
+  shell: |
+        rpm-ostree cleanup -m && rpm-ostree upgrade
+
+- name: "rpm-ostree : Install basic software"
+  shell: |
+        rpm-ostree install --idempotent \
+            {{ basic | join(" ") }} \
+
+- name: "rpm-ostree : Install dev software"
+  shell: |
+        rpm-ostree install --idempotent \
+            {{ dev | join(" ") }} \

@@ -1,0 +1,55 @@
+---
+- name: create all prerequisites for an OT installation
+  hosts: localhost
+  become: yes
+
+  vars_files:
+    - "{{ playbook_dir }}/special/variables.yml"
+
+  vars_prompt:
+    - name: domain_password
+      prompt: Provide your AD login password for CORP.OPTITOOL.DE
+
+  tasks:
+    - name: Create a user group 
+      group: name="{{customer.group}}"
+
+    - name: "Create the {{ customer.user }} user"
+      user:
+        name: "{{customer.user}}"
+        group: "{{customer.group}}"
+        shell: "/usr/bin/bash"
+        comment: "user {{customer.user}} for customer"
+        createhome: "yes"
+        state: present
+
+    - name: "create a (for now unused) OT directory"    
+      file:
+        path: "/var/home/{{ customer.user }}/OT"
+        state: directory
+        owner: "{{ customer.user }}"
+        group: "{{ customer.group }}"
+        mode: 0755 
+
+    - name: "Download the base installation files"
+      unarchive:
+        src: ftp://{{ ftp.user }}:{{ ftp.password }}@{{ ftp.server }}/FTP/bosterholt/_INSTALL/OPTITOOL.zip
+        dest: "/var/home/{{ customer.user }}"
+        remote_src: yes
+        owner: "{{ customer.user }}"
+        group: "{{ customer.group }}"
+        creates: "/var/home/{{ customer.user }}/OPTITOOL"
+
+  #  - name: "Download the customer build for customer {{ customer.user }}"
+  #    fetch:
+  #      src: ftp://{{ corp.user }}:{{ domain_password }}@{{ corp.server }}{{ corp.path }}/Customer-Arla-DK-linux/master/ASWizardTomee.jar
+  #      dest: "/var/home/{{ customer.user }}/OT"
+  #      remote_src: yes
+  #      creates: "/var/home/{{ customer.user }}/OPTITOOL"    
+
+    - name: "Download a licence file"
+      fetch:
+        src: sftp://{{ ftp.user }}:{{ ftp.password }}@{{ ftp.server }}/FTP/bosterholt/_INSTALL/licence/optitool.licence.zip
+        dest: "/var/home/{{ customer.user }}/OPTITOOL/AS/apache-tomee-plus-7.0.4/licence/optitool.licence"
+#        remote_src: yes
+ #       creates: "/var/home/{{ customer.user }}/OPTITOOL/AS/apache-tomee-plus-7.0.4/licence/optitool.licence"

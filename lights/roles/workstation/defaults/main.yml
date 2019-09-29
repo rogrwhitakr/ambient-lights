@@ -1,2 +1,32 @@
 ---
 # defaults file for workstation_common
+
+basic:
+  - nano
+  - htop
+  - chromium
+  - nmap
+
+dev:
+  - tig
+  - git
+
+flatpak:
+  - ca.desrt.dconf-editor
+  - com.jetbrains.PyCharm-Community
+  - com.mattermost.Desktop
+  - com.visualstudio.code
+  - com.github.donadigo.appeditor
+ # - org.freedesktop.Platform
+  - org.freedesktop.Platform.html5-codecs
+  - org.freedesktop.Sdk
+  - org.gnome.Platform
+  - org.inkscape.Inkscape
+  - org.libreoffice.LibreOffice
+  - org.videolan.VLC
+  - com.calibre_ebook.calibre
+
+virtualisation:
+  - libvirt
+  - libvirt-client
+  - libvirt-viewer
