@@ -4,14 +4,6 @@
 #   debug:
 #    var: ansible_facts
 
-<<<<<<< HEAD
- - name: "Determine package Manager"
-   debug: 
-    var: ansible_facts.pkg_mgr
-
-# update and basics 
- - include: "defaults.yml"    
-=======
 - name: "run the dnf playbook"
   include: "dnf.yml"
   when:
@@ -30,4 +22,3 @@
 
 - name: "Install GUI applications as Flatpaks"
   include: "flatpak.yml"
->>>>>>> 3d31aba43d3ca4dd57ba64c6c74994ba03334c0e
