@@ -32,6 +32,12 @@ all-dem-servers:
     elk.internal.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
+    sql.internal.northern-lights.one:
+      ansible_user: admin
+      ansible_become: yes
+    redmine.internal.northern-lights.one:
+      ansible_user: redmine
+      ansible_become: yes
     
 authentication-servers:
   hosts:
