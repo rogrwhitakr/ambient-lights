@@ -15,3 +15,40 @@
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
         value: false
+        
+# create some custom shit
+    - name: make a shortcut for a maximised python shell
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding
+        value: <Primary>p
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command
+        value: gnome-terminal --profile python --maximize
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name
+        value: python shell
+
+    # bash
+    - name: make a shortcut for a maximised python shell
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/binding
+        value: <Primary>b
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/command
+        value: gnome-terminal --profile bash --maximize
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
+        value: bash shell
+
+    # nautilus
+    - name: make a shortcut for a file explorer using windows keybindings
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/binding
+        value: <Super>e
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/command
+        value: /usr/bin/nautilus
+      dconf:
+        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
+        value: explorer
+
