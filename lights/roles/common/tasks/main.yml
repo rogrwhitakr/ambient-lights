@@ -5,6 +5,11 @@
     name: libselinux-python3
     state: latest
 
+- name: "install SELinux manage"
+  dnf:
+    name: policycoreutils-python-utils
+    state: latest
+
 - name: "Install monitoring software"
   dnf: 
     name: ['htop','sysstat','iotop','dmidecode']
