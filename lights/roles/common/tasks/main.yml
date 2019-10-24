@@ -2,7 +2,7 @@
 
 - name: "Allow editing on an SELinux enforced system"
   dnf:
-    name: libselinux-python
+    name: libselinux-python3
     state: latest
 
 - name: "Install monitoring software"

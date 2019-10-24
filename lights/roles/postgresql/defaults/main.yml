@@ -1,2 +1,2 @@
 ---
-# defaults file for postgresql
+ansible_python_interpreter: /usr/bin/python3
