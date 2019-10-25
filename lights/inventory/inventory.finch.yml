@@ -4,7 +4,8 @@
 
 ---
 all:
-northern-lights:
+# apparently, having a dash ("-") in a group name is not allowed
+northernlights:
   hosts:
     samba.northern-lights.one:
       ansible_user: admin
@@ -24,32 +25,24 @@ northern-lights:
 
 commons:        
   hosts:
-    samba.northern-lights.one
-    console.northern-lights.one # aka localhost
-    
-all-dem-servers:        
+    samba.northern-lights.one:
+#    console.northern-lights.one: # aka localhost
+    openstack.internal.northern-lights.one:
+    elk.internal.northern-lights.one:
+    sql.internal.northern-lights.one:
+    redmine.internal.northern-lights.one:
+
+all_servers:        
   hosts:
     samba.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
     openstack.internal.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
     elk.internal.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
     sql.internal.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
     redmine.internal.northern-lights.one:
-      ansible_user: redmine
-      ansible_become: yes
     
 authentication-servers:
   hosts:
     samba.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
 
 workstations:
   hosts:
