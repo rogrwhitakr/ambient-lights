@@ -15,40 +15,50 @@
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
         value: false
-        
-# create some custom shit
-    - name: make a shortcut for a maximised python shell
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding
-        value: <Primary>p
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command
-        value: gnome-terminal --profile python --maximize
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name
-        value: python shell
+
+    # python   
+    - block: # create some custom shit
+      - name: create a shortcut for a maximised python shell
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding
+          value: <Primary>p
+      - name: set the command for the shortcut for a maximised python shell
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command
+          value: gnome-terminal --profile python --maximize
+      - name: set the name for the shortcut        
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name
+          value: python shell
 
     # bash
-    - name: make a shortcut for a maximised python shell
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/binding
-        value: <Primary>b
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/command
-        value: gnome-terminal --profile bash --maximize
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
-        value: bash shell
+    - block:
+      - name: set the keybinding for the shortcut for a maximised bash shell
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/binding
+          value: <Primary>b
+      - name: set the command for the shortcut for a maximised bash shell        
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/command
+          value: gnome-terminal --profile bash --maximize
+      - name: set the name for the shortcut           
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
+          value: bash shell
 
     # nautilus
-    - name: make a shortcut for a file explorer using windows keybindings
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/binding
-        value: <Super>e
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/command
-        value: /usr/bin/nautilus
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
-        value: explorer
+    - block:
+      - name: set the keybinding for a shortcut for a file explorer using windows keybindings
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/binding
+          value: <Super>e
+
+      - name: set the command for the shortcut for a file explorer using windows keybindings        
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/command
+          value: /usr/bin/nautilus
+      - name: set the name for the shortcut          
+        dconf:
+          key: /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name
+          value: explorer
 
