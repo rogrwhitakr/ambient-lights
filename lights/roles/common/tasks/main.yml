@@ -30,10 +30,15 @@
     name: ['rhythmbox','shotwell','builder']
     state: absent
 
-- name: "Ensure cockpit packages exist"
-  dnf:
-    name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
-    state: latest
+- name: cockpit 
+  block:
+  - name: "Ensure cockpit packages exist"
+    dnf:
+      name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
+      state: latest
+
+  - name: "Enable cockpit socket"
+    shell: /usr/bin/systemctl enable --now cockpit.socket
 
 # update all packages
 - name: "update all packages"
