@@ -6,7 +6,7 @@
     - name: Enable Night Light
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
-        value: true
+        value: "True"
     - name: Set Night Light Temperature
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
@@ -14,7 +14,7 @@
     - name: disable Night Light again
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
-        value: false
+        value: "False"
 
     # python   
     - block: # create some custom shit
