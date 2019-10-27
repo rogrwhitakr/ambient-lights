@@ -4,24 +4,8 @@
 
 ---
 all:
-northern-lights:
-  hosts:
-    samba.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
-    redmine.northern-lights.one:
-      ansible_user: redmine
-      ansible_become: yes
-    sql.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
-
-commons:        
-  hosts:
-    samba.northern-lights.one
-    console.northern-lights.one # aka localhost
-    
-all-dem-servers:        
+# apparently, having a dash ("-") in a group name is not allowed
+northernlights:
   hosts:
     samba.northern-lights.one:
       ansible_user: admin
@@ -38,12 +22,27 @@ all-dem-servers:
     redmine.internal.northern-lights.one:
       ansible_user: redmine
       ansible_become: yes
+
+commons:        
+  hosts:
+    samba.northern-lights.one:
+#    console.northern-lights.one: # aka localhost
+    openstack.internal.northern-lights.one:
+    elk.internal.northern-lights.one:
+    sql.internal.northern-lights.one:
+    redmine.internal.northern-lights.one:
+
+all_servers:        
+  hosts:
+    samba.northern-lights.one:
+    openstack.internal.northern-lights.one:
+    elk.internal.northern-lights.one:
+    sql.internal.northern-lights.one:
+    redmine.internal.northern-lights.one:
     
 authentication-servers:
   hosts:
     samba.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
 
 workstations:
   hosts:

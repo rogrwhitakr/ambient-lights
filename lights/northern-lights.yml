@@ -7,7 +7,7 @@
 #  roles:
 #  - role: common
 
-- hosts: all-dem-servers
+- hosts: commons
   roles:
   - role: common
 
