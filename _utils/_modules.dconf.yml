@@ -5,8 +5,10 @@
   tasks:
     - name: Enable Night Light
       dconf:
-        key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
+        key: "/org/gnome/settings-daemon/plugins/power/ambient-enabled"
         value: "True"
+        state: present
+
     - name: Set Night Light Temperature
       dconf:
         key: /org/gnome/settings-daemon/plugins/color/night-light-temperature

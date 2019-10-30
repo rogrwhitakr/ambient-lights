@@ -1,0 +1,22 @@
+- name: _MODULES MOUNT
+  hosts: localhost
+  become: yes
+
+  tasks:
+
+  - block:
+    - name: "ensure '/mnt/share' directory exists"
+      file:
+        path: /mnt/share
+        state: directory
+        owner: admin
+        group: admin
+        mode: 0755
+
+    - name: "add mount to windows share on host FINCH"
+      mount:
+        name: /mnt/share
+        src: //192.168.0.3/share
+        opts: "user=HaroldFinch,password=vasques,domain=WORKGROUP"
+        fstype: cifs
+        state: mounted
