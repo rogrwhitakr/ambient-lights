@@ -1,15 +1,5 @@
 
-customer:
-  user: minet
-  group: minet
-  password: $6$4bps8CQ5qiNFOtc3$42kUjpcD00.8LTUF5rmW1hgSD/DfMmubGlUmm3FeoKpRksQaDgBLmy12O3/Y/TtWXK8/KvpJcfeyb95eOgpoV.
-
-ftp:
-  user: u119042
-  server: u119042.your-storagebox.de
-  password: wVprfeRDpZP0x1Fp
-
-corp:
-  user: bosterholt
+internal:
+  user: Administrator
   server: jenkins
-  path: /mnt/build/buildResults
+  path: /mnt/build/resultset
