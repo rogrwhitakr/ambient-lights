@@ -8,19 +8,23 @@
     debug: 
       var: ansible_facts
 
+  - name: "get me some specific data" 
+    debug: 
+      var: ansible_facts['env']['SUDO_GID'], ansible_facts['env']['SUDO_UID']
+
   - block:
     - name: "ensure '/mnt/share' directory exists"
       file:
         path: /mnt/share
         state: directory
-        owner: admin
-        group: admin
+        owner: ansible_facts['env']['SUDO_USER']
+        group: ansible_facts['env']['SUDO_USER']
         mode: 0777
 
     - name: "add mount to windows share on host FINCH"
       mount:
         name: /mnt/share
         src: //192.168.0.3/share
-        opts: "user=HaroldFinch,password=vasques,domain=WORKGROUP,file_mode=0777,dir_mode=0777,uid=1000,gid=1000"
+        opts: "user=HaroldFinch,password=vasques,domain=WORKGROUP,file_mode=0777,dir_mode=0777,uid=ansible_facts['env']['SUDO_UID'],gid=ansible_facts['env']['SUDO_GID']"
         fstype: cifs
         state: mounted

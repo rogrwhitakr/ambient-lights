@@ -1,22 +1,31 @@
 - name: _MODULES DCONF
   hosts: localhost
-  become: yes
+#  become: yes
 
   tasks:
-    - name: Enable Night Light
+    - name: Read currently available keyboard layouts in Gnome
       dconf:
-        key: "/org/gnome/settings-daemon/plugins/power/ambient-enabled"
-        value: "True"
-        state: present
+        key: "/org/gnome/desktop/background/picture-uri"
+        state: read
+      register: keyboard_layouts
 
-    - name: Set Night Light Temperature
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
-        value: uint32 5500
-    - name: disable Night Light again
-      dconf:
-        key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
-        value: "False"
+    - name: "read out variable datas"
+      debug:
+        var: keyboard_layouts
+#    - name: Enable Night Light
+ #     dconf:
+  #      key: "/org/gnome/settings-daemon/plugins/power/ambient-enabled"
+   #     value: "TRUE"
+    #    state: present
+
+#    - name: Set Night Light Temperature
+ #     dconf:
+  #      key: /org/gnome/settings-daemon/plugins/color/night-light-temperature
+   #     value: uint32 5500
+#    - name: disable Night Light again
+ #     dconf:
+  #      key: /org/gnome/settings-daemon/plugins/color/night-light-enabled
+   #     value: "False"
 
     # python   
     - block: # create some custom shit
