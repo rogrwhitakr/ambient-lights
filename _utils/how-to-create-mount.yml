@@ -1,5 +1,5 @@
 - name: _MODULES MOUNT
-  hosts: redmine
+  hosts: localhost
   become: yes
 
   tasks:
