@@ -1,0 +1,48 @@
+---
+# tasks file for jenkins
+---
+
+- name: "Allow editing on an SELinux enforced system"
+  dnf:
+    name: libselinux-python3
+    state: latest
+
+- name: Define jenkins_repo_url
+  set_fact:
+    jenkins_repo_url: "{{ __jenkins_repo_url }}"
+  when: jenkins_repo_url is not defined
+
+- name: Define jenkins_repo_key_url
+  set_fact:
+    jenkins_repo_key_url: "{{ __jenkins_repo_key_url }}"
+  when: jenkins_repo_key_url is not defined
+
+- name: Define jenkins_pkg_url
+  set_fact:
+    jenkins_pkg_url: "{{ __jenkins_pkg_url }}"
+  when: jenkins_pkg_url is not defined
+
+- name: Ensure Jenkins repo is installed.
+  get_url:
+    url: "{{ jenkins_repo_url }}"
+    dest: /etc/yum.repos.d/jenkins.repo
+  when: jenkins_repo_url | default(false)
+
+- name: Add Jenkins repo GPG key.
+  rpm_key:
+    state: present
+    key: "{{ jenkins_repo_key_url }}"
+  when: jenkins_repo_url | default(false)
+
+- name: "Install jenkins"
+  dnf:
+    - jenkins
+    - java-1.8.0-openjdk
+
+- include_tasks: settings.yml
+
+- name: Ensure Jenkins is started and runs on startup.
+  service: 
+    name: jenkins
+    state: started
+    enabled: yes    
