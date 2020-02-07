@@ -1,13 +1,4 @@
----
-- name: Update GNOME softwares
-  dnf: 
-    name: ['gnome-tweak-tool', 'gnome-todo', 'gnome-music']
-    state: present
 
-- name: Remove unwanted default packages 
-  dnf: 
-    name: ['rhythmbox', 'shotwell', 'evolution']
-    state: absent
 
 # - name : Change theme to Adwaita-dark
 #   dconf:

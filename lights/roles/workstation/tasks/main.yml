@@ -4,17 +4,32 @@
 #   debug:
 #    var: ansible_facts
 
-- name: "run the dnf playbook"
-  include: "dnf.yml"
-  when:
-      - ansible_facts['pkg_mgr'] == "dnf"
+- name: "install workstation classic"
+  block: 
+  - name: "run the dnf playbook"
+    include: "dnf.yml"
 
-- name: "run the atomic playbook"
-  include: "rpm-ostree.yml"
-  when:
-      - ansible_facts['pkg_mgr'] == "atomic_container"
+  - name: "Install misc apps"
+    include: "apps.yml"
 
-- name: "Install GUI applications as Flatpaks"
-  include: "flatpak.yml"
+  - name: "Install VS Code"
+    include: "vscode.yml"
+
   when:
-      - ansible_facts['pkg_mgr'] == "atomic_container"  
+    - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: "install workstation atomic | silverblue"
+  block: 
+  - name: "run the atomic playbook"
+    include: "rpm-ostree.yml"
+
+  - name: "Install misc apps"
+    include: "apps_atomic.yml"
+
+  - name: "Install GUI applications as Flatpaks"
+    include: "flatpak.yml"
+
+  - name: "Install VS Code"
+    include: "vscode_atomic.yml"
+  when:
+    - ansible_facts['pkg_mgr'] == "atomic_container"

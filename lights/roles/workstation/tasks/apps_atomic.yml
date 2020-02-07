@@ -1,23 +1,11 @@
 ---
-
 - name: "atomic systems: Update all software on system to current latest"
   shell: |                           
    rpm-ostree update
   when:
     - ansible_facts['pkg_mgr'] == "atomic_container"
 
-- name: "dnf based systems: Update all software on system to current latest"
-  dnf:
-    name: "*"
-    state: latest
-  when:
-    - ansible_facts['pkg_mgr'] == "dnf"
 
-- name: Install basic software
-  dnf: 
-    name: ['htop', 'nmap', 'nano']
-  when:
-    - ansible_facts['pkg_mgr'] == "dnf"
 
 - name: Install basic software
   shell: |                           
