@@ -1,7 +1,5 @@
 ---
 # tasks file for jenkins
----
-
 - name: "Allow editing on an SELinux enforced system"
   dnf:
     name: libselinux-python3
@@ -36,8 +34,10 @@
 
 - name: "Install jenkins"
   dnf:
+    name: 
     - jenkins
     - java-1.8.0-openjdk
+    state: latest
 
 - include_tasks: settings.yml
 

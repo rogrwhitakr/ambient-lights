@@ -30,21 +30,11 @@
     name: ['rhythmbox','shotwell','builder']
     state: absent
 
-- name: cockpit 
-  block:
-  - name: "Ensure cockpit packages exist"
-    dnf:
-      name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
-      state: latest
-
-  - name: "Enable cockpit socket"
-    shell: /usr/bin/systemctl enable --now cockpit.socket
-
 # update all packages
-- name: "update all packages"
-  dnf:
-    name: "*"
-    state: latest
+#- name: "update all packages"
+#  dnf:
+#    name: "*"
+#    state: latest
 
 # bashrc
 - name: "create a decent bashrc"
@@ -55,8 +45,8 @@
   import_tasks: roles/common/tasks/harden-ssh.yml    
 
 # tasks file for fedora upgrades
-- name: "fedora upgrades"
-  import_tasks: roles/common/tasks/upgrade.yml    
-  when: 
-  - ansible_facts['distribution_major_version'] is version('30', '!=')
-  - ansible_facts['distribution'] == "Fedora"
+#- name: "fedora upgrades"
+#  import_tasks: roles/common/tasks/upgrade.yml    
+#  when: 
+#  - ansible_facts['distribution_major_version'] is version('30', '!=')
+#  - ansible_facts['distribution'] == "Fedora"

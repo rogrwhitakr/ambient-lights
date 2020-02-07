@@ -16,9 +16,6 @@ northernlights:
     elk.internal.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
-    sql.internal.northern-lights.one:
-      ansible_user: admin
-      ansible_become: yes
     redmine.internal.northern-lights.one:
       ansible_user: redmine
       ansible_become: yes
@@ -26,21 +23,12 @@ northernlights:
 commons:        
   hosts:
     samba.northern-lights.one:
-#    console.northern-lights.one: # aka localhost
+    console.northern-lights.one:
     openstack.internal.northern-lights.one:
     elk.internal.northern-lights.one:
-    sql.internal.northern-lights.one:
     redmine.internal.northern-lights.one:
 
-all_servers:        
-  hosts:
-    samba.northern-lights.one:
-    openstack.internal.northern-lights.one:
-    elk.internal.northern-lights.one:
-    sql.internal.northern-lights.one:
-    redmine.internal.northern-lights.one:
-    
-authentication-servers:
+authentication-server:
   hosts:
     samba.northern-lights.one:
 
@@ -52,3 +40,15 @@ workstations:
     silverblue.northern-lights.one:
       ansible_user: admin
       ansible_become: yes    
+
+build-server:
+  hosts:
+    redmine.internal.northern-lights.one
+
+project-management-server:
+  hosts:
+    redmine.internal.northern-lights.one
+
+logging-server:
+  hosts:
+    elk.internal.northern-lights.one

@@ -1,0 +1,5 @@
+---
+- name: Install visual studio code
+  flatpak:
+    name: code
+    state: present
