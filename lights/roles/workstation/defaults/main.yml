@@ -7,9 +7,15 @@ basic:
   - chromium
   - nmap
 
-dev:
+ansible:
+  - ansible
+  - molecule
+
+development:
   - tig
   - git
+  - python3
+  - jupyter
 
 flatpak:
   - ca.desrt.dconf-editor

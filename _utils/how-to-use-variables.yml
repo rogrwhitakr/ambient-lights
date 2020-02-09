@@ -12,8 +12,6 @@
 #   foo-port, foo port, foo.port and 12 are not valid variable names.
 
 - name: EXPLAINER FOR VARIABLES - HOW TO
-  hosts: cortez
-  remote_user: admin
   become: yes
 
   # [-----------------------------------------]

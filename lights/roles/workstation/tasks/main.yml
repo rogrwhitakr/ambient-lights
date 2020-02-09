@@ -18,6 +18,7 @@
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
 
+
 - name: "install workstation atomic | silverblue"
   block: 
   - name: "run the atomic playbook"

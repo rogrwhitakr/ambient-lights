@@ -1,8 +1,5 @@
 ---
 - name: EXPLAINER FOR DEBUGGING / MESSAGE FROM SYSTEMS - HOW TO
-  hosts: magellan
-  remote_user: admin
-  become: yes
 
   tasks:
     - name: "do something: make a file"
