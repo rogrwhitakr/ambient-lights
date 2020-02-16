@@ -1,0 +1,6 @@
+
+# version
+molecule --version
+
+# init a role
+molecule init role --role-name sambadc --driver-name docker

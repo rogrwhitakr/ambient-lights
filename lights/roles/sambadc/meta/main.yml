@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: rogrwhitakr
+  description: common elements of all servers.
+    includes
+    packets
+    commandline utils
+
+  license: BSD
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Fedora
+      versions:
+        - all
