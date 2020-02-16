@@ -7,7 +7,7 @@ all:
 # apparently, having a dash ("-") in a group name is not allowed
 northernlights:
   hosts:
-    samba.northern-lights.one:
+    auth.internal.northern-lights.one:
       ansible_user: admin
       ansible_become: yes
     openstack.internal.northern-lights.one:
@@ -22,7 +22,7 @@ northernlights:
 
 commons:        
   hosts:
-    samba.northern-lights.one:
+    auth.internal.northern-lights.one:
     console.northern-lights.one:
     openstack.internal.northern-lights.one:
     elk.internal.northern-lights.one:
@@ -30,7 +30,7 @@ commons:
 
 authentication-server:
   hosts:
-    samba.northern-lights.one:
+    auth.internal.northern-lights.one:
 
 workstations:
   hosts:

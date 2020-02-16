@@ -1,5 +1,7 @@
 ---
 - name: EXPLAINER FOR DEBUGGING / MESSAGE FROM SYSTEMS - HOW TO
+  hosts: localhost
+  become: yes
 
   tasks:
     - name: "do something: make a file"
