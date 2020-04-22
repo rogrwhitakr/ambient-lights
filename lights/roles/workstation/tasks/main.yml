@@ -6,8 +6,9 @@
 
 - name: "install workstation classic"
   block: 
-  - name: "run the dnf playbook"
-    include: "dnf.yml"
+
+  - name: "Install rpm-fusion stuffs"
+    include: "rpmfusion.yml"
 
   - name: "Install misc apps"
     include: "apps.yml"

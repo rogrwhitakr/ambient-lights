@@ -1,0 +1,14 @@
+---
+
+- name: "dnf : enable installs from free and non-free rpmfusion"
+  dnf:
+    name: "{{ rpmfusion._dnf }}"
+    state: present
+  when:
+    - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: "rpm-ostree : enable installs from free and non-free rpmfusion"
+  debug:
+    msg: "{{ rpmfusion._rpm_ostree }}"
+  when:
+    - ansible_facts['pkg_mgr'] == "atomic_container"

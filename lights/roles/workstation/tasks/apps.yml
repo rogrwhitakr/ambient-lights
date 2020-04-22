@@ -5,8 +5,33 @@
     name: "*"
     state: latest
 
-- name: Remove unwanted default packages 
+- name: "dnf : Install basic software"
+  dnf:
+    name: "{{ basic }}"
+    state: present
+
+- name: "dnf : Install development software"
+  dnf:
+    name: "{{ development }}"
+    state: present
+
+- name: "dnf : Update GNOME softwares"
+  dnf:
+      name: "{{ gnome }}"
+      state: present
+
+- name: "dnf : Update ansible"
+  dnf:
+      name: "{{ ansible }}"
+      state: present
+
+- name: "dnf : Update productivity softwares"
+  dnf:
+      name: "{{ productivity }}"
+      state: present
+
+- name: "Remove unwanted default packages" 
   dnf: 
-    name: ['rhythmbox', 'shotwell', 'evolution']
+    name: "{{ removal }}"
     state: absent
 
