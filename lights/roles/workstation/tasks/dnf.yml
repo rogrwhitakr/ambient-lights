@@ -1,10 +1,28 @@
 ---
+
+
 - name: "dnf : Install basic software"
   dnf:
-      name: "{{ basic }}"
+      list: "{{ basic }}"
       state: present
 
-- name: "dnf : Install dev software"
+- name: "dnf : Install development software"
   dnf:
-      name: "{{ dev }}"
+      list: '[ "{{ development }}" ]'
       state: present
+
+- name: "dnf : Update GNOME softwares"
+  dnf:
+      list: '[ "{{ gnome }}" ]'
+      state: present
+
+- name: "dnf : Update ansible"
+  dnf:
+      list: '[ "{{ ansible }}" ]'
+      state: present
+
+- name: "dnf : Update productivity softwares"
+  dnf:
+      list: '[ "{{ productivity }}" ]'
+      state: present
+

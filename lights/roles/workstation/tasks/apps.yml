@@ -5,16 +5,6 @@
     name: "*"
     state: latest
 
-- name: Install basic software
-  dnf: 
-    name: ['htop', 'nmap', 'nano']
-    state: present 
-    
-- name: Update GNOME softwares
-  dnf: 
-    name: ['gnome-tweak-tool', 'gnome-todo', 'gnome-music']
-    state: present
-
 - name: Remove unwanted default packages 
   dnf: 
     name: ['rhythmbox', 'shotwell', 'evolution']

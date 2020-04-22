@@ -11,11 +11,23 @@ ansible:
   - ansible
   - molecule
 
+gnome:
+  - gnome-tweak-tool
+  - gnome-todo
+  - gnome-music
+  - dconf-editor
+
 development:
   - tig
   - git
   - python3
   - jupyter
+
+productivity:
+  - calibre
+  - Inkscape
+  - LibreOffice
+  - VLC
 
 flatpak:
   - ca.desrt.dconf-editor
