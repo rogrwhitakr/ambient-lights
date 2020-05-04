@@ -27,8 +27,8 @@ productivity:
   - calibre
   - inkscape
   - libreoffice
-  - vlc # -> needs fusion freee and non-free
- # - mattermost
+  - vlc 
+  - remmina
 
 flatpak:
   - ca.desrt.dconf-editor
@@ -54,6 +54,7 @@ removal:
   - rhythmbox
   - shotwell
   - evolution
+#  - boxes
 
 rpmfusion:
     _dnf:
