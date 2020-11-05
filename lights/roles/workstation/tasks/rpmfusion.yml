@@ -4,6 +4,7 @@
   dnf:
     name: "{{ rpmfusion._dnf }}"
     state: present
+    disable_gpg_check: yes
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
 
