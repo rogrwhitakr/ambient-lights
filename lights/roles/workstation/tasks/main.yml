@@ -13,7 +13,7 @@
   - name: "Install misc apps"
     include: "apps.yml"
 
-  - name: "Install VS Code"
+  - name: "Install VS Code and Powershell"
     include: "vscode.yml"
 
   when:

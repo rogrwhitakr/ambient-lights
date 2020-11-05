@@ -11,3 +11,14 @@
   dnf: 
     name: code
     state: latest
+
+- name: Add Repository for Powershell
+  yum_repository:
+    name: microsoft
+    description: Microsoft Repository
+    baseurl: "https://packages.microsoft.com/config/rhel/7/prod.repo"
+
+#- name: Install the PowerShell Package
+#  dnf:
+#    name: powershell
+#    state: latest
