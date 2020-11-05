@@ -12,30 +12,19 @@
 
 - name: "Install monitoring software"
   dnf: 
-    name: ['htop','sysstat','iotop','dmidecode']
+    name: ['htop','sysstat', 'iotop', 'dmidecode']
     state: present
 
 - name: "Install basics"
   dnf: 
-    name: ['nano','python3','python']
+    name: [ 'nano','python3' ]
     state: present
     
 - name: "Install Powerline for pleasant commandline operation"
   dnf: 
     name: ['powerline','powerline-fonts'] 
     state: present
-
-- name: "Remove unwanted default packages" 
-  dnf: 
-    name: ['rhythmbox','shotwell','builder']
-    state: absent
-
-# update all packages
-#- name: "update all packages"
-#  dnf:
-#    name: "*"
-#    state: latest
-
+    
 # bashrc
 - name: "create a decent bashrc"
   import_tasks: roles/common/tasks/bashrc.yml    
@@ -43,10 +32,3 @@
 # tasks file for common
 - name: "harden the ssh daemon"
   import_tasks: roles/common/tasks/harden-ssh.yml    
-
-# tasks file for fedora upgrades
-#- name: "fedora upgrades"
-#  import_tasks: roles/common/tasks/upgrade.yml    
-#  when: 
-#  - ansible_facts['distribution_major_version'] is version('30', '!=')
-#  - ansible_facts['distribution'] == "Fedora"
