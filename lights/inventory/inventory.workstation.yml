@@ -1,0 +1,6 @@
+---
+workstations:
+  hosts:
+    localhost:
+      ansible_user: finch
+      ansible_become: yes
