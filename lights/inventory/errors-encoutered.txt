@@ -1,0 +1,3 @@
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Failed to validate GPG signature for dbeaver-ce-7.2.4-stable.x86_64"}
+fatal: [localhost]: FAILED! => {"changed": false, "failures": ["vlc Keine Übereinstimmung für Argumente: vlc"], "msg": "Failed to install some of the specified packages", "rc": 1, "results": []}
+
