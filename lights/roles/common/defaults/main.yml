@@ -1,3 +1,11 @@
 ---
 # defaults file for server_common
 ansible_python_interpreter: /usr/bin/python3
+
+# dotfiles to use
+dotfile:
+ - ssh
+ - bashrc
+ - bash_profile
+ - bash_logout
+ 

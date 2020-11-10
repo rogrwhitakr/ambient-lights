@@ -1,1 +1,5 @@
 # nothing to see here
+
+- name: "simply list the contents of that var field"
+  debug:
+    msg: "{{ dotfiles }}"
