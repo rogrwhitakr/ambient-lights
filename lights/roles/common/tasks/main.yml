@@ -27,8 +27,12 @@
     
 # bashrc
 - name: "create a decent bashrc"
-  import_tasks: roles/common/tasks/bashrc.yml    
+  include: bashrc.yml    
 
 # tasks file for common
 - name: "harden the ssh daemon"
-  import_tasks: roles/common/tasks/harden-ssh.yml    
+  include: harden-ssh.yml    
+
+# other dotfiles?
+- name: "add dotfiles"
+  include: dotfiles.yml
