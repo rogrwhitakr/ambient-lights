@@ -1,28 +1,23 @@
 ---
 
-- name: "Allow editing on an SELinux enforced system"
+- name: "install SELinux recommends"
   dnf:
-    name: libselinux-python3
-    state: latest
-
-- name: "install SELinux manage"
-  dnf:
-    name: policycoreutils-python-utils
+    name: "{{ install.selinux }}"
     state: latest
 
 - name: "Install monitoring software"
   dnf: 
-    name: ['htop','sysstat', 'iotop', 'dmidecode']
+    name: "{{ install.monitor }}"
     state: present
 
 - name: "Install basics"
   dnf: 
-    name: [ 'nano','python3' ]
+    name: "{{ install.default }}"
     state: present
     
 - name: "Install Powerline for pleasant commandline operation"
   dnf: 
-    name: ['powerline','powerline-fonts'] 
+    name: "{{ install.powerline }}"
     state: present
     
 # bashrc
