@@ -4,5 +4,6 @@
 
 - hosts: workstations
   roles:
+  - role: common
   - role: workstation
   - role: common
