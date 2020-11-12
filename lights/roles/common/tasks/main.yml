@@ -2,22 +2,22 @@
 
 - name: "install SELinux recommends"
   dnf:
-    name: "{{ install.selinux }}"
+    name: "{{ selinux }}"
     state: latest
 
 - name: "Install monitoring software"
   dnf: 
-    name: "{{ install.monitor }}"
+    name: "{{ monitor }}"
     state: present
 
 - name: "Install basics"
   dnf: 
-    name: "{{ install.default }}"
+    name: "{{ default }}"
     state: present
     
 - name: "Install Powerline for pleasant commandline operation"
   dnf: 
-    name: "{{ install.powerline }}"
+    name: "{{ powerline }}"
     state: present
     
 # bashrc

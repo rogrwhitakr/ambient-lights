@@ -9,20 +9,21 @@ dotfile:
  - bash_profile
  - bash_logout
  
-install:
-    default:
-     - nano
-     - fail2ban
-     - zstd
-    monitor:
-     - htop
-     - sysstat
-     - iotop
-     - dmidecode
-    selinux:
-     - selinux
-     - libselinux-python3  
-     - policycoreutils-python-utils
-    powerline:
-     - powerline
-     - powerline-fonts 
+default:
+ - nano
+ - fail2ban
+ - zstd
+
+monitor:
+ - htop
+ - sysstat
+ - iotop
+ - dmidecode
+
+selinux:
+ - libselinux-python3  
+ - policycoreutils-python-utils
+
+powerline:
+ - powerline
+ - powerline-fonts 
