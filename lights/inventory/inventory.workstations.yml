@@ -1,0 +1,23 @@
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+---
+all:
+  hosts:
+    localhost:
+      ansible_user: finch
+      ansible_become: yes
+    silverblue:
+      ansible_user: fusco
+      ansible_become: yes  
+
+workstations:
+  hosts:
+    localhost:
+    silverblue:
+
+commons:        
+  hosts:
+    localhost:
+    silverblue:
