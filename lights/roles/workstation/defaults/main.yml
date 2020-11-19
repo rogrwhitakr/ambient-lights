@@ -22,6 +22,7 @@ development:
   - git
   - python3
   - https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
+  - postgresql
 
 productivity:
   - calibre
