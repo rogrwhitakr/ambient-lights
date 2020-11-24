@@ -19,7 +19,8 @@ monitor:
  - sysstat
  - iotop
  - dmidecode
-
+ - hyperfine
+ 
 selinux:
  - libselinux-python3  
  - policycoreutils-python-utils
