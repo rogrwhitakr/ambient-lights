@@ -1,0 +1,6 @@
+---
+# handlers file for nextcloud
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted

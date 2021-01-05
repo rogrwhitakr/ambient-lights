@@ -1,0 +1,31 @@
+---
+# tasks file for nextcloud
+
+- name: "Install nextcloud softwares"
+  dnf:
+    name: "{{ install }}"
+    state: present
+
+- name: "Install NGINX"
+  include_tasks: nginx.yml
+
+- name: "Install postgresql"
+  include_role:
+    name: postgresql
+  vars:
+    postgresql_databases:
+      - name: nextcloud
+    postgresql_users:
+      - name: nextcloud
+        password: nextcloud
+        db: nextcloud
+    postgres_users_no_log: false    
+#    __postgresql_version: "13.0"    
+    postgresql_hba_entries:
+      - {type: local, database: all, user: postgres, auth_method: peer}
+      - {type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: md5}
+      - {type: host, database: all, user: all, address: '::1/128', auth_method: md5}
+      - {type: host, database: nextcloud, user: nextcloud, address: '0.0.0.0/0', auth_method: md5}
+
+- name: "Configure Nextcloud"
+  include_tasks: nextcloud.yml

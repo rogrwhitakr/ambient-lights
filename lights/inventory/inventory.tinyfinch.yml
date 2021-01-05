@@ -24,16 +24,12 @@ commons:
   hosts:
     domain.northern-lights.one:
     elk.northern-lights.one:
-#    redmine.northern-lights.one:
+    storage.northern-lights.one:
 
-authentication-server:
+authentication:
   hosts:
     domain.northern-lights.one:
 
-storage-server:
+storage:
   hosts:
     storage.northern-lights.one:
-
-build-server:
-  hosts:
-    redmine.northern-lights.one:

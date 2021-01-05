@@ -1,0 +1,25 @@
+--- 
+
+- name: "create user nginx"
+  user:
+    name: "{{nginx_user}}"
+    group: "{{nginx_user}}"
+    password: "{{nginx_password}}"
+    system: yes
+    comment: "{{nginx_user}} for webserver"
+    createhome: no
+    state: present   
+
+- name: "NGINX: copy nginx configuration file"
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: restart nginx
+
+- name: "enable NGINX"
+  service:
+    name: nginx
+    state: started

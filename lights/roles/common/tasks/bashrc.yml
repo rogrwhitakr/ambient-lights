@@ -1,5 +1,5 @@
 ---
-  - name: "download script for custom bashrc, profile"
+  - name: "download script for custom bashrc profile"
     get_url:
       url: "https://raw.githubusercontent.com/rogrwhitakr/northern-lights/master/script/setup-profile-on-new-box.bash"
       dest: "/home/{{ ansible_user }}/profile-setup.bash"
@@ -11,7 +11,7 @@
     become_user: "{{ ansible_user }}"
     script: "/home/{{ ansible_user }}/profile-setup.bash"
     args:
-      executable: /usr/bin/bash
+      executable: /usr/bin/env bash
       creates: "/home/{{ ansible_user }}/.bashrc.d"
 
   - name: remove script

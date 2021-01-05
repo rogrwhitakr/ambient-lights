@@ -1,0 +1,14 @@
+---
+
+- hosts: storage
+  roles:
+  - role: nextcloud  
+
+- hosts: commons
+  roles:
+  - role: common
+
+- hosts: authentication
+  roles:
+  - role: authentication  
+

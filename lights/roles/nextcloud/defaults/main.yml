@@ -1,0 +1,33 @@
+---
+# defaults file for nextcloud
+
+install:
+  - nginx
+  - php 
+  - php-gd 
+  - php-mbstring 
+  - php-intl
+  - php-pecl-apcu 
+  - php-pdo 
+  - php-pecl-redis 
+  - php-opcache 
+  - php-imagick 
+  - php-zip 
+  - php-process
+
+nextcloud: https://download.nextcloud.com/server/releases/nextcloud-20.0.4.tar.bz2
+
+nginx_port: 80
+nginx_user: nginx
+nginx_group: nginx
+nginx_password: nginx
+
+nexcloud:
+    trusted_domains: 
+      - "'storage.northern-lights.one',"
+      - "'192.168.0.60'"
+    dbtype: pgsql
+    dbhost: localhost
+    dbname: nextcloud
+    dbuser: nextcloud
+    dbpassword: nextcloud
