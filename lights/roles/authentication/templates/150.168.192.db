@@ -1,0 +1,17 @@
+;
+; reverse pointers for 192.168.150.0/24 subnet
+;
+$ORIGIN 150.168.192.in-addr.arpa.
+$TTL 1D
+@     IN SOA  magellan.northern-lights.one. root.northern-lights.one. (
+              201710013  ; serial
+              28800      ; refresh (8 hours)
+              14400      ; retry (4 hours)
+              2419200    ; expire (4 weeks)
+              86400      ; minimum (1 day)
+              )
+; define the authoritative name server
+    IN     NS      magellan.northern-lights.one.
+    IN     PTR     northern-lights.one.
+    IN     A       255.255.255.0 
+1   IN     PTR     magellan.northern-lights.one.

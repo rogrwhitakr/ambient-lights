@@ -15,6 +15,7 @@
   vars:
     postgresql_databases:
       - name: nextcloud
+        owner: nextcloud 
     postgresql_users:
       - name: nextcloud
         password: nextcloud

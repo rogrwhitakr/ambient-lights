@@ -18,6 +18,7 @@
     group: root
     mode: u=rw,g=r,o=r
   notify: restart nginx
+  tags: config
 
 - name: "enable NGINX"
   service:

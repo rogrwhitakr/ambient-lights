@@ -14,18 +14,26 @@ install:
   - php-imagick 
   - php-zip 
   - php-process
-
-nextcloud: https://download.nextcloud.com/server/releases/nextcloud-20.0.4.tar.bz2
+  - php-apcu
+  - php-pgsql
 
 nginx_port: 80
 nginx_user: nginx
 nginx_group: nginx
 nginx_password: nginx
+nginx:
+    server_name: 'storage'
+    port: 80
+    root: '/var/www/html'
 
-nexcloud:
+nextcloud:
+    archive: https://download.nextcloud.com/server/releases/nextcloud-20.0.4.tar.bz2
     trusted_domains: 
-      - "'storage.northern-lights.one',"
-      - "'192.168.0.60'"
+      - 'storage.northern-lights.one'
+      - '192.168.0.60'
+      - 'localhost'
+    datadirectory: '/usr/share/nginx/html/nextcloud/data'  
+    appsdirectory: '/usr/share/nginx/html/nextcloud/apps'  
     dbtype: pgsql
     dbhost: localhost
     dbname: nextcloud

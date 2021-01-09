@@ -2,7 +2,7 @@
 
 - name: "Download nextcloud programme binaries"
   unarchive:
-    src: "{{ nextcloud }}"
+    src: "{{ nextcloud.archive }}"
     dest: /usr/share/nginx/html
     owner: "{{ nginx_user }}"
     group: "{{ nginx_user }}"
@@ -16,3 +16,4 @@
     group: "{{ nginx_user }}"
     mode: u=rw,g=r,o=r
   notify: restart nginx
+  tags: config
