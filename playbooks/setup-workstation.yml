@@ -13,13 +13,8 @@
       name: "*"
       state: latest
 
-
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/defaults.yml"
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/gnome.yml"
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/sqlwb.yml"
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/vscode.yml"
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/sublime.yml"
-  - include: "{{ playbook_dir }}/setup-workstation-tasks/pycharm.yml"
+  - include: "{{ playbook_dir }}/install-defaults.yml"
+  - include: "{{ playbook_dir }}/install-sqlwb.yml"
 
 
   - name: Install PowerLine

@@ -1,5 +1,0 @@
-
-internal:
-  user: Administrator
-  server: jenkins
-  path: /mnt/build/resultset
