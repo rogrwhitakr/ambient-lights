@@ -1,0 +1,8 @@
+---
+# tasks file for cockpit
+
+- name: "Ensure cockpit packages exist"
+  dnf:
+    name: "{{ cockpit }}"
+    state: latest
+  notify: "activate cockpit socket"

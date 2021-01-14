@@ -1,0 +1,8 @@
+---
+# handlers file for cockpit
+
+- name: "activate cockpit socket"
+  service:
+    name: cockpit.socket
+    state: started
+    enabled: yes

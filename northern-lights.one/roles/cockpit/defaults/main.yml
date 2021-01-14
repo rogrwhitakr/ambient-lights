@@ -1,0 +1,8 @@
+---
+# defaults file for cockpit
+
+cockpit:
+  - 'cockpit'
+  - -'cockpit-dashboard'
+  - 'cockpit-shell'
+  - 'cockpit-ws'
