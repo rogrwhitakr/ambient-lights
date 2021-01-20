@@ -1,0 +1,16 @@
+---
+
+# for this to work, one needs to install the ansible.posix collection
+# ansible-galaxy collection install ansible.posix
+
+- name: "manage firewall rules"
+  hosts: storage
+  remote_user: admin
+  become: yes
+
+  tasks:
+  - name: permit traffic in default zone for https service
+    ansible.posix.firewalld:
+      service: https
+      permanent: yes
+      state: enabled

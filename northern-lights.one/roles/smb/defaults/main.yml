@@ -1,2 +1,31 @@
 ---
 # defaults file for smb
+install:
+  - samba
+  - samba-client
+  - samba-common
+  - cifs-utils
+
+config:
+  workgroup: "WORKGROUP"
+  server_string: "Fileserver %m"
+  log_size: 5000
+  log_level: 0
+  interfaces: []
+  security: "user"
+  passdb_backend: "tdbsam"
+  map_to_guest: "never"
+  load_printers: false
+  printer_type: "cups"
+  cups_server: "localhost:631"
+  load_homes: false
+  create_varwww_symlinks: false
+  shares_root: "/srv/shares"
+  shares: []
+  users: []
+  
+  wins_support: "yes"
+  local_master: "yes"
+  domain_master: "yes"
+  preferred_master: "yes"
+  mitigate_cve_2017_7494: true
