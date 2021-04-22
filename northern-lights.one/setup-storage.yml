@@ -1,0 +1,10 @@
+---
+
+- hosts: commons
+  roles:
+  - role: common
+  - role: cockpit
+
+- hosts: storage
+  roles:
+  - role: nextcloud  
