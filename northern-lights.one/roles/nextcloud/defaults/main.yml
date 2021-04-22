@@ -1,6 +1,8 @@
 ---
 # defaults file for nextcloud
 
+ansible_python_interpreter: /usr/bin/python3
+
 install:
   - nginx
   - php 
