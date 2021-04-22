@@ -4,6 +4,6 @@ ansible_python_interpreter: /usr/bin/python3
 
 cockpit:
   - 'cockpit'
-  - -'cockpit-dashboard'
+  - 'cockpit-dashboard'
   - 'cockpit-shell'
   - 'cockpit-ws'
