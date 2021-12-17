@@ -7,33 +7,38 @@ all:
 # apparently, having a dash ("-") in a group name is not allowed
 northernlights:
   hosts:
-    domain.northern-lights.one:
+    domain.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    storage.northern-lights.one:
+    storage.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    elk.northern-lights.one:
+    elk.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    redmine.northern-lights.one:
+    redmine.fritz.box:
       ansible_user: redmine
       ansible_become: yes
 
 commons:        
   hosts:
-    domain.northern-lights.one:
-    elk.northern-lights.one:
-#    redmine.northern-lights.one:
+    domain.fritz.box:
+    elk.fritz.box:
+    storage.fritz.box:
+#    redmine.fritz.box:
 
 authentication-server:
   hosts:
-    domain.northern-lights.one:
+    domain.fritz.box:
 
 storage-server:
   hosts:
-    storage.northern-lights.one:
+    storage.fritz.box:
 
 build-server:
   hosts:
-    redmine.northern-lights.one:
+    redmine.fritz.box:
+
+remote-server:
+  hosts:
+    domain.fritz.box:

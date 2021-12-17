@@ -1,0 +1,9 @@
+---
+- hosts: remote-server
+  roles:
+  - role: guacamole  
+
+- hosts: commons
+  roles:
+  - role: common
+  - role: cockpit  
