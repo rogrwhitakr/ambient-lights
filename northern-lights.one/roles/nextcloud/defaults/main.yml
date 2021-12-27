@@ -29,10 +29,10 @@ nginx:
     root: '/var/www/html'
 
 nextcloud:
-    archive: https://download.nextcloud.com/server/releases/nextcloud-20.0.4.tar.bz2
+    archive: https://download.nextcloud.com/server/releases/nextcloud-23.0.0.tar.bz2
     trusted_domains: 
       - 'storage.northern-lights.one'
-      - '192.168.0.60'
+      - 'storage.fritz.box'
       - 'localhost'
     datadirectory: '/usr/share/nginx/html/nextcloud/data'  
     appsdirectory: '/usr/share/nginx/html/nextcloud/apps'  
@@ -41,3 +41,5 @@ nextcloud:
     dbname: nextcloud
     dbuser: nextcloud
     dbpassword: nextcloud
+    admin: admin
+    admin_password: vasques

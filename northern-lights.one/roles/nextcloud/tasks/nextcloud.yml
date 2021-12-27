@@ -17,3 +17,21 @@
     mode: u=rw,g=r,o=r
   notify: restart nginx
   tags: config
+
+
+- name: "execute this command"
+  ansible.builtin.command: /usr/bin/php occ maintenance:install
+  become: yes
+  become_user: "{{ nginx_user }}"
+  argv:
+   - --data-dir /usr/share/nginx/html/nextcloud/data/ 
+   - --database {{ nextcloud.dbtype }} 
+   - --database-name {{ nextcloud.dbname }} 
+   - --database-user {{ nextcloud.dbuser }} 
+   - --database-pass {{ nextcloud.dbpassword }} 
+   - --admin-user {{ nextcloud.admin }} 
+   - --admin-pass {{ nextcloud.admin_password }} 
+  chdir: /usr/share/nginx/html/nextcloud
+  tags: config  
+
+  

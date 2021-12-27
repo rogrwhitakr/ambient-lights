@@ -1,10 +1,5 @@
 ---
 
-- hosts: commons
-  roles:
-  - role: common
-  - role: cockpit
-
-- hosts: storage
+- hosts: storage-server
   roles:
   - role: nextcloud  

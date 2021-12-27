@@ -1,6 +1,7 @@
 ---
 - hosts: remote-server
   roles:
+  - role: postgresql
   - role: guacamole  
 
 - hosts: commons
