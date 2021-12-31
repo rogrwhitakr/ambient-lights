@@ -24,9 +24,9 @@ nginx_user: nginx
 nginx_group: nginx
 nginx_password: nginx
 nginx:
-    server_name: 'storage'
+    server: 'storage'
     port: 80
-    root: '/usr/share/nginx/html/nextcloud'
+    root: '/usr/share/nginx/html'
 
 nextcloud:
     archive: https://download.nextcloud.com/server/releases/nextcloud-23.0.0.tar.bz2

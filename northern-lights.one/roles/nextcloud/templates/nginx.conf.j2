@@ -13,7 +13,7 @@ server {
     #}
 
         # Path to the root of the domain
-    root /var/www;
+    root {{ nginx.root }};
 
     location = /robots.txt {
         allow all;

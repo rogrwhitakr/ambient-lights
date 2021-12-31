@@ -1,13 +1,13 @@
 ---
 # tasks file for nextcloud
 
-- name: "Install nextcloud softwares"
+- name: "Nextcloud | Install nextcloud additional software"
   dnf:
     name: "{{ install }}"
     state: present
 
 - name: "Install NGINX"
-  include_tasks: nginx.yml
+  include: nginx.yml
 
 - name: "Install postgresql"
   include_role:
@@ -29,4 +29,4 @@
       - {type: host, database: nextcloud, user: nextcloud, address: '0.0.0.0/0', auth_method: md5}
 
 - name: "Configure Nextcloud"
-  include_tasks: nextcloud.yml
+  include: nextcloud.yml
