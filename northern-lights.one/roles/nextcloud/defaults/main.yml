@@ -26,13 +26,14 @@ nginx_password: nginx
 nginx:
     server_name: 'storage'
     port: 80
-    root: '/var/www/html'
+    root: '/usr/share/nginx/html/nextcloud'
 
 nextcloud:
     archive: https://download.nextcloud.com/server/releases/nextcloud-23.0.0.tar.bz2
     trusted_domains: 
       - 'storage.northern-lights.one'
       - 'storage.fritz.box'
+      - 'fritz.box'
       - 'localhost'
     datadirectory: '/usr/share/nginx/html/nextcloud/data'  
     appsdirectory: '/usr/share/nginx/html/nextcloud/apps'  

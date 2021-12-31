@@ -1,0 +1,25 @@
+<?php
+$CONFIG = [
+
+'instanceid' => '',
+'version' => '',
+'passwordsalt' => '',
+
+'trusted_domains' =>
+   [
+	{{ nextcloud.trusted_domains }}
+  ],
+
+'datadirectory' => '{{ nextcloud.datadirectory }}' ,
+
+'dbtype' => '{{ nextcloud.dbtype }}',
+'dbhost' => '{{ nextcloud.dbhost }}',
+'dbname' => '{{ nextcloud.dbname }}',
+'dbuser' => '{{ nextcloud.dbuser }}',
+'dbpassword' => '{{ nextcloud.dbpassword }}',
+'dbtableprefix' => 'oc_',
+'default_language' => 'de_DE',
+'default_locale' => 'de',
+'defaultapp' => 'files'
+
+>

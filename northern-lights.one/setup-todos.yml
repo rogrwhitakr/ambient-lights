@@ -1,0 +1,24 @@
+---
+
+# todo 1
+# set the hostname to <server-name>.fqdn 
+# using
+
+- name: Set a hostname specifying strategy
+  ansible.builtin.hostname:
+    name: web01
+    use: systemd
+
+
+# todo 2
+# chekc if there is a database, database instance, database installation for the role we are using  
+# we dont need to upgrade all the time that is not necessary
+# and any upgrades should be handled manaully
+
+- name: Check if database is available
+  postgresql_ping:
+    db: "testdb"
+  become: yes
+  become_user: postgres
+  register: ping_database
+  failed_when: ping_database.warnings is defined

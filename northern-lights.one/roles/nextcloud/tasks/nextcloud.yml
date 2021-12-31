@@ -10,28 +10,33 @@
 
 - name: "copy nextcloud configuration file"
   template:
-    src: config.php.j2
-    dest: /usr/share/nginx/html/nextcloud/config/config.php
+    src: config.northern-lights.php.j2
+    dest: /usr/share/nginx/html/nextcloud/config/config.northern-lights.php
     owner: "{{ nginx_user }}"
     group: "{{ nginx_user }}"
     mode: u=rw,g=r,o=r
   notify: restart nginx
   tags: config
 
+- name: "modify php configuration"
+  template:
+    src: php.d.60-nextcloud.ini.j2
+    dest: /etc/php.d/60-nextcloud.ini
+  tags: config
 
 - name: "execute this command"
-  ansible.builtin.command: /usr/bin/php occ maintenance:install
-  become: yes
   become_user: "{{ nginx_user }}"
-  argv:
-   - --data-dir /usr/share/nginx/html/nextcloud/data/ 
-   - --database {{ nextcloud.dbtype }} 
-   - --database-name {{ nextcloud.dbname }} 
-   - --database-user {{ nextcloud.dbuser }} 
-   - --database-pass {{ nextcloud.dbpassword }} 
-   - --admin-user {{ nextcloud.admin }} 
-   - --admin-pass {{ nextcloud.admin_password }} 
-  chdir: /usr/share/nginx/html/nextcloud
+  ansible.builtin.command: 
+    argv:
+    - /usr/bin/php /usr/share/nginx/html/nextcloud/occ maintenance:install
+    - --data-dir /usr/share/nginx/html/nextcloud/data/ 
+    - --database "{{ nextcloud.dbtype }}"
+    - --database-name "{{ nextcloud.dbname }}"
+    - --database-user "{{ nextcloud.dbuser }}"
+    - --database-pass "{{ nextcloud.dbpassword }}"
+    - --admin-user "{{ nextcloud.admin }}"
+    - --admin-pass "{{ nextcloud.admin_password }}"
+    chdir: /usr/share/nginx/html/nextcloud
   tags: config  
 
   
