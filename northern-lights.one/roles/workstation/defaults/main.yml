@@ -32,6 +32,7 @@ productivity:
   - remmina
   - gscan2pdf
   - keepass
+  - firewall-config
 
 flatpak:
   - ca.desrt.dconf-editor
