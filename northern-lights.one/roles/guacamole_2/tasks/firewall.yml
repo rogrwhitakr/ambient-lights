@@ -1,8 +1,0 @@
----
-- name: permit traffic for guacamole web service
-  ansible.posix.firewalld:
-    port: 4822/tcp
-    permanent: yes
-    state: enabled
-    name: guacamole
-  become: yes    
