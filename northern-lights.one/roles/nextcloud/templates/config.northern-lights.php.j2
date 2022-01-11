@@ -1,25 +1,19 @@
 <?php
-$CONFIG = [
-
-'instanceid' => '',
-'version' => '',
-'passwordsalt' => '',
-
-'trusted_domains' =>
-   [
-	{{ nextcloud.trusted_domains }}
-  ],
-
-'datadirectory' => '{{ nextcloud.datadirectory }}' ,
-
-'dbtype' => '{{ nextcloud.dbtype }}',
-'dbhost' => '{{ nextcloud.dbhost }}',
-'dbname' => '{{ nextcloud.dbname }}',
-'dbuser' => '{{ nextcloud.dbuser }}',
-'dbpassword' => '{{ nextcloud.dbpassword }}',
-'dbtableprefix' => 'oc_',
-'default_language' => 'de_DE',
-'default_locale' => 'de',
-'defaultapp' => 'files'
-
->
+$CONFIG = array (
+  'trusted_domains' => 
+  array (
+    0 => 'localhost',
+    {% for domain in nextcloud.trusted_domains %}
+    {{ loop.index }} => '{{ domain }}',
+    {% endfor %}
+  ),
+  'dbtype' => '{{ nextcloud.dbtype }}',
+  'dbhost' => '{{ nextcloud.dbhost }}',
+  'dbname' => '{{ nextcloud.dbname }}',
+  'dbuser' => '{{ nextcloud.dbuser }}',
+  'dbpassword' => '{{ nextcloud.dbpassword }}',
+  'dbtableprefix' => 'oc_',
+  'default_language' => 'de_DE',
+  'default_locale' => 'de',
+  'defaultapp' => 'files'
+);

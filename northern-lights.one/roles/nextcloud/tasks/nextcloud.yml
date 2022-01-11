@@ -1,20 +1,19 @@
 ---
-
 - name: "Download nextcloud programme binaries"
   unarchive:
     src: "{{ nextcloud.archive }}"
     dest: /usr/share/nginx/html
-    owner: "{{ nginx_user }}"
-    group: "{{ nginx_user }}"
+    owner: "{{ nginx.user }}"
+    group: "{{ nginx.user }}"
     remote_src: yes
 
 - name: "copy nextcloud configuration file"
   template:
     src: config.northern-lights.php.j2
-    dest: /usr/share/nginx/html/nextcloud/config/config.northern-lights.php
-    owner: "{{ nginx_user }}"
-    group: "{{ nginx_user }}"
-    mode: u=rw,g=r,o=r
+    dest: /usr/share/nginx/html/nextcloud/config/northern-lights.config.php
+    owner: "{{ nginx.user }}"
+    group: "{{ nginx.group }}"
+    mode: u=rw,g=rw,o=rw
   notify: restart nginx
   tags: config
 
@@ -24,8 +23,15 @@
     dest: /etc/php.d/60-nextcloud.ini
   tags: config
 
+- name: "modify php-fpm configuration"
+  template:
+    src: php-fpm.d.nextcloud.conf.j2
+    dest: /etc/php-fpm.d/nextcloud.conf
+  tags: config
+
+
 - name: "execute this command"
-  become_user: "{{ nginx_user }}"
+  become_user: "{{ nginx.user }}"
   ansible.builtin.command: 
     argv:
     - /usr/bin/php /usr/share/nginx/html/nextcloud/occ maintenance:install

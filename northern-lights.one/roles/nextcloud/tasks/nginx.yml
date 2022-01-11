@@ -2,11 +2,11 @@
 
 - name: "create user nginx"
   user:
-    name: "{{nginx_user}}"
-    group: "{{nginx_user}}"
-    password: "{{nginx_password}}"
+    name: "{{nginx.user}}"
+    group: "{{nginx.group}}"
+    password: "{{nginx.password}}"
     system: yes
-    comment: "{{nginx_user}} for webserver"
+    comment: "{{nginx.user}} for webserver"
     createhome: no
     state: present   
 
@@ -19,6 +19,26 @@
     mode: u=rw,g=r,o=r
   notify: restart nginx
   tags: config
+
+- name: Create NGINX log directory 
+  ansible.builtin.file:
+    path: "{{ nginx.log }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ nginx.user }}"
+    group: "{{ nginx.group }}"
+
+- name: permit traffic in default zone for https service
+  ansible.posix.firewalld:
+    service: https
+    permanent: yes
+    state: enabled
+
+- name: permit traffic in default zone for http service
+  ansible.posix.firewalld:
+    service: http
+    permanent: yes
+    state: enabled
 
 - name: "enable NGINX"
   service:

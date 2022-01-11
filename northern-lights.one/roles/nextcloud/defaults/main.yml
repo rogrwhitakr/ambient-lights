@@ -19,14 +19,18 @@ install:
   - php-apcu
   - php-pgsql
 
-nginx_port: 80
-nginx_user: nginx
-nginx_group: nginx
-nginx_password: nginx
 nginx:
     server: 'storage'
+    tls_port: 443
     port: 80
+    user: nginx
+    group: nginx
+    password: nginx
     root: '/usr/share/nginx/html'
+    log: '/var/log/nginx'
+    cert: '/etc/ssl/certs/nextcloud.fritz.box.rsa.crt'
+    key: '/etc/ssl/certs/nextcloud.fritz.box.rsa.key'
+    made_comme_ca: 'openssl req -new -newkey rsa:4096 -x509 -sha256 -nodes -out nextcloud.fritz.box.rsa.crt -keyout nextcloud.fritz.box.rsa.key'
 
 nextcloud:
     archive: https://download.nextcloud.com/server/releases/nextcloud-23.0.0.tar.bz2
