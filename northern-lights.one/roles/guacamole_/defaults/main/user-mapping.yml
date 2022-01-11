@@ -1,0 +1,30 @@
+---
+guacamole_users: []
+name: admin
+password: vasques
+connections:
+ - host: redmine
+   name: redmine
+   protocol: ssh
+   port: 22
+ - host: elk
+   name: elk
+   protocol: ssh
+   port: 22
+ - host: domain
+   name: domain
+   protocol: ssh
+   port: 22   
+ - host: storage
+   name: storage
+   protocol: ssh
+   port: 22   
+ - host: iavmagellan
+   name: I.A.V. Mavmagellan
+   protocol: rdp
+   port: 3389
+ - host: silverblue
+   name: silverblue
+   protocol: vnc
+   port: 5901
+   password: vasques

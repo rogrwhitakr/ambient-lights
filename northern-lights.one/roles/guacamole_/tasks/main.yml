@@ -1,0 +1,24 @@
+---
+# tasks file for ansible-guacamole
+
+- name: "Set Facts"
+  include: set_facts.yml    
+
+- name: "Redhat based Installation"
+  include: redhat.yml    
+
+- name: "Installation, Download, compilation"
+  include: install.yml    
+
+- name: "configuration"
+  include: config.yml    
+
+- name: "firewall configuration"
+  include: firewall.yml    
+
+- name: "services"
+  include: services.yml   
+
+- name: "client configuration"
+  include: client.yml   
+

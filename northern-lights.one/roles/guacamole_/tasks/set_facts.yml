@@ -1,0 +1,36 @@
+---
+- name: set_facts | Setting RedHat Facts
+  set_fact:
+    guacamole_tomcat: tomcat
+    guacamole_tomcat_service: tomcat
+    guacamole_tomcat_user: tomcat
+  when:
+    - ansible_os_family == "RedHat"
+
+- name: set_facts | Setting RedHat Packages
+  set_fact:
+    guacamole_redhat_pre_reqs:
+      - "{{ guacamole_tomcat }}"
+      - cairo-devel
+      - ffmpeg-devel
+      - freerdp-devel
+      - gcc
+      - libjpeg-turbo-devel
+      - libpng-devel
+      - libssh2-devel
+      - libtelnet-devel
+      - libvncserver-devel
+      - libvorbis-devel
+      - libwebp-devel
+      - openssl-devel
+      - pango-devel
+      - pulseaudio-libs-devel
+      - uuid-devel
+      - git
+      - autoconf
+      - automake
+      - libtool
+      - make
+      - python3-psycopg2
+  when:
+    - ansible_os_family == "RedHat"
