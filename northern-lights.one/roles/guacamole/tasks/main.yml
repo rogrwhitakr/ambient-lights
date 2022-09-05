@@ -13,8 +13,8 @@
 - name: "configuration"
   include: config.yml    
 
-- name: "firewall configuration"
-  include: firewall.yml    
+#- name: "firewall configuration"
+#  include: firewall.yml    
 
 - name: "services"
   include: services.yml   

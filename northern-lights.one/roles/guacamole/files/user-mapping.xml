@@ -1,0 +1,27 @@
+<user-mapping>
+    <authorize username="admin" password="cb3f160024b39299f4eef7d5f81e7532" encoding="md5">
+
+        <!-- First authorized connection -->
+        <connection name="reese.fritz.box">
+            <protocol>ssh</protocol>
+            <param name="hostname">reese.fritz.box</param>
+            <param name="port">22</param>
+            <param name="password">vasques</param>
+        </connection>
+
+        <!-- Second authorized connection -->
+        <connection name="reese.fritz.box">
+            <protocol>vnc</protocol>
+            <param name="hostname">reese.fritz.box</param>
+            <param name="port">5902</param>
+            <param name="password">vasques</param>
+        </connection>
+
+        <connection name="To infinity and beyond">
+            <protocol>rdp</protocol>
+            <param name="hostname">localhost</param>
+            <param name="port">5900</param>
+            <param name="password">demodemo</param>
+        </connection>
+    </authorize>
+</user-mapping>
