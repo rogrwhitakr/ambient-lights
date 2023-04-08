@@ -9,13 +9,12 @@
 
   - name: Run the script
     become_user: "{{ ansible_user }}"
-    script: "/home/{{ ansible_user }}/profile-setup.bash"
+    ansible.builtin.script: "/home/{{ ansible_user }}/profile-setup.bash"
     args:
-      executable: /usr/bin/env bash
       creates: "/home/{{ ansible_user }}/.bashrc.d"
 
   - name: remove script
-    file:
+    ansible.builtin.file:
       path: "/home/{{ ansible_user }}/profile-setup.bash"
       state: absent
 

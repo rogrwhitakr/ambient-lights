@@ -21,13 +21,13 @@
     state: present
     
 # bashrc
-- name: "create a decent bashrc"
-  include: bashrc.yml    
+#- name: "create a decent bashrc"
+#  include_tasks: bashrc.yml    
 
 # tasks file for common
 - name: "harden the ssh daemon"
-  include: harden-ssh.yml    
+  include_tasks: harden-ssh.yml    
 
 # other dotfiles?
 - name: "add dotfiles"
-  include: dotfiles.yml
+  include_tasks: dotfiles.yml

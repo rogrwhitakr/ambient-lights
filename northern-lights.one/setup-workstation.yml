@@ -6,3 +6,4 @@
   roles:
   - role: common
   - role: workstation
+  - role: dnf-automatic

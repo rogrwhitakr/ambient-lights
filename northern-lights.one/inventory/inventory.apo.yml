@@ -5,22 +5,17 @@
 ---
 all:
   hosts:
-    localhost:
-      ansible_user: finch
-      ansible_become: yes
-    silverblue:
-      ansible_user: fusco
+    apo-touch-01:
+      ansible_user: admin
       ansible_become: yes  
-    fedora-2:
+    apo-touch-02:
       ansible_user: admin
       ansible_become: yes  
 
 workstations:
   hosts:
-    localhost:
-    silverblue:
+    apo-touch-01:
 
 commons:        
   hosts:
-    localhost:
-    silverblue:
+    apo-touch-01:

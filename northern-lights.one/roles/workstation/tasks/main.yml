@@ -8,13 +8,13 @@
   block: 
 
   - name: "Install rpm-fusion stuffs"
-    include: "rpmfusion.yml"
+    include_tasks: "rpmfusion.yml"
 
   - name: "Install misc apps"
-    include: "apps.yml"
+    include_tasks: "apps.yml"
 
   - name: "Install VS Code and Powershell"
-    include: "vscode.yml"
+    include_tasks: "vscode.yml"
 
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
@@ -23,15 +23,15 @@
 - name: "install workstation atomic | silverblue"
   block: 
   - name: "run the atomic playbook"
-    include: "rpm-ostree.yml"
+    include_tasks: "rpm-ostree.yml"
 
   - name: "Install misc apps"
-    include: "apps_atomic.yml"
+    include_tasks: "apps_atomic.yml"
 
   - name: "Install GUI applications as Flatpaks"
-    include: "flatpak.yml"
+    include_tasks: "flatpak.yml"
 
   - name: "Install VS Code"
-    include: "vscode_atomic.yml"
+    include_tasks: "vscode_atomic.yml"
   when:
     - ansible_facts['pkg_mgr'] == "atomic_container"
