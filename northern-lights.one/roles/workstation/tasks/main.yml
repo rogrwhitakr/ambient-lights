@@ -16,6 +16,9 @@
   - name: "Install VS Code and Powershell"
     include_tasks: "vscode.yml"
 
+  - name: "Install Spotify"
+    include_tasks: "spotify.yml"
+
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
 
@@ -33,5 +36,8 @@
 
   - name: "Install VS Code"
     include_tasks: "vscode_atomic.yml"
+
+  - name: "Install Spotify"
+    include_tasks: "spotify.yml" 
   when:
     - ansible_facts['pkg_mgr'] == "atomic_container"

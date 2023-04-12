@@ -1,0 +1,28 @@
+---
+- name: "FLATPAK: install SPOTIFY"
+  block: 
+  - name: "Add the flathub flatpak repository remote to the system installation"
+    flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+  - name: "Install flatpak for spotify"
+    flatpak:
+      name: com.spotify.Client
+      state: present
+  when:
+    - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: "FLATPAK: install SPOTIFY"
+  block:
+  - name: "Add the flathub flatpak repository remote to the system installation"
+    flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+  - name: "Install flatpak for spotify"
+    flatpak:
+      name: com.spotify.Client
+      state: present
+  when:
+    - ansible_facts['pkg_mgr'] == "atomic_container"    
