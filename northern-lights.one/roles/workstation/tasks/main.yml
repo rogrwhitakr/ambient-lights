@@ -1,24 +1,24 @@
 ---
-# tasks file for workstation_common
-# - name: "Determine Build"
-#   debug:
-#    var: ansible_facts
 
-- name: "install workstation classic"
-  block: 
+- name: "Display desktop Env data"
+  ansible.builtin.debug:
+    msg:
+    - "Desktop Env: {{ ansible_env.DESKTOP_SESSION }}"
+    - "IP Address: {{ ansible_default_ipv4.address }}"
 
-  - name: "Install rpm-fusion stuffs"
-    include_tasks: "rpmfusion.yml"
-
+- name: "install apps"
+  block:
   - name: "Install misc apps"
     include_tasks: "apps.yml"
-
-  - name: "Install VS Code and Powershell"
+  - name: "Install VS Code"
     include_tasks: "vscode.yml"
-
   - name: "Install Spotify"
     include_tasks: "spotify.yml"
 
+- name: "install workstation classic"
+  block: 
+  - name: "Install rpm-fusion stuffs"
+    include_tasks: "rpmfusion.yml"
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
 
@@ -27,16 +27,8 @@
   block: 
   - name: "run the atomic playbook"
     include_tasks: "rpm-ostree.yml"
-
-  - name: "Install misc apps"
-    include_tasks: "apps_atomic.yml"
-
   - name: "Install GUI applications as Flatpaks"
     include_tasks: "flatpak.yml"
-
-  - name: "Install VS Code"
-    include_tasks: "vscode_atomic.yml"
-
   - name: "Install Spotify"
     include_tasks: "spotify.yml" 
   when:

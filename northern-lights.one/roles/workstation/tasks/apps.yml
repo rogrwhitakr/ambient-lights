@@ -1,43 +1,54 @@
 ---
+- name: "dnf : install apps"
+  block:
+  - name: "dnf : Update all software on system to current latest"
+    dnf:
+      name: "*"
+      state: latest
 
-- name: "dnf based systems: Update all software on system to current latest"
-  dnf:
-    name: "*"
-    state: latest
-
-- name: "dnf : Install basic software"
-  dnf:
-    name: "{{ basic }}"
-    state: present
-
-- name: "dnf : Install development software"
-  dnf:
-    name: "{{ development }}"
-    state: present
-    disable_gpg_check: yes
-
-- name: "dnf : Update GNOME softwares"
-  dnf:
-      name: "{{ gnome }}"
+  - name: "dnf : Install basic software"
+    dnf:
+      name: "{{ basic }}"
       state: present
 
-- name: "dnf : Update ansible"
-  dnf:
-      name: "{{ ansible }}"
+  - name: "dnf : Install development software"
+    dnf:
+      name: "{{ development }}"
       state: present
+      disable_gpg_check: yes
 
-- name: "dnf : Update productivity softwares"
-  dnf:
-      name: "{{ productivity }}"
+  - name: "dnf : Update GNOME softwares"
+    dnf:
+        name: "{{ gnome }}"
+        state: present
+
+  - name: "dnf : Update ansible"
+    dnf:
+        name: "{{ ansible }}"
+        state: present
+
+  - name: "dnf : Update productivity softwares"
+    dnf:
+        name: "{{ productivity }}"
+        state: present
+
+  - name: "Remove unwanted default packages" 
+    dnf: 
+      name: "{{ removal }}"
+      state: absent
+      
+  - name: "dnf : Install virtualisation softwares" 
+    dnf: 
+      name: "{{ virtualisation }}"
       state: present
+  when:
+  - ansible_facts['pkg_mgr'] == "dnf"
 
-- name: "Remove unwanted default packages" 
-  dnf: 
-    name: "{{ removal }}"
-    state: absent
-    
-- name: "dnf : Install virtualisation softwares" 
-  dnf: 
-    name: "{{ virtualisation }}"
-    state: present
-
+- name: "atomic systems : install apps"
+  block:
+  - name: "atomic systems: Install basic software"
+    community.general.rpm_ostree_pkg:
+      name: "{{ basic }}"
+      state: present
+  when:
+  - ansible_facts['pkg_mgr'] == "atomic_container"
