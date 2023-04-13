@@ -11,11 +11,20 @@ all:
     apo-touch-02:
       ansible_user: admin
       ansible_become: yes  
+    apo-touch-03:
+      ansible_user: admin
+      ansible_become: yes  
+    apo-touch-04:
+      ansible_user: admin
+      ansible_become: yes  
+    apo-touch-05:
+      ansible_user: admin
+      ansible_become: yes  
 
 workstations:
   hosts:
     apo-touch-01:
-
-commons:        
-  hosts:
-    apo-touch-01:
+    apo-touch-02:
+    apo-touch-03:
+    apo-touch-04:
+    apo-touch-05:

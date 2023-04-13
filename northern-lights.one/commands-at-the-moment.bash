@@ -17,5 +17,9 @@ ansible-playbook -i inventory/inventory.finch.yml northern-lights-shutdown.yml -
 # query system information and save to file
 ansible -i inventory/inventory.finch.yml all-dem-servers -m setup --ask-become-pass > ansible-facts.json
 
+# APO
 # configure the APO computers
 ansible-playbook -i inventory/inventory.apo.yml setup-workstation.yml --ask-become-pass
+
+# shutdown of all computers
+ansible-playbook -i inventory/inventory.apo.yml shutdown-northern-lights.yml --ask-become-pass
