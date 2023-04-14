@@ -1,24 +1,7 @@
 ---
 
-- name: "install SELinux recommends"
-  dnf:
-    name: "{{ selinux }}"
-    state: latest
-
-- name: "Install monitoring software"
-  dnf: 
-    name: "{{ monitor }}"
-    state: present
-
-- name: "Install basics"
-  dnf: 
-    name: "{{ default }}"
-    state: present
-    
-- name: "Install Powerline for pleasant commandline operation"
-  dnf: 
-    name: "{{ powerline }}"
-    state: present
+- name: "install basics"
+  include_tasks: installs.yml    
     
 # bashrc
 #- name: "create a decent bashrc"

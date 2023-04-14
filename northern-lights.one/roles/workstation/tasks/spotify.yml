@@ -2,12 +2,12 @@
 - name: "FLATPAK: install SPOTIFY"
   block: 
   - name: "Add the flathub flatpak repository remote to the system installation"
-    flatpak_remote:
+    community.general.flatpak_remote:
         name: flathub
         state: present
         flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
   - name: "Install flatpak for spotify"
-    flatpak:
+    community.general.flatpak:
       name: com.spotify.Client
       state: present
   when:
@@ -16,12 +16,12 @@
 - name: "FLATPAK: install SPOTIFY"
   block:
   - name: "Add the flathub flatpak repository remote to the system installation"
-    flatpak_remote:
+    community.general.flatpak_remote:
         name: flathub
         state: present
         flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
   - name: "Install flatpak for spotify"
-    flatpak:
+    community.general.flatpak:
       name: com.spotify.Client
       state: present
   when:

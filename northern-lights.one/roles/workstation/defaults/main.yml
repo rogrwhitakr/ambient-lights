@@ -32,6 +32,7 @@ productivity:
   - remmina
   - gscan2pdf
   - firewall-config
+  - audacity
 
 flatpak:
   - ca.desrt.dconf-editor

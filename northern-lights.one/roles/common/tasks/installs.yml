@@ -1,0 +1,27 @@
+---
+
+- name: "install basics"
+  block:
+
+  - name: "Install basics"
+    dnf: 
+      name: "{{ default }}"
+      state: present
+
+  - name: "install SELinux recommends"
+    dnf:
+      name: "{{ selinux }}"
+      state: latest
+
+  - name: "Install monitoring software"
+    dnf: 
+      name: "{{ monitor }}"
+      state: present
+
+  - name: "Install Powerline for pleasant commandline operation"
+    dnf: 
+      name: "{{ powerline }}"
+      state: present
+
+  when:
+  - ansible_facts['pkg_mgr'] == "dnf"

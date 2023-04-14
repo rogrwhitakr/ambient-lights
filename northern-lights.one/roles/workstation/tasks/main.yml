@@ -3,8 +3,9 @@
 - name: "Display desktop Env data"
   ansible.builtin.debug:
     msg:
-    - "Desktop Env: {{ ansible_env.DESKTOP_SESSION }}"
+    - "OS: {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
     - "IP Address: {{ ansible_default_ipv4.address }}"
+    - "Desktop Env: {{ lookup('ansible.builtin.env', 'DESKTOP_SESSION', default='G-N-O-M-E') }}"
 
 - name: "install apps"
   block:
@@ -29,7 +30,5 @@
     include_tasks: "rpm-ostree.yml"
   - name: "Install GUI applications as Flatpaks"
     include_tasks: "flatpak.yml"
-  - name: "Install Spotify"
-    include_tasks: "spotify.yml" 
   when:
     - ansible_facts['pkg_mgr'] == "atomic_container"
