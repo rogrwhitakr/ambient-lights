@@ -28,7 +28,7 @@ productivity:
   - calibre
   - inkscape
   - libreoffice
-  - vlc 
+  - vlc-core
   - remmina
   - gscan2pdf
   - firewall-config

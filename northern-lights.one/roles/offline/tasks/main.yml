@@ -1,5 +1,14 @@
 ---
 # tasks file for offline
 # shutdown one minute from now
-- name: user-instigated shutdown "{{ ansible_host }}"
-  command: /sbin/shutdown -h +1 
+
+- name: "Shutting Down Computer"
+  ansible.builtin.debug:
+    msg:
+#    - "OS: {{ ansible_distribution }} {{ ansible_distribution_major_version }}"
+ #   - "IP Address: {{ ansible_default_ipv4.address }}"
+ #   - "Host: {{ ansible_host }}"
+    - "The host will be shut down in one minute !!!" 
+
+- name: "user-instigated shutdown"
+  ansible.builtin.command: /sbin/shutdown -h +1 

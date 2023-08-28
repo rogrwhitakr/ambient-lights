@@ -1,2 +1,27 @@
 ---
 # tasks file for ftp
+
+# using the community.general.github requires the local istallation of `dnf install python3-github3py` 
+
+- name: Get latest release of sftpgo repository
+  community.general.github_release:
+    user: drakkan
+    repo: sftpgo
+    action: latest_release
+  register: sftpgo  
+
+- name: "wherre is de tagg"
+  ansible.builtin.debug:
+    msg:
+    - "tag: {{ sftpgo }} "
+    - "the singled var: {{ sftpgo.tag }}"
+
+- name: Download said release
+  ansible.builtin.get_url:
+    url: https://github.com/drakkan/sftpgo/releases/download/{{ sftpgo.tag }}/sftpgo-{{ sftpgo.tag |replace('v', '') }}-1.x86_64.rpm
+    dest: /tmp  
+
+- name: "Install SFTPGo"
+  ansible.builtin.dnf:
+    name: https://github.com/drakkan/sftpgo/releases/download/{{ sftpgo.tag }}/sftpgo-{{ sftpgo.tag |replace('v', '') }}-1.x86_64.rpm
+    state: present
