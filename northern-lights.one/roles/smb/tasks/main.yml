@@ -1,7 +1,7 @@
 ---
 # tasks file for smb
 - name: Ensure Samba-related packages are installed.
-  dnf: 
+  ansible.builtin.dnf: 
     name: "{{ install }}"
     state: present
 

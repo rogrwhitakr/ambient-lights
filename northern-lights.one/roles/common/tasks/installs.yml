@@ -4,22 +4,22 @@
   block:
 
   - name: "Install basics"
-    dnf: 
+    ansible.builtin.dnf: 
       name: "{{ default }}"
       state: present
 
   - name: "install SELinux recommends"
-    dnf:
+    ansible.builtin.dnf:
       name: "{{ selinux }}"
       state: latest
 
   - name: "Install monitoring software"
-    dnf: 
+    ansible.builtin.dnf: 
       name: "{{ monitor }}"
       state: present
 
   - name: "Install Powerline for pleasant commandline operation"
-    dnf: 
+    ansible.builtin.dnf: 
       name: "{{ powerline }}"
       state: present
 

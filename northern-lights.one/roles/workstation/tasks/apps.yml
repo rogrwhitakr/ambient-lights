@@ -2,43 +2,43 @@
 - name: "dnf : install apps"
   block:
   - name: "dnf : Update all software on system to current latest"
-    dnf:
+    ansible.builtin.dnf:
       name: "*"
       state: latest
 
   - name: "dnf : Install basic software"
-    dnf:
+    ansible.builtin.dnf:
       name: "{{ basic }}"
       state: present
 
   - name: "dnf : Install development software"
-    dnf:
+    ansible.builtin.dnf:
       name: "{{ development }}"
       state: present
       disable_gpg_check: yes
 
   - name: "dnf : Update GNOME softwares"
-    dnf:
+    ansible.builtin.dnf:
         name: "{{ gnome }}"
         state: present
 
   - name: "dnf : Update ansible"
-    dnf:
+    ansible.builtin.dnf:
         name: "{{ ansible }}"
         state: present
 
   - name: "dnf : Update productivity softwares"
-    dnf:
+    ansible.builtin.dnf:
         name: "{{ productivity }}"
         state: present
 
   - name: "Remove unwanted default packages" 
-    dnf: 
+    ansible.builtin.dnf: 
       name: "{{ removal }}"
       state: absent
       
   - name: "dnf : Install virtualisation softwares" 
-    dnf: 
+    ansible.builtin.dnf: 
       name: "{{ virtualisation }}"
       state: present
   when:

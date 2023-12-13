@@ -9,7 +9,7 @@
 #  until: result is successful
 
 - name: "dnf : enable installs from free and non-free rpmfusion"
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ rpmfusion }}"
     state: present
     disable_gpg_check: yes
@@ -19,7 +19,7 @@
   become: true
 
 - name: redhat | Installing Guacamole Pre-Reqs
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ guacamole_redhat_pre_reqs }}"
     state: present
   become: true

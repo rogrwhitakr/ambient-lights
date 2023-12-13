@@ -8,6 +8,6 @@
     gpgcheck: yes
 
 - name: Install Sublime Text
-  dnf: 
+  ansible.builtin.dnf: 
     name: sublime-text
     state: latest

@@ -1,7 +1,7 @@
 ---
 # tasks file for jenkins
 - name: "Allow editing on an SELinux enforced system"
-  dnf:
+  ansible.builtin.dnf:
     name: libselinux-python3
     state: latest
 
@@ -33,7 +33,7 @@
   when: jenkins_repo_url | default(false)
 
 - name: "Install jenkins"
-  dnf:
+  ansible.builtin.dnf:
     name: 
     - jenkins
     - java-1.8.0-openjdk

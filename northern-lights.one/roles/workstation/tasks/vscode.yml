@@ -11,7 +11,7 @@
       gpgcheck: yes
       
   - name: Install visual studio code
-    dnf: 
+    ansible.builtin.dnf: 
       name: code
       state: latest
 

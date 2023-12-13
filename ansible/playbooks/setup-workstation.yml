@@ -9,7 +9,7 @@
   tasks:
 
   - name: Update all software on system to current latest 
-    dnf:
+    ansible.builtin.dnf:
       name: "*"
       state: latest
 
@@ -18,11 +18,11 @@
 
 
   - name: Install PowerLine
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['powerline', 'powerline-fonts']
 
   - name: Allow editing on an SELinux enforced system
-    dnf:
+    ansible.builtin.dnf:
       name: libselinux-python
       state: latest
 

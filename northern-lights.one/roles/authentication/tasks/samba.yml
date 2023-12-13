@@ -1,5 +1,5 @@
 ---
 - name: install samba
-  dnf:
+  ansible.builtin.dnf:
     name: ['samba', 'samba-dc']
     state: latest

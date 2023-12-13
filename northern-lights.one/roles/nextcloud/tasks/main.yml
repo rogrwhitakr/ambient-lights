@@ -2,7 +2,7 @@
 # tasks file for nextcloud
 
 - name: "Nextcloud | Install nextcloud additional software"
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ install }}"
     state: present
 

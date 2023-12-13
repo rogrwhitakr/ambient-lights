@@ -1,10 +1,10 @@
 ---
 - name: install dnsmasq
-  dnf:
+  ansible.builtin.dnf:
     name: ['dnsmasq']
     state: latest
 
 - name: remove named
-  dnf:
+  ansible.builtin.dnf:
     name: ['named']
     state: absent

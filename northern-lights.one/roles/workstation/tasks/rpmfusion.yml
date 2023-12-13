@@ -1,7 +1,7 @@
 ---
 
 - name: "dnf : enable installs from free and non-free rpmfusion"
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ rpmfusion._dnf }}"
     state: present
     disable_gpg_check: yes

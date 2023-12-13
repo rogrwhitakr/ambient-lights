@@ -5,7 +5,7 @@
 
   tasks:
   - name: "install fail2ban"
-    dnf:
+    ansible.builtin.dnf:
       name: ['fail2ban']
 
   - name: "start fail2ban service"

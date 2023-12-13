@@ -9,7 +9,7 @@
 
   tasks:
   - name: Install necessary software
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['postgresql','postgresql-server','httpd']
       state: present
 

@@ -12,27 +12,27 @@
     tags: get_version
 
   - name: update all packages
-    dnf:
+    ansible.builtin.dnf:
       name: "*"
       state: latest
 
   - name: Allow editing on an SELinux enforced system
-    dnf:
+    ansible.builtin.dnf:
       name: libselinux-python
       state: latest
 
   - name: Install basics
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['nano','python3','python']
       state: present
 
   - name: Install monitoring software
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['htop','sysstat','iotop','dmidecode']
       state: present
     
   - name: "Install Powerline for pleasant commandline operation"
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['powerline','powerline-fonts'] 
       state: present
     
@@ -48,12 +48,12 @@
         fi
 
   - name: Remove unwanted default packages 
-    dnf: 
+    ansible.builtin.dnf: 
       name: ['rhythmbox','shotwell','builder']
       state: absent
 
   - name: "Ensure cockpit packages exist"
-    dnf:
+    ansible.builtin.dnf:
       name: ['cockpit','cockpit-dashboard','cockpit-shell','cockpit-ws']
       state: latest
 

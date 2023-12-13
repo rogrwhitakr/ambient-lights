@@ -5,18 +5,18 @@
 
   tasks:
     - name: LOOP INSTALL -> DEPRICATED
-      dnf: name={{item}} state=present
+      ansible.builtin.dnf: name={{item}} state=present
       with_items:
         - htop
         - nano
         - nmap
 
     - name: INSTALL SOFTWARE -> CURRENT BEST-PRACTICE
-      dnf:
+      ansible.builtin.dnf:
         name: ["htop", "nmap", "nano"]
 
     - name: UNINSTALL
-      dnf:
+      ansible.builtin.dnf:
         name: ["htop", "nmap", "nano"]
         state: absent
 

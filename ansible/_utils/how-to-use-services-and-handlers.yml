@@ -6,7 +6,7 @@
 
   tasks:
     - name: Update and restart ssh if it is updated
-      dnf:
+      ansible.builtin.dnf:
         name: "httpd"
         state: latest
       notify:
