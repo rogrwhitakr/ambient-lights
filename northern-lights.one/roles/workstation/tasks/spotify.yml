@@ -10,6 +10,10 @@
     community.general.flatpak:
       name: com.spotify.Client
       state: present
+  - name: "Install flatpak for signal"
+    community.general.flatpak:
+      name: org.signal.Signal
+      state: present    
   when:
     - ansible_facts['pkg_mgr'] == "dnf"
 
