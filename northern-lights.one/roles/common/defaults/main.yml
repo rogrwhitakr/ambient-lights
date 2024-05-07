@@ -4,27 +4,27 @@ ansible_python_interpreter: /usr/bin/python3
 
 # dotfiles to use
 dotfile:
- - ssh
- - bashrc
- - bash_profile
- - bash_logout
- 
+  - ssh
+  - bashrc
+  - bash_profile
+  - bash_logout
+
 default:
- - nano
- - fail2ban
- - zstd
+  - nano
+  - fail2ban
+  - zstd
 
 monitor:
- - htop
- - sysstat
- - iotop
- - dmidecode
- - hyperfine
- 
+  - htop
+  - sysstat
+  - iotop
+  - dmidecode
+  - hyperfine
+
 selinux:
- - libselinux-python3  
- - policycoreutils-python-utils
+  - libselinux-python3
+  - policycoreutils-python-utils
 
 powerline:
- - powerline
- - powerline-fonts 
+  - powerline
+  - powerline-fonts

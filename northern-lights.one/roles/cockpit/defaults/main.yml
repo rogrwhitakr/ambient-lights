@@ -9,3 +9,4 @@ cockpit:
   - 'cockpit-storaged'
   - 'cockpit-system'
   - 'cockpit-navigator'
+  - 'cockpit-pcp'

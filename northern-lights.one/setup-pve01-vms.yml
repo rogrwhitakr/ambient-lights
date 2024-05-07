@@ -1,0 +1,8 @@
+---
+
+- hosts: pve-cluster-01
+  roles:
+  - role: common
+  - role: cockpit
+  - role: dnf-automatic 
+

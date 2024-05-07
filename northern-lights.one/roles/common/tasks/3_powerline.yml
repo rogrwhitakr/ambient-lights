@@ -1,0 +1,4 @@
+- name: "Install Powerline for pleasant commandline operation"
+  ansible.builtin.dnf:
+    name: "{{ powerline }}"
+    state: present

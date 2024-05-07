@@ -1,0 +1,34 @@
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+---
+pve-cluster-01:
+  hosts:
+    db-01:
+      ansible_user: admin
+      ansible_become: yes
+    workstation:
+      ansible_user: admin
+      ansible_become: yes
+    bitwarden:
+      ansible_user: admin
+      ansible_become: yes
+    db-02:
+      ansible_user: admin
+      ansible_become: yes
+    firefly:
+      ansible_user: admin
+      ansible_become: yes
+    fedora-server:
+      ansible_user: admin
+      ansible_become: yes
+    dc-01:
+      ansible_user: admin
+      ansible_become: yes
+    photos:
+      ansible_user: admin
+      ansible_become: yes
+    redmine:
+      ansible_user: admin
+      ansible_become: yes

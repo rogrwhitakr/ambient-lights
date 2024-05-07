@@ -18,10 +18,5 @@
       name: "{{ monitor }}"
       state: present
 
-  - name: "Install Powerline for pleasant commandline operation"
-    ansible.builtin.dnf: 
-      name: "{{ powerline }}"
-      state: present
-
   when:
   - ansible_facts['pkg_mgr'] == "dnf"

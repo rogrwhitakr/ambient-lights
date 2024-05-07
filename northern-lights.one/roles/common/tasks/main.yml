@@ -1,16 +1,19 @@
 ---
-
 - name: "install basics"
-  include_tasks: installs.yml    
-    
-# bashrc
-#- name: "create a decent bashrc"
-#  include_tasks: bashrc.yml    
+  include_tasks: 1_installs.yml
 
 # tasks file for common
 - name: "harden the ssh daemon"
-  include_tasks: harden-ssh.yml    
+  include_tasks: 2_harden-ssh.yml
+
+# powerline (not active ATM, is slow)
+# - name: "add powerline"
+#   include_tasks: 3_powerline.yml
 
 # other dotfiles?
 - name: "add dotfiles"
   include_tasks: dotfiles.yml
+
+# bashrc
+- name: "create a decent bashrc"
+  include_tasks: 4_bashrc.yml
