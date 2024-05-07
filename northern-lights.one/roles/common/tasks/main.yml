@@ -17,3 +17,7 @@
 # bashrc
 - name: "create a decent bashrc"
   include_tasks: 4_bashrc.yml
+
+# qemu guest agent
+- name: "install guest agent"
+  include_tasks: 5_virtualisation.yml

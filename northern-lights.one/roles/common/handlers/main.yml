@@ -1,13 +1,13 @@
 ---
 # handlers file for server_common
-  - name: Ensure cockpit is started
-    service:
-      name: cockpit.socket
-      state: started
-      enabled: yes   
-
   - name: "start fail2ban service"
     service:
       name: fail2ban
+      state: started
+      enabled: yes
+
+  - name: "qemu-guest-agent"
+    service:
+      name: qemu-guest-agent
       state: started
       enabled: yes
