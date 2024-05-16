@@ -4,5 +4,9 @@
   roles:
   - role: common
   - role: cockpit
-  - role: dnf-automatic 
+#  - role: dnf-automatic 
+#    when: "{{ inventory_hostname }} not in ['db-01', 'db-02']"
 
+- hosts: docker 
+  roles:
+  - role: docker

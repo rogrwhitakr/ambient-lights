@@ -10,13 +10,9 @@
 # - name: "add powerline"
 #   include_tasks: 3_powerline.yml
 
-# other dotfiles?
-- name: "add dotfiles"
-  include_tasks: dotfiles.yml
-
 # bashrc
-- name: "create a decent bashrc"
-  include_tasks: 4_bashrc.yml
+#- name: "create a decent bashrc"
+#  include_tasks: 4_bashrc.yml
 
 # qemu guest agent
 - name: "install guest agent"

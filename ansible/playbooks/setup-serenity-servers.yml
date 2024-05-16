@@ -3,7 +3,7 @@
 - name: Setup local test servers
   hosts: cortez magellan dortmunder alexander
   remote_user: admin
-  become: yes
+  become: true
 
   tasks:
   - name: "Get version info"

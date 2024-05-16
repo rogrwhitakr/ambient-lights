@@ -20,7 +20,7 @@ pve-cluster-01:
     firefly:
       ansible_user: admin
       ansible_become: yes
-    fedora-server:
+    fedora-server-template-40:
       ansible_user: admin
       ansible_become: yes
     dc-01:
@@ -32,3 +32,11 @@ pve-cluster-01:
     redmine:
       ansible_user: admin
       ansible_become: yes
+    graylog:
+      ansible_user: admin
+      ansible_become: yes
+
+docker:
+  hosts:
+    photos:
+    graylog:

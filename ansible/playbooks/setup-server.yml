@@ -3,7 +3,7 @@
 - name: Setup test server
   hosts: cortez
   remote_user: admin
-  become: yes
+  become: true
 
   tasks:
   - name: update all packages

@@ -5,8 +5,12 @@
   become: yes
 
   tasks:
+  - debug:
+      msg: "{{ ansible_facts['virtualization_role'] }}"
+
   - name: Install Virtualisation software
     ansible.builtin.dnf: name={{item}} state=present
     with_items:
-    - virsh
-    - virt-manager
+    - nano
+    - htop
+    when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_type'] == "kvm"

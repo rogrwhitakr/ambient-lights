@@ -1,0 +1,35 @@
+---
+# tasks file for docker
+
+- name: "install docker"
+  block:
+
+  - name: "install dnf plugin"
+    ansible.builtin.dnf: 
+      name: "dnf-plugins-core"
+      state: latest
+
+#  - name: "remove \"old\" install if applicable"
+#    ansible.builtin.dnf: 
+#      name: "{{ docker_io }}"
+#      state: absent
+
+  - name: Add Docker GPG key
+    ansible.builtin.rpm_key:
+      url: https://download.docker.com/linux/fedora/gpg
+
+  - name: "add docker-ce repository" 
+    ansible.builtin.yum_repository:
+      name: "docker-ce"
+      description: "docker-ce"
+      baseurl: https://download.docker.com/linux/fedora/docker-ce.repo
+      gpgcheck: yes
+
+  - name: "install docker Community edition"
+    ansible.builtin.dnf:
+      name: "{{ docker_ce }}"
+      state: latest
+    notify: "docker_service"
+
+  when:
+  - ansible_facts['pkg_mgr'] == "dnf"

@@ -1,7 +1,7 @@
 ---
 - name: create all prerequisites for an installation
   hosts: localhost
-  become: yes
+  become: true
 
   vars_files:
     - "{{ playbook_dir }}/special/variables.yml"
