@@ -35,6 +35,9 @@ pve-cluster-01:
     graylog:
       ansible_user: admin
       ansible_become: yes
+    zabbix:
+      ansible_user: admin
+      ansible_become: yes
 
 docker:
   hosts:

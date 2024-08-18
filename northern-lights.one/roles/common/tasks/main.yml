@@ -17,3 +17,9 @@
 # qemu guest agent
 - name: "install guest agent"
   include_tasks: 5_virtualisation.yml
+  when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_type'] == "kvm"
+
+- name: Exclude postgresql-server from updates
+  lineinfile:
+    path: /etc/dnf/dnf.conf
+    line: "exclude=postgresql-server"
