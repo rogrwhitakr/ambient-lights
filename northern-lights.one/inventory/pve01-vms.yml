@@ -3,43 +3,103 @@
 #   - A hostname/ip can be a member of multiple groups
 
 ---
-pve-cluster-01:
+
+
+all:
   hosts:
-    db-01:
+    192.168.178.1:
+    pve01.fritz.box:	
+      ansible_user: root
+      ansible_become: yes
+    pve02.fritz.box:	
+      ansible_user: root
+      ansible_become: yes    
+    pve03.fritz.box:
+      ansible_user: root
+      ansible_become: yes    
+    pve04.fritz.box:	
+      ansible_user: root
+      ansible_become: yes    
+    pve05.fritz.box:	
+      ansible_user: root
+      ansible_become: yes    
+    pve06.fritz.box:	
+      ansible_user: root
+      ansible_become: yes    
+    Toniebox.fritz.box:
+    carter.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    workstation:
+    redmine-old-backup.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    bitwarden:
+    db-01.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    db-02:
+    db-02.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    firefly:
+    firefly.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    fedora-server-template-40:
+    photos.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    dc-01:
+    fedora.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    photos:
+    graylog.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    redmine:
+    zabbix.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    graylog:
+    dms.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    zabbix:
+    proxy.fritz.box:
       ansible_user: admin
       ansible_become: yes
+    redmine.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+    HP-Buero.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+    vroni-Handy.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+    datacenter-manager.fritz.box:
+      ansible_user: root
+      ansible_become: yes
+    fedora-server-template.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+    plex.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+
+hypervisor:
+  hosts:
+    pve01.fritz.box:	
+    pve02.fritz.box:	
+    pve03.fritz.box:
+    pve04.fritz.box:	
+    pve05.fritz.box:	
+    pve06.fritz.box:	
+    datacenter-manager.fritz.box:
 
 docker:
   hosts:
     photos:
     graylog:
+    redmine:
+    dms:
+
+regular:
+  hosts:
+    proxy.fritz.box:
+    firefly.fritz.box:
+#    plex.fritz.box:
+    zabbix.fritz.box:
+    fedora-server-template.fritz.box:
