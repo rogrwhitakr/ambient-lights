@@ -10,7 +10,6 @@
 
 all:
   hosts:
-    192.168.178.1:
     pve01.fritz.box:	
       ansible_user: root
       ansible_become: yes
@@ -29,7 +28,6 @@ all:
     pve06.fritz.box:	
       ansible_user: root
       ansible_become: yes    
-    Toniebox.fritz.box:
     carter.fritz.box:
       ansible_user: admin
       ansible_become: yes
@@ -79,6 +77,9 @@ all:
       ansible_user: admin
       ansible_become: yes
     plex.fritz.box:
+      ansible_user: admin
+      ansible_become: yes
+    AWX.fritz.box:
       ansible_user: admin
       ansible_become: yes
 
