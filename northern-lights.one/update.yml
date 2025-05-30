@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+
+  become: true
+
+  tasks:
+    - name: update via ansible.builtin.dnf
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+  
