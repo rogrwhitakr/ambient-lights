@@ -1,0 +1,27 @@
+---
+- name: Discover and catalogue servers
+  hosts: all
+  gather_facts: yes
+  vars:
+    # Set the directory where the catalogue files will be stored
+    catalogue_dir: "/tmp/server_catalogue"
+
+  tasks:
+    - name: Create local directory to store server facts
+      ansible.builtin.file:
+        path: "{{ catalogue_dir }}"
+        state: directory
+        mode: '0755'
+      run_once: true
+      delegate_to: localhost
+
+    - name: Save all system facts to a JSON file
+      ansible.builtin.copy:
+        content: "{{ ansible_facts | to_json(indent=2) }}"
+        dest: "{{ catalogue_dir }}/{{ ansible_hostname }}.json"
+      run_once: false
+      delegate_to: localhost
+      
+    - name: Display a success message
+      ansible.builtin.debug:
+        msg: "Successfully catalogued {{ ansible_hostname }}. Facts saved to {{ catalogue_dir }}/{{ ansible_hostname }}.json"
