@@ -11,17 +11,23 @@
   - name: Gather service facts
     ansible.builtin.service_facts:
 
-  - name: Display server status and dnf-automatic info
-    ansible.builtin.debug:
-      msg: |
-        Server Status for {{ ansible_hostname }}:
-        -------------------------------------
-        - Operating System: {{ ansible_distribution }} {{ ansible_distribution_version }}
+    - name: Set host details as a fact
+      ansible.builtin.set_fact:
+        host_info:
+          hostname: "{{ ansible_hostname }}"
+          os_version: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+          dnf_automatic_status: >-
+            {% if 'dnf-automatic' in ansible_facts.packages %} Installed ✅ {% else %} Not Installed ❌ {% endif %}
 
-        - DNF Automatic Service:
-          {% if 'dnf-automatic' in ansible_facts.packages %}
-          Status: Installed ✅
-          Running: {{ 'Yes' if ansible_facts.services['dnf-automatic.timer'].state == 'running' else 'No' }}
-          {% else %}
-          Status: Not Installed ❌
-          {% endif %}
+    - name: Display table on the control node
+      run_once: true
+      delegate_to: localhost
+      ansible.builtin.debug:
+        msg: |
+          {% set table_header = '| Server | Operating System | DNF Automatic Status |' %}
+          {% set table_separator = '| :--- | :--- | :--- |' %}
+          {{ table_header }}
+          {{ table_separator }}
+          {% for host in groups['all'] %}
+          | {{ hostvars[host]['ansible_hostname'] }} | {{ hostvars[host]['host_info']['os_version'] }} | {{ hostvars[host]['host_info']['dnf_automatic_status'] }} |
+          {% endfor %}
