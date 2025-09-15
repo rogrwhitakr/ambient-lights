@@ -1,20 +1,13 @@
 ---
 - name: Shutdown a remote computer
   vars_prompt:
-  - name: host
-    prompt: What box to shut down?
+    - name: host
+      prompt: What box to shut down?
 
-  gather_facts: no
+  gather_facts: false
   hosts: "{{ host }}"
-  remote_user: admin 
-  become: yes
-  become_method: sudo
+  become: true
 
-# handle gracefully - this works, unsure why !!! 
   tasks:
- # - name: wait for ssh to go down
-  #  local_action: wait_for host={{ ansible_hostname }} port=22 state=stopped  
-
-    # shutdown one minute from now
-  - name: user-instigated shutdown of "{{ host }}"
-    command: /sbin/shutdown -h +1 
+    - name: user-instigated shutdown of "{{ host }}"
+      command: /sbin/shutdown -h +1
