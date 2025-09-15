@@ -4,11 +4,12 @@
   gather_facts: yes
 
   tasks:
-  - name: Gather package and service facts
+  - name: Gather package facts
     ansible.builtin.package_facts:
       manager: auto
-    ansible.builtin.service_facts:
 
+  - name: Gather service facts
+    ansible.builtin.service_facts:
 
   - name: Display server status and dnf-automatic info
     ansible.builtin.debug:
