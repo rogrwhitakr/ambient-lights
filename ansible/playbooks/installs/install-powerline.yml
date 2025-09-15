@@ -1,27 +1,27 @@
 ---
-- name: Add Powerline to Workstation
-  hosts: cortez
-  remote_user: admin
+- name: Install Powerline globally for all users
+  hosts: all
+  become: yes
 
   tasks:
-  - name: Install necessary package to allow editing on an SELinux enforced system
-    ansible.builtin.dnf:
-      name: libselinux-python
-      state: latest
-      
-  - name: Install Powerline for pleasant commandline operation
-    ansible.builtin.dnf: name={{item}} state=present
-    with_items:
-    - powerline
-    - powerline-fonts
+    - name: Ensure Powerline packages are installed system-wide
+      ansible.builtin.dnf:
+        name:
+          - powerline
+          - powerline-fonts
+          - python3-libselinux
+        state: present
 
-  - name: edit .bashrc to enable powerline usage
-    blockinfile:
-      path: /home/admin/.bashrc
-      block: |
-        if [ -f `which powerline-daemon` ]; then
-          powerline-daemon -q
-          POWERLINE_BASH_CONTINUATION=1
-          POWERLINE_BASH_SELECT=1
-          . /usr/share/powerline/bash/powerline.sh
-        fi
+    - name: Configure /etc/bashrc to enable Powerline for all users
+      ansible.builtin.blockinfile:
+        path: /etc/bashrc
+        block: |
+          # The following lines were added by Ansible for Powerline
+          if [ -f `which powerline-daemon` ]; then
+            powerline-daemon -q
+            POWERLINE_BASH_CONTINUATION=1
+            POWERLINE_BASH_SELECT=1
+            . /usr/share/powerline/bash/powerline.sh
+          fi
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - POWERLINE"
+        insertafter: EOF
