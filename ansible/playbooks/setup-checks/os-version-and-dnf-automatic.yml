@@ -4,12 +4,12 @@
   gather_facts: yes
 
   tasks:
-  - name: Gather package facts
-    ansible.builtin.package_facts:
-      manager: auto
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
 
-  - name: Gather service facts
-    ansible.builtin.service_facts:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
 
     - name: Set host details as a fact
       ansible.builtin.set_fact:
