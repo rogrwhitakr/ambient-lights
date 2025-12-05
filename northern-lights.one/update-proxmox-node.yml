@@ -1,0 +1,73 @@
+---
+- name: Proxmox node maintenance and VM migration
+  hosts: all
+  gather_facts: no
+  become: yes
+
+  vars:
+    proxmox_api_host: "https://{{ ansible_host }}:8006"
+    proxmox_api_user: "your-proxmox-api-user@pam"
+    proxmox_api_token_id: "your-api-token-id"
+    proxmox_api_token_secret: "your-api-token-secret"
+    destination_node: "your_destination_node_name"
+
+  tasks:
+  - name: Get a list of all running VMs on this host
+    community.general.proxmox_vm_info:
+      api_host: "{{ proxmox_api_host }}"
+      api_user: "{{ proxmox_api_user }}"
+      api_token_id: "{{ proxmox_api_token_id }}"
+      api_token_secret: "{{ proxmox_api_token_secret }}"
+    run_once: true
+    delegate_to: localhost
+    register: pve_vm_info
+
+  - name: Set fact for VMs to be migrated
+    ansible.builtin.set_fact:
+      vms_to_migrate: "{{ pve_vm_info.proxmox_vms | selectattr('node', 'equalto', ansible_hostname) | selectattr('status', 'equalto', 'running') | list }}"
+    run_once: true
+    delegate_to: localhost
+
+  - name: Show the list of VMs to migrate
+    ansible.builtin.debug:
+      msg: "Found {{ vms_to_migrate | length }} running VMs to migrate: {{ vms_to_migrate | map(attribute='name') | list }}"
+    when: vms_to_migrate | length > 0
+    run_once: true
+    delegate_to: localhost
+
+  - name: Migrate VMs to the destination node
+    community.general.proxmox_vm:
+      api_host: "{{ proxmox_api_host }}"
+      api_user: "{{ proxmox_api_user }}"
+      api_token_id: "{{ proxmox_api_token_id }}"
+      api_token_secret: "{{ proxmox_api_token_secret }}"
+      node: "{{ destination_node }}"
+      vmid: "{{ item.vmid }}"
+      state: migrated
+      migration_downtime: 5
+    loop: "{{ vms_to_migrate }}"
+    when: vms_to_migrate | length > 0
+
+  - name: Update the Proxmox host
+    ansible.builtin.apt:
+      update_cache: yes
+      upgrade: yes
+      autoclean: yes
+      autoremove: yes
+
+  - name: Reboot the Proxmox host
+    ansible.builtin.reboot:
+      reboot_timeout: 600
+
+  - name: Migrate VMs back to the original host
+    community.general.proxmox_vm:
+      api_host: "{{ proxmox_api_host }}"
+      api_user: "{{ proxmox_api_user }}"
+      api_token_id: "{{ proxmox_api_token_id }}"
+      api_token_secret: "{{ proxmox_api_token_secret }}"
+      node: "{{ ansible_hostname }}"
+      vmid: "{{ item.vmid }}"
+      state: migrated
+      migration_downtime: 5
+    loop: "{{ vms_to_migrate }}"
+    when: vms_to_migrate | length > 0

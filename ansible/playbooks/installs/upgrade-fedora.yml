@@ -1,0 +1,42 @@
+---
+- name: Perform Fedora system upgrade to release 43
+  hosts: all
+  become: true
+
+  vars:
+    target_release: 43
+
+  tasks:
+  - name: Ensure dnf-plugin-system-upgrade is installed
+    ansible.builtin.dnf:
+      name: dnf-plugin-system-upgrade
+      state: present
+      disable_excludes: system-upgrade
+
+  - name: Download the system upgrade packages for release {{ target_release }}
+    ansible.builtin.command:
+      # Use shell for easier handling of output/errors if needed, but command works
+      cmd: dnf system-upgrade download --releasever={{ target_release }} -y
+      # Wait until the download process finishes before continuing
+      # Use "chdir: /tmp" if the default working directory might be an issue
+    register: upgrade_download_status
+    # Check if the download was successful or already done
+    failed_when: upgrade_download_status.rc != 0 and "Nothing to do" not in upgrade_download_status.stdout
+    #    - name: Initiate the system upgrade and reboot
+    #      ansible.builtin.command:
+    # The reboot command must run for the upgrade to proceed
+    #        cmd: dnf system-upgrade reboot -y
+    # This task is expected to cause the connection to drop
+    # so we use async to ensure Ansible doesn't fail immediately.
+    #      async: 10 # Run for up to 10 seconds asynchronously
+    #      poll: 0   # Do not poll for the result (fire and forget)
+    # Only run this if the download task actually resulted in new downloads
+    #      when: "'Nothing to do' not in upgrade_download_status.stdout"
+
+    #    - name: Wait for the host to come back online after the reboot
+    #      ansible.builtin.wait_for_connection:
+    #        delay: 60  # Wait 60 seconds before checking the connection
+    #        timeout: 600 # Total time to wait for host to reappear (10 minutes)
+    #      delegate_to: localhost # Run this wait task from the Ansible controller
+    # Only wait if we actually initiated the reboot
+    #      when: "'Nothing to do' not in upgrade_download_status.stdout"
