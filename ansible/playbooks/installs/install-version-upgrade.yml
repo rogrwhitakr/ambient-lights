@@ -4,18 +4,19 @@
   become: true
 
   vars:
+    ansible_python_interpreter: /usr/bin/python3
     target_release: 43
 
   tasks:
-  - name: Install the DNF plugin
-    ansible.builtin.dnf:
-      name: dnf-plugin-system-upgrade
-      state: latest  
-
   - name: upgrade all packages to latest
     ansible.builtin.dnf:
       name: "*"
       state: latest
+
+  - name: Install the DNF plugin
+    ansible.builtin.dnf:
+      name: dnf-plugin-system-upgrade
+      state: latest  
 
   - name: Ensure dnf-plugin-system-upgrade is installed
     ansible.builtin.dnf:
