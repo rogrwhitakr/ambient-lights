@@ -4,34 +4,29 @@
 
 # setoup with
 # export ANSIBLE_HOST_KEY_CHECKING=False
-
 ---
-
 
 all:
   hosts:
-    pve01.fritz.box:	
+    pve01.fritz.box:
       ansible_user: root
       ansible_become: yes
-    pve02.fritz.box:	
+    pve02.fritz.box:
       ansible_user: root
-      ansible_become: yes    
+      ansible_become: yes
     pve03.fritz.box:
       ansible_user: root
-      ansible_become: yes    
-    pve04.fritz.box:	
-      ansible_user: root
-      ansible_become: yes    
-    pve05.fritz.box:	
-      ansible_user: root
-      ansible_become: yes    
-    pve06.fritz.box:	
-      ansible_user: root
-      ansible_become: yes    
-    carter.fritz.box:
-      ansible_user: admin
       ansible_become: yes
-    redmine-old-backup.fritz.box:
+    pve04.fritz.box:
+      ansible_user: root
+      ansible_become: yes
+    pve05.fritz.box:
+      ansible_user: root
+      ansible_become: yes
+    pve06.fritz.box:
+      ansible_user: root
+      ansible_become: yes
+    carter.fritz.box:
       ansible_user: admin
       ansible_become: yes
     db-01.fritz.box:
@@ -64,34 +59,29 @@ all:
     redmine.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    HP-Buero.fritz.box:
-      ansible_user: admin
-      ansible_become: yes
-    vroni-Handy.fritz.box:
-      ansible_user: admin
-      ansible_become: yes
     datacenter-manager.fritz.box:
       ansible_user: root
       ansible_become: yes
-    fedora-server-template.fritz.box:
+    f44.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    plex.fritz.box:
+    snipe.fritz.box:
       ansible_user: admin
       ansible_become: yes
-    AWX.fritz.box:
+    cve-check.fritz.box:
       ansible_user: admin
       ansible_become: yes
 
 hypervisor:
   hosts:
-    pve01.fritz.box:	
-    pve02.fritz.box:	
+    pve01.fritz.box:
+    pve02.fritz.box:
     pve03.fritz.box:
-    pve04.fritz.box:	
-    pve05.fritz.box:	
-    pve06.fritz.box:	
+    pve04.fritz.box:
+    pve05.fritz.box:
+    pve06.fritz.box:
     datacenter-manager.fritz.box:
+
 
 docker:
   hosts:
@@ -100,10 +90,10 @@ docker:
     redmine:
     dms:
 
+
 regular:
   hosts:
     proxy.fritz.box:
     firefly.fritz.box:
-#    plex.fritz.box:
     zabbix.fritz.box:
-    fedora-server-template.fritz.box:
+    f44.fritz.box:

@@ -1,5 +1,0 @@
----
-
-- hosts: storage-server
-  roles:
-  - role: nextcloud  

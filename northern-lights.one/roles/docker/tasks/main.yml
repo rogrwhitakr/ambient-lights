@@ -9,10 +9,10 @@
       name: "dnf-plugins-core"
       state: latest
 
-#  - name: "remove \"old\" install if applicable"
-#    ansible.builtin.dnf: 
-#      name: "{{ docker_io }}"
-#      state: absent
+  - name: "remove \"old\" install if applicable"
+    ansible.builtin.dnf: 
+      name: "{{ docker_io }}"
+      state: absent
 
   - name: "add docker-ce repository" 
     ansible.builtin.command:

@@ -1,9 +1,0 @@
----
-# This Playbook would deploy the workstation currently in play. 
-# regular and atomic
-
-- hosts: workstations
-  roles:
-  - role: common
-  - role: workstation
-  - role: dnf-automatic
