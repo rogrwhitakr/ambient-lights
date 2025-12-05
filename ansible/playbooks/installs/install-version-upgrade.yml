@@ -1,25 +1,52 @@
 ---
-- name: Upgrade Fedora Major Version
-  hosts: alexander
-  become: yes
+- name: Perform Fedora system upgrade to release 43
+  hosts: all
+  become: true
+
+  vars:
+    target_release: 43
 
   tasks:
   - name: Install the DNF plugin
     ansible.builtin.dnf:
       name: dnf-plugin-system-upgrade
       state: latest  
-  
-  - name: Update software and back up your system
-    shell: /usr/bin/dnf upgrade --refresh -y
-   # warn: False
 
-  - name: "Start the update with the download of packages"
-    shell: /usr/bin/dnf system-upgrade download --allowerasing --assumeyes --releasever=29 
+  - name: upgrade all packages to latest
+    ansible.builtin.dnf:
+      name: "*"
+      state: latest
 
-  - name: "wait for ssh to go down"
-    local_action: wait_for host="{{ ansible_hostname }}" port=22 state=stopped 
+  - name: Ensure dnf-plugin-system-upgrade is installed
+    ansible.builtin.dnf:
+      name: dnf-plugin-system-upgrade
+      state: present
+      disable_excludes: system-upgrade
 
-  - name: "Trigger the upgrade process"
-    shell: sudo dnf system-upgrade reboot
-    ignore_errors: yes 
-    # ignoring the error hinders ansible to fil the task even if the upgrade process runs without issue 
+  - name: Download the system upgrade packages for release {{ target_release }}
+    ansible.builtin.command:
+      # Use shell for easier handling of output/errors if needed, but command works
+      cmd: dnf system-upgrade download --releasever={{ target_release }} -y
+      # Wait until the download process finishes before continuing
+      # Use "chdir: /tmp" if the default working directory might be an issue
+    register: upgrade_download_status
+    # Check if the download was successful or already done
+    failed_when: upgrade_download_status.rc != 0 and "Nothing to do" not in upgrade_download_status.stdout
+    #    - name: Initiate the system upgrade and reboot
+    #      ansible.builtin.command:
+    # The reboot command must run for the upgrade to proceed
+    #        cmd: dnf system-upgrade reboot -y
+    # This task is expected to cause the connection to drop
+    # so we use async to ensure Ansible doesn't fail immediately.
+    #      async: 10 # Run for up to 10 seconds asynchronously
+    #      poll: 0   # Do not poll for the result (fire and forget)
+    # Only run this if the download task actually resulted in new downloads
+    #      when: "'Nothing to do' not in upgrade_download_status.stdout"
+
+    #    - name: Wait for the host to come back online after the reboot
+    #      ansible.builtin.wait_for_connection:
+    #        delay: 60  # Wait 60 seconds before checking the connection
+    #        timeout: 600 # Total time to wait for host to reappear (10 minutes)
+    #      delegate_to: localhost # Run this wait task from the Ansible controller
+    # Only wait if we actually initiated the reboot
+    #      when: "'Nothing to do' not in upgrade_download_status.stdout"
