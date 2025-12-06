@@ -44,7 +44,7 @@
   - name: Wait for the host to come back online after the reboot
     ansible.builtin.wait_for_connection:
       delay: 60  # Wait 60 seconds before checking the connection
-      timeout: 600 # Total time to wait for host to reappear (10 minutes)
+      timeout: 3600 # Total time to wait for host to reappear (1 hour)
     delegate_to: localhost # Run this wait task from the Ansible controller
     when: "'Nothing to do' not in upgrade_download_status.stdout"
 
