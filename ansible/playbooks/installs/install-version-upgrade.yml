@@ -26,12 +26,8 @@
 
   - name: Download the system upgrade packages for release {{ target_release }}
     ansible.builtin.command:
-      # Use shell for easier handling of output/errors if needed, but command works
       cmd: dnf system-upgrade download --releasever={{ target_release }} -y
-      # Wait until the download process finishes before continuing
-      # Use "chdir: /tmp" if the default working directory might be an issue
     register: upgrade_download_status
-    # Check if the download was successful or already done
     failed_when: upgrade_download_status.rc != 0 and "Nothing to do" not in upgrade_download_status.stdout
 
   - name: Initiate the system upgrade and reboot
@@ -43,8 +39,8 @@
 
   - name: Wait for the host to come back online after the reboot
     ansible.builtin.wait_for_connection:
-      delay: 60  # Wait 60 seconds before checking the connection
-      timeout: 3600 # Total time to wait for host to reappear (1 hour)
-    delegate_to: localhost # Run this wait task from the Ansible controller
+      delay: 60  
+      timeout: 7200 # Total time to wait for host to reappear (1 hour)
+    delegate_to: localhost
     when: "'Nothing to do' not in upgrade_download_status.stdout"
 
