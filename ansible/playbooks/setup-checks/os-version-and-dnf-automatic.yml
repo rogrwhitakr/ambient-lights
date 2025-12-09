@@ -25,7 +25,12 @@
   tasks:
     - name: Build the reporting list from hostvars
       ansible.builtin.set_fact:
-        report_data: "{{ report_data | default([]) + [hostvars[item]['host_info']] }}"
+        report_data: >
+          {{ report_data | default([]) + [ hostvars[item]['host_info'] | default({
+              'hostname': item, 
+              'os_version': 'N/A (Fact Missing)', 
+              'dnf_automatic_status': 'N/A (Fact Missing)' 
+          }) ] }}
       loop: "{{ groups['all'] }}"
       run_once: true
 
