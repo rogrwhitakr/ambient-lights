@@ -11,3 +11,8 @@
       name: qemu-guest-agent
       state: started
       enabled: yes
+
+  - name: dnf-automatic-timer
+    ansible.builtin.systemd:
+      name: dnf-automatic.timer
+      state: restarted
