@@ -6,7 +6,8 @@ default:
   - nano
   - fail2ban
   - zstd
-
+  - 'dnf-automatic'
+  
 monitor:
   - htop
   - sysstat
