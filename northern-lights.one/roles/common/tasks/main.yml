@@ -3,8 +3,8 @@
   include_tasks: 1_installs.yml
 
 # tasks file for common
-- name: "harden the ssh daemon"
-  include_tasks: 2_harden-ssh.yml
+#- name: "harden the ssh daemon"
+#  include_tasks: 2_harden-ssh.yml
 
 # powerline (not active ATM, is slow)
 # - name: "add powerline"
