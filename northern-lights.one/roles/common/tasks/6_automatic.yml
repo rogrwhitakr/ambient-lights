@@ -1,0 +1,37 @@
+- name: Install dnf-automatic
+  ansible.builtin.dnf:
+    name: "{{ packages }}"
+
+- name: Configure dnf-automatic to download and apply updates daily
+  ansible.builtin.copy:
+    content: |
+      [commands]
+      # The command to execute (e.g., download, apply, or check)
+      # "apply" means it downloads and installs security and bug fixes.
+      # "download" only downloads the files.
+      upgrade_type = default
+      action = apply
+
+      [emitters]
+      # Set emitters to false unless you configure an email client.
+      emit_via = stdio
+
+      [base]
+      # Set to true to ensure security updates are processed immediately.
+      debuglevel = 1
+      mdpolicy = default
+      download_daemon = yes
+
+      [reporting]
+      email_to = root
+      email_from = root
+
+      [timer]
+      # Run dnf-automatic daily
+      Persistent = true
+      OnCalendar = daily
+    dest: /etc/dnf/automatic.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: dnf-automatic-timer

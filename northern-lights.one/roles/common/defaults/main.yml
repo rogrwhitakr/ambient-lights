@@ -6,7 +6,6 @@ default:
   - nano
   - fail2ban
   - zstd
-  - 'dnf-automatic'
   
 monitor:
   - htop
@@ -22,3 +21,6 @@ selinux:
 powerline:
   - powerline
   - powerline-fonts
+
+packages:
+  - 'dnf-automatic'
