@@ -4,7 +4,7 @@
   block:
 
   - name: "Install basics"
-    ansible.builtin.dnf: 
+    ansible.builtin.dnf:
       name: "{{ default }}"
       state: present
 
@@ -14,9 +14,30 @@
       state: latest
 
   - name: "Install monitoring software"
-    ansible.builtin.dnf: 
+    ansible.builtin.dnf:
       name: "{{ monitor }}"
       state: present
 
   when:
   - ansible_facts['pkg_mgr'] == "dnf"
+
+- name: "install basics - dnf5"
+  block:
+
+  - name: "Install basics"
+    ansible.builtin.dnf:
+      name: "{{ default }}"
+      state: present
+
+  - name: "install SELinux recommends"
+    ansible.builtin.dnf:
+      name: "{{ selinux }}"
+      state: latest
+
+  - name: "Install monitoring software"
+    ansible.builtin.dnf:
+      name: "{{ monitor }}"
+      state: present
+
+  when:
+  - ansible_facts['pkg_mgr'] == "dnf5"
