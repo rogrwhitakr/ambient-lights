@@ -35,3 +35,8 @@
     group: root
     mode: '0644'
   notify: dnf-automatic-timer
+
+- name: Exclude postgresql-server from updates
+  lineinfile:
+    path: /etc/dnf/dnf.conf
+    line: "exclude=postgresql-server"

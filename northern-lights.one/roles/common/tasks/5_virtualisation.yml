@@ -3,3 +3,10 @@
     name: "qemu-guest-agent"
     state: present
   notify: "qemu-guest-agent"
+  when: ansible_facts['virtualization_role'] == "guest" and ansible_facts['virtualization_type'] == "kvm"
+
+- name: "DEBUG: Show virtualization facts"
+  ansible.builtin.debug:
+    msg:
+    - "Virtualization Role: {{ ansible_facts['virtualization_role'] | default('N/A') }}"
+    - "Virtualization Type: {{ ansible_facts['virtualization_type'] | default('N/A') }}"
