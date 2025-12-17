@@ -1,30 +1,19 @@
 ---
-  - name: "download script for custom bashrc profile"
-    get_url:
-      url: "https://raw.githubusercontent.com/rogrwhitakr/northern-lights/master/script/setup-profile-on-new-box.bash"
-      dest: "/home/{{ ansible_user }}/profile-setup.bash"
-      mode: 0740
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
+- name: "download script for custom bashrc profile"
+  get_url:
+    url: "https://raw.githubusercontent.com/rogrwhitakr/northern-lights/master/script/setup-profile-on-new-box.bash"
+    dest: "/home/{{ ansible_user }}/profile-setup.bash"
+    mode: 740
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
 
-  - name: Run the script
-    become_user: "{{ ansible_user }}"
-    ansible.builtin.script: "/home/{{ ansible_user }}/profile-setup.bash"
-    args:
-      creates: "/home/{{ ansible_user }}/.bashrc.d"
+- name: Run the script
+  become_user: "{{ ansible_user }}"
+  ansible.builtin.script: "/home/{{ ansible_user }}/profile-setup.bash"
+  args:
+    creates: "/home/{{ ansible_user }}/.bashrc.d"
 
-  - name: remove script
-    ansible.builtin.file:
-      path: "/home/{{ ansible_user }}/profile-setup.bash"
-      state: absent
-
-  - name: edit .bashrc to enable powerline usage
-    blockinfile:
-      path: /home/{{ ansible_user }}/.bashrc
-      block: |
-        if [ -f `which powerline-daemon` ]; then
-          powerline-daemon -q
-          POWERLINE_BASH_CONTINUATION=1
-          POWERLINE_BASH_SELECT=1
-          . /usr/share/powerline/bash/powerline.sh
-        fi
+- name: remove script
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/profile-setup.bash"
+    state: absent
