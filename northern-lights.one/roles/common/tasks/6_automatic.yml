@@ -34,6 +34,13 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Ensure the dnf-automatic timer is enabled and running
+  ansible.builtin.systemd:
+    name: dnf-automatic.timer
+    enabled: yes
+    state: started
+    daemon_reload: yes
   notify: dnf-automatic-timer
 
 - name: Exclude postgresql-server from updates
