@@ -1,0 +1,34 @@
+---
+- name: Proxmox Cluster Sequential Update and Reboot
+  hosts: proxmox_nodes
+  become: true
+  # ensures only one node is updated and rebooted at a time
+  serial: 1 
+
+  tasks:
+    - name: Clean up apt cache and remove unused packages
+      apt:
+        autoremove: yes
+        purge: yes
+        update_cache: yes
+
+    - name: Update all packages to the latest version (dist-upgrade)
+      apt:
+        upgrade: dist
+        force_apt_get: yes # Recommended for Proxmox to handle complex dependencies
+      register: upgrade_result
+
+    - name: Reboot the node if updates were applied
+      reboot:
+        msg: "Rebooting node after Proxmox dist-upgrade"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+      when: upgrade_result.changed
+
+    - name: Wait for 5 minutes before moving to the next node
+      pause:
+        minutes: 5
+      when: inventory_hostname != groups['proxmox_nodes'][-1]
+      # This skips the 5-minute wait on the very last node to save time
