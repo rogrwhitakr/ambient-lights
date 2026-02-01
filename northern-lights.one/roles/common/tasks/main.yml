@@ -18,5 +18,5 @@
   include_tasks: 5_virtualisation.yml
 
 # dnf automatic
-- name: "install guest agent"
+- name: "install dnf-automatic"
   include_tasks: 6_automatic.yml
