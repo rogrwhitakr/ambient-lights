@@ -1,11 +1,11 @@
 ---
-- name: Perform Fedora system upgrade to release 43
+- name: Perform Fedora system upgrade to release 44
   hosts: all
   become: true
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    target_release: 43
+    target_release: 44
 
   tasks:
   - name: upgrade all packages to latest
