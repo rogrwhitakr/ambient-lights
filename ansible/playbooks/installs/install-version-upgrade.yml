@@ -37,10 +37,10 @@
     poll: 0   
     when: "'Nothing to do' not in upgrade_download_status.stdout"
 
-  - name: Wait for the host to come back online after the reboot
-    ansible.builtin.wait_for_connection:
-      delay: 60  
-      timeout: 7200 # Total time to wait for host to reappear (1 hour)
-    delegate_to: localhost
-    when: "'Nothing to do' not in upgrade_download_status.stdout"
+#  - name: Wait for the host to come back online after the reboot
+#    ansible.builtin.wait_for_connection:
+#      delay: 60  
+#      timeout: 7200 # Total time to wait for host to reappear (1 hour)
+#    delegate_to: localhost
+#    when: "'Nothing to do' not in upgrade_download_status.stdout"
 
