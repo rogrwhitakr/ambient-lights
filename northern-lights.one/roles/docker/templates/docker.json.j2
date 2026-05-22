@@ -1,0 +1,7 @@
+{
+  "log-driver": "gelf",
+  "log-opts": {
+    "gelf-address": "udp://graylog.fritz.box:12201",
+    "tag": "{{ '{{.ImageName}}/{{.Name}}/{{.ID}}' }}"
+  }
+}

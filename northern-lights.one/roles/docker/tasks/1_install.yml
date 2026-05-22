@@ -1,0 +1,43 @@
+---
+# tasks file for docker
+
+- name: "install docker"
+  block:
+
+  - name: "install dnf plugin"
+    ansible.builtin.dnf: 
+      name: "dnf-plugins-core"
+      state: latest
+
+  - name: "remove \"old\" install if applicable"
+    ansible.builtin.dnf: 
+      name: "{{ docker_io }}"
+      state: absent
+
+  - name: "add docker-ce repository" 
+    ansible.builtin.command:
+      argv:
+        - /usr/bin/dnf
+        - config-manager
+        - --add-repo
+        - https://download.docker.com/linux/fedora/docker-ce.repo
+
+  - name: "install docker Community edition"
+    ansible.builtin.dnf:
+      name: "{{ docker_ce }}"
+      state: latest
+    notify: "start docker service"
+
+  - name: Ensure group "docker" exists with correct gid
+    ansible.builtin.group:
+      name: docker
+      state: present
+      gid: 1750
+
+  - name: "Add the BECOME user to the docker group"
+    ansible.builtin.user:
+      name: admin
+      groups: docker,wheel
+
+  when:
+  - ansible_facts['pkg_mgr'] == "dnf"
