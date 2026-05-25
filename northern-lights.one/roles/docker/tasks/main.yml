@@ -3,4 +3,4 @@
   include_tasks: 1_install.yml
 
 - name: "configure docker"
-  include_tasks: 2_harden-ssh.yml
+  include_tasks: 2_config.yml
