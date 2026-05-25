@@ -9,10 +9,10 @@
       name: "dnf-plugins-core"
       state: latest
 
-  - name: "remove \"old\" install if applicable"
+  - name: "install selinux container component"
     ansible.builtin.dnf: 
-      name: "{{ docker_io }}"
-      state: absent
+      name: "{{ selinux }}"
+      state: latest
 
   - name: "install docker Community edition"
     ansible.builtin.dnf:

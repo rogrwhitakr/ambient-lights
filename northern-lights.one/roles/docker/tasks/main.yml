@@ -1,9 +1,12 @@
 ---
+- name: "remove existing non-docker-ce install"
+  include_tasks: 0_removals.yml
+
 - name: "docker-ce repository"
-  include_tasks: 0_repository.yml
+  include_tasks: 1_repository.yml
 
 - name: "install docker"
-  include_tasks: 1_install.yml
+  include_tasks: 2_install.yml
 
 - name: "configure docker"
-  include_tasks: 2_config.yml
+  include_tasks: 3_config.yml

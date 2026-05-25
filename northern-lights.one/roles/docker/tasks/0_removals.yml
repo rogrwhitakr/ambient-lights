@@ -1,0 +1,8 @@
+---
+  - name: "remove \"old\" install if applicable"
+    ansible.builtin.dnf: 
+      name: "{{ docker_io }}"
+      state: absent
+      nobest: true
+    ignore_errors: true
+

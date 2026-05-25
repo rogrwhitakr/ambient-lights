@@ -23,3 +23,6 @@ docker_io:
   - 'docker-selinux'
   - 'docker-engine-selinux'
   - 'docker-engine'
+
+selinux:
+  - 'container-selinux'
