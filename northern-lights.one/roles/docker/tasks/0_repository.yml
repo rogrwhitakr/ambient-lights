@@ -1,0 +1,8 @@
+---
+- name: install docker-ce repo
+  ansible.builtin.template:
+    src: docker-ce.repo.j2
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: '0644'
+    owner: root
+    group: root

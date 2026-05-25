@@ -4,14 +4,6 @@
 - name: "install docker"
   block:
 
-  - name: add docker-ce repository
-    ansible.builtin.command:
-      argv:
-        - /usr/bin/dnf
-        - config-manager
-        - addrepo
-        - --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-
   - name: "install dnf plugin"
     ansible.builtin.dnf: 
       name: "dnf-plugins-core"
