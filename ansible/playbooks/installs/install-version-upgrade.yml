@@ -8,6 +8,11 @@
     target_release: 44
 
   tasks:
+  - name: install python3-libdnf5
+    ansible.builtin.dnf:
+      name: python3-libdnf5
+      state: latest
+  
   - name: upgrade all packages to latest
     ansible.builtin.dnf:
       name: "*"
