@@ -1,0 +1,67 @@
+---
+- name: 1. Gather facts and package status from reachable remote hosts
+  hosts: all
+  gather_facts: yes
+  vars:
+    target_package: "{{ target_package | default('dnf-automatic') }}"
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Set host details as a fact
+      ansible.builtin.set_fact:
+        host_info:
+          hostname: "{{ ansible_hostname | default(inventory_hostname) }}"
+          os_version: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+          package_name: "{{ target_package }}"
+          package_status: >-
+            {% if target_package in ansible_facts.packages %}
+            Installed ✅
+            {% else %}
+            Not Installed ❌
+            {% endif %}
+          package_version: >-
+            {% if target_package in ansible_facts.packages %}
+            {{ ansible_facts.packages[target_package] | map(attribute='version') | join(', ') }}
+            {% else %}
+            -
+            {% endif %}
+
+    - name: Save list of reachable hosts on controller
+      ansible.builtin.set_fact:
+        reachable_hosts: "{{ ansible_play_hosts }}"
+      delegate_to: localhost
+      delegate_facts: true
+      run_once: true
+
+    - name: Save queried package name on controller
+      ansible.builtin.set_fact:
+        report_package_name: "{{ target_package }}"
+      delegate_to: localhost
+      delegate_facts: true
+      run_once: true
+
+    - name: Clear errors so play exits successfully
+      meta: clear_host_errors
+
+- name: 2. Build and display the table on the control node
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Build the reporting list from reachable hosts only
+      ansible.builtin.set_fact:
+        report_data: "{{ report_data | default([]) + [hostvars[item]['host_info']] }}"
+      loop: "{{ hostvars['localhost']['reachable_hosts'] | default([]) }}"
+
+    - name: Display table on the control node
+      ansible.builtin.debug:
+        msg: |
+          {% set pkg = hostvars['localhost']['report_package_name'] | default('package') %}
+          | Server | Operating System | Package | Status | Version |
+          | :--- | :--- | :--- | :--- | :--- |
+          {% for host_details in report_data | default([]) %}
+          | {{ host_details.hostname }} | {{ host_details.os_version }} | {{ host_details.package_name }} | {{ host_details.package_status | trim }} | {{ host_details.package_version | trim }} |
+          {% endfor %}
