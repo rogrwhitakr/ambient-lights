@@ -1,0 +1,11 @@
+[Unit]
+Description=Create a backup of database %i every {{ backup_interval }}
+
+[Timer]
+OnBootSec={{ backup_boot_delay }}
+OnUnitActiveSec={{ backup_interval }}
+WakeSystem=false
+Unit=psql-backup@%i.service
+
+[Install]
+WantedBy=timers.target

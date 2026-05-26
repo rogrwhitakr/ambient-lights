@@ -1,0 +1,9 @@
+---
+# vars file for postgresql-backup
+db_name: "{{ lookup('env', 'DB_NAME') | default(db_name, true) }}"
+backup_dir: /home/reese/Dokumente/Backup
+backup_user: reese
+backup_group: reese
+env_file: "{{ backup_dir }}/firefly.conf"
+backup_interval: 3h
+backup_boot_delay: 15min

@@ -1,0 +1,17 @@
+[Unit]
+Description=Execute backup for PostgreSQL database %i using pg_dump
+AssertPathExists={{ backup_dir }}
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory={{ backup_dir }}
+EnvironmentFile={{ env_file }}
+
+ExecStart=/usr/bin/pg_dump --format=plain --dbname=%i --file=%i.sql --no-password
+ExecStart=/usr/bin/zstd %i.sql --rm --compress -o %i.zst --force
+ExecStartPost=/usr/bin/chown {{ backup_user }}:{{ backup_group }} {{ backup_dir }} -R
+
+KillSignal=SIGQUIT
+KillMode=mixed
