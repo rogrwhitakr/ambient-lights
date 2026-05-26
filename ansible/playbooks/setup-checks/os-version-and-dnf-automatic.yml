@@ -27,6 +27,9 @@
       delegate_facts: true
       run_once: true
 
+    - name: Clear errors so play exits successfully
+      meta: clear_host_errors
+      
 - name: 2. Build and display the table on the control node
   hosts: localhost
   gather_facts: no
