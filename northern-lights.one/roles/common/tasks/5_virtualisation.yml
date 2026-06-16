@@ -10,3 +10,12 @@
     msg:
     - "Virtualization Role: {{ ansible_facts['virtualization_role'] | default('N/A') }}"
     - "Virtualization Type: {{ ansible_facts['virtualization_type'] | default('N/A') }}"
+
+- name: Ensure fstrim.timer is enabled and running on KVM guests
+  ansible.builtin.systemd_service:
+    name: fstrim.timer
+    enabled: true
+    state: started
+  when:
+    - ansible_facts['virtualization_role'] == 'guest'
+    - ansible_facts['virtualization_type'] == 'kvm'
