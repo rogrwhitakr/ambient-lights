@@ -14,6 +14,12 @@
     mode: '0644'
   notify: Restart rsyslog
 
+- name: Remove old rsyslog Graylog configuration file
+  ansible.builtin.file:
+    path: /etc/rsyslog.d/99-graylog.conf
+    state: absent
+  notify: Restart rsyslog
+
 - name: Ensure rsyslog service is started and enabled
   ansible.builtin.systemd:
     name: rsyslog
