@@ -1,0 +1,21 @@
+---
+- name: Ensure rsyslog-gelf module is installed
+  ansible.builtin.dnf:
+    name: rsyslog-gelf
+    state: present
+  notify: Restart rsyslog
+
+- name: Deploy rsyslog GELF configuration from Jinja2 template
+  ansible.builtin.template:
+    src: rsyslog_gelf.conf.j2
+    dest: /etc/rsyslog.d/99-graylog-gelf.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rsyslog
+
+- name: Ensure rsyslog service is started and enabled
+  ansible.builtin.systemd:
+    name: rsyslog
+    state: started
+    enabled: yes

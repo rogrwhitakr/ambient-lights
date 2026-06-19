@@ -20,3 +20,7 @@
 # dnf automatic
 - name: "install dnf-automatic"
   include_tasks: 6_automatic.yml
+
+# syslog
+- name: "add logforwarding to Greylog instance"
+  include_tasks: 7_syslog.yml

@@ -1,0 +1,33 @@
+# Transmited via Ansible - Do not edit manually
+
+# 1. Module laden
+module(load="imuxsock")
+module(load="omgelf")
+
+# 2. Inputs
+input(type="imuxsock" Socket="/var/run/sshd/dev/log" CreatePath="on" Facility="authpriv")
+input(type="imuxsock" Socket="/run/systemd/journal/syslog")
+
+# 3. GELF Output mit dynamischen Variablen und Default-Werten
+*.* action(
+    type="omgelf"
+    target="{{ rsyslog_graylog_target }}"
+    port="{{ rsyslog_graylog_port | default(12201) }}"
+    protocol="{{ rsyslog_graylog_protocol | default('udp') }}"
+
+    # Dynamische Custom Fields aus den Ansible-Fakten/Variablen
+    custom_fields=[
+        "_env", "{{ rsyslog_tag_env | default('production') }}",
+        "_role", "{{ rsyslog_tag_role | default('generic') }}",
+        "_layer", "{{ rsyslog_tag_layer | default('os') }}",
+        "_managed_by", "ansible"
+    ]
+
+    # Queue-Schutz
+    action.resumeRetryCount="-1"
+    queue.type="linkedList"
+    queue.size="50000"
+    queue.discardmark="45000"
+    queue.discardseverity="6"
+    queue.saveonshutdown="on"
+)

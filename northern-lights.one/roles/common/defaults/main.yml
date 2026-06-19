@@ -24,3 +24,14 @@ powerline:
 
 packages:
   - 'dnf-automatic'
+
+
+# Graylog Server Verbindung
+rsyslog_graylog_target: "graylog.fritz.box"
+rsyslog_graylog_port: 12201
+rsyslog_graylog_protocol: "udp"
+
+# Standard-Tags für die GELF-Struktur
+rsyslog_tag_env: "production"
+rsyslog_tag_role: "generic"
+rsyslog_tag_layer: "os"
