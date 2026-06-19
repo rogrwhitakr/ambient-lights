@@ -1,7 +1,7 @@
 ---
-- name: Ensure rsyslog-gelf module is installed
+- name: Ensure rsyslog is installed
   ansible.builtin.dnf:
-    name: rsyslog-gelf
+    name: rsyslog
     state: present
   notify: Restart rsyslog
 
