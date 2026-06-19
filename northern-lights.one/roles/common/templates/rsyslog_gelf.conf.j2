@@ -1,27 +1,23 @@
-# Transmited via Ansible - Do not edit manually
+# Transmitted via Ansible - Do not edit manually
 
-# 1. Module laden
-module(load="imuxsock")
-module(load="omgelf")
+# 1. JSON-Parsing-Modul laden
+module(load="mmjsonparse")
 
-# 2. Inputs
-input(type="imuxsock" Socket="/var/run/sshd/dev/log" CreatePath="on" Facility="authpriv")
+# 2. Inputs (Parameter kleingeschrieben)
+input(type="imuxsock" Socket="/var/run/sshd/dev/log" CreatePath="on" facility="authpriv")
 input(type="imuxsock" Socket="/run/systemd/journal/syslog")
 
-# 3. GELF Output mit dynamischen Variablen und Default-Werten
+# 3. Manuelles GELF-JSON-Template definieren
+template(name="GELF_Format" type="string"
+         string="{\"version\":\"1.1\",\"host\":\"%HOSTNAME%\",\"short_message\":\"%msg:::json%\",\"timestamp\":%timereported:::date-unixtimestamp%,\"level\":%syslogseverity%,\"_env\":\"{{ rsyslog_tag_env | default('production') }}\",\"_role\":\"{{ rsyslog_tag_role | default('generic') }}\",\"_layer\":\"{{ rsyslog_tag_layer | default('os') }}\",\"_managed_by\":\"ansible\",\"_app_name\":\"%APP-NAME%\",\"_proc_id\":\"%PROCID%\"}\n")
+
+# 4. Senden via omfwd (Standard-Forwarding) an den Graylog GELF-Input
 *.* action(
-    type="omgelf"
+    type="omfwd"
     target="{{ rsyslog_graylog_target }}"
     port="{{ rsyslog_graylog_port | default(12201) }}"
     protocol="{{ rsyslog_graylog_protocol | default('udp') }}"
-
-    # Dynamische Custom Fields aus den Ansible-Fakten/Variablen
-    custom_fields=[
-        "_env", "{{ rsyslog_tag_env | default('production') }}",
-        "_role", "{{ rsyslog_tag_role | default('generic') }}",
-        "_layer", "{{ rsyslog_tag_layer | default('os') }}",
-        "_managed_by", "ansible"
-    ]
+    template="GELF_Format"
 
     # Queue-Schutz
     action.resumeRetryCount="-1"

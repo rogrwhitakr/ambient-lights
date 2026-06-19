@@ -1,11 +1,13 @@
 ---
-- name: Ensure rsyslog is installed
+- name: Ensure rsyslog and mmjsonparse are installed
   ansible.builtin.dnf:
-    name: rsyslog
-    state: present
+    name:
+      - rsyslog
+      - rsyslog-mmjsonparse
+    state: latest
   notify: Restart rsyslog
 
-- name: Deploy rsyslog GELF configuration from Jinja2 template
+- name: Deploy manual GELF-JSON rsyslog configuration
   ansible.builtin.template:
     src: rsyslog_gelf.conf.j2
     dest: /etc/rsyslog.d/99-graylog-gelf.conf
