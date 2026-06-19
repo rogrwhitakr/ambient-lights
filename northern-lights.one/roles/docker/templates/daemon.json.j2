@@ -3,6 +3,6 @@
   "log-opts": {
     "gelf-address": "udp://graylog.fritz.box:12201",
     "gelf-fields": "image_name,container_name,container_id",
-    "tag": "{{.Name}}"
+    "tag": "{% raw %}{{.Name}}{% endraw %}"
   }
 }
