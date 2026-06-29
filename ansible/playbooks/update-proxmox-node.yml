@@ -3,7 +3,7 @@
   hosts: proxmox_nodes
   become: true
   # ensures only one node is updated and rebooted at a time
-  serial: 1 
+  serial: 1
 
   tasks:
     - name: Clean up apt cache and remove unused packages
@@ -18,17 +18,12 @@
         force_apt_get: yes # Recommended for Proxmox to handle complex dependencies
       register: upgrade_result
 
-    - name: Reboot the node if updates were applied
-      reboot:
+    - name: Reboot the machine and wait for it to come back online
+      ansible.builtin.reboot:
         msg: "Rebooting node after Proxmox dist-upgrade"
-        connect_timeout: 5
-        reboot_timeout: 300
-        pre_reboot_delay: 0
-        post_reboot_delay: 30
+        reboot_timeout: 300 # Maximum time to wait for the reboot (5 minutes)
+        connect_timeout: 5 # Timeout for a single connection attempt
+        pre_reboot_delay: 0 # Seconds to wait before shutting down
+        post_reboot_delay: 0 # Seconds to wait after the system is up before continuing
+        test_command: whoami # Command to run on the managed host to confirm it's ready
       when: upgrade_result.changed
-
-    - name: Wait for 5 minutes before moving to the next node
-      pause:
-        minutes: 5
-      when: inventory_hostname != groups['proxmox_nodes'][-1]
-      # This skips the 5-minute wait on the very last node to save time
