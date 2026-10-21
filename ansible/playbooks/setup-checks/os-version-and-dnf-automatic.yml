@@ -1,5 +1,5 @@
 ---
-- name: 1. Gather facts and set host_info for reachable remote hosts
+- name: 1. Gather facts and timer status for reachable remote hosts
   hosts: all
   gather_facts: yes
 
@@ -8,17 +8,52 @@
       ansible.builtin.package_facts:
         manager: auto
 
+    - name: Query systemd for DNF automatic timer status and timings
+      ansible.builtin.command: >
+        systemctl show -p Id -p ActiveState -p UnitFileState -p NextElapseUSecRealtime -p LastTriggerUSecRealtime
+        dnf5-automatic.timer dnf-automatic.timer
+      register: timer_raw
+      changed_when: false
+      failed_when: false
+
+    - name: Parse timer properties
+      vars:
+        # Splits the key=value pairs into a clean dictionary
+        timer_dict: "{{ ('\n' + timer_raw.stdout) | regex_findall('\n([A-Za-z0-9_]+)=(.*)') | items2dict }}"
+      ansible.builtin.set_fact:
+        timer_info:
+          unit: "{{ timer_dict['Id'] | default('None') }}"
+          state: "{{ timer_dict['ActiveState'] | default('inactive') }}"
+          file_state: "{{ timer_dict['UnitFileState'] | default('disabled') }}"
+          next_run: "{{ timer_dict['NextElapseUSecRealtime'] | default('') | trim }}"
+          last_run: "{{ timer_dict['LastTriggerUSecRealtime'] | default('') | trim }}"
+
     - name: Set host details as a fact
       ansible.builtin.set_fact:
         host_info:
           hostname: "{{ ansible_hostname }}"
           os_version: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
-          dnf_automatic_status: >-
-            {% if 'dnf-automatic' in ansible_facts.packages %}
-            Installed ✅
+          kernel_version: "{{ ansible_kernel }}"
+          dnf_pkg_status: >-
+            {% if 'dnf5-plugin-automatic' in ansible_facts.packages %}
+            DNF5 Plugin ✅
+            {% elif 'dnf5-automatic' in ansible_facts.packages %}
+            DNF5 Auto ✅
+            {% elif 'dnf-automatic' in ansible_facts.packages %}
+            DNF4 Auto ✅
             {% else %}
             Not Installed ❌
             {% endif %}
+          timer_status: >-
+            {% if timer_info.state == 'active' %}
+            Active ({{ timer_info.file_state }}) 🟢
+            {% elif timer_info.unit != 'None' and timer_info.unit != '' %}
+            {{ timer_info.state | capitalize }} ({{ timer_info.file_state }}) 🟡
+            {% else %}
+            Missing ⚪
+            {% endif %}
+          timer_next: "{{ timer_info.next_run if timer_info.next_run != '' else 'N/A' }}"
+          timer_last: "{{ timer_info.last_run if timer_info.last_run != '' else 'Never' }}"
 
     - name: Save list of reachable hosts on controller
       ansible.builtin.set_fact:
@@ -29,7 +64,7 @@
 
     - name: Clear errors so play exits successfully
       meta: clear_host_errors
-      
+
 - name: 2. Build and display the table on the control node
   hosts: localhost
   gather_facts: no
@@ -44,10 +79,10 @@
     - name: Display table on the control node
       ansible.builtin.debug:
         msg: |
-          {% set table_header = '| Server | Operating System | DNF Automatic Status |' %}
-          {% set table_separator = '| :--- | :--- | :--- |' %}
+          {% set table_header = '| Server | OS | Kernel | Package | Timer State | Next Scheduled Run | Last Trigger |' %}
+          {% set table_separator = '| :--- | :--- | :--- | :--- | :--- | :--- | :--- |' %}
           {{ table_header }}
           {{ table_separator }}
-          {% for host_details in report_data | default([]) %}
-          | {{ host_details.hostname }} | {{ host_details.os_version }} | {{ host_details.dnf_automatic_status | trim }} |
+          {% for host in report_data | default([]) %}
+          | {{ host.hostname }} | {{ host.os_version }} | {{ host.kernel_version }} | {{ host.dnf_pkg_status | trim }} | {{ host.timer_status | trim }} | {{ host.timer_next }} | {{ host.timer_last }} |
           {% endfor %}
