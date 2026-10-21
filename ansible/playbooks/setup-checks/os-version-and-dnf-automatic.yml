@@ -87,11 +87,11 @@
 
     - name: Display table on the control node
       ansible.builtin.debug:
-        msg: |
-          {% set table_header = '| Server | OS | Kernel | Package | Timer State | Next Scheduled Run | Last Trigger |' %}
-          {% set table_separator = '| :--- | :--- | :--- | :--- | :--- | :--- | :--- |' %}
-          {{ table_header }}
-          {{ table_separator }}
-          {% for host in report_data | default([]) %}
-          | {{ host.hostname }} | {{ host.os_version }} | {{ host.kernel_version }} | {{ host.dnf_pkg_status | trim }} | {{ host.timer_status | trim }} | {{ host.timer_next }} | {{ host.timer_last }} |
-          {% endfor %}
+        msg: >-
+          [
+            "| Server | OS | Kernel | Package | Timer State | Next Scheduled Run | Last Trigger |",
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+            {% for h in report_data | default([]) %}
+            , "| {{ h.hostname }} | {{ h.os_version }} | {{ h.kernel_version }} | {{ h.dnf_pkg_status | trim }} | {{ h.timer_status | trim }} | {{ h.timer_next }} | {{ h.timer_last }} |"
+            {% endfor %}
+          ]
