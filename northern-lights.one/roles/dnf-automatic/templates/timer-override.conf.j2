@@ -3,7 +3,7 @@
 Description=Daily dnf-automatic install timer at 03:00
 
 [Timer]
-# Clear any default OnCalendar triggers inherited from the package
+# Reset inherited OnCalendar triggers
 OnCalendar=
 OnCalendar={{ dnf_automatic_timer_calendar }}
 RandomizedDelaySec={{ dnf_automatic_randomized_delay_sec }}

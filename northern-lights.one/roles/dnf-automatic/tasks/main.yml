@@ -3,12 +3,17 @@
   ansible.builtin.assert:
     that:
       - ansible_facts['distribution'] == 'Fedora'
-    fail_msg: "This playbook is only intended for Fedora systems."
+    fail_msg: "This role is designed for Fedora systems."
     quiet: true
 
-- name: Install dnf-automatic package
+- name: Determine DNF package and timer unit name based on Fedora version
+  ansible.builtin.set_fact:
+    dnf_automatic_pkg_name: "{{ 'dnf5-plugin-automatic' if (ansible_facts['distribution_major_version'] | int >= 41) else 'dnf-automatic' }}"
+    dnf_automatic_timer_unit: "{{ 'dnf5-automatic.timer' if (ansible_facts['distribution_major_version'] | int >= 41) else 'dnf-automatic.timer' }}"
+
+- name: Install DNF automatic package
   ansible.builtin.dnf:
-    name: dnf-automatic
+    name: "{{ dnf_automatic_pkg_name }}"
     state: present
 
 - name: Deploy /etc/dnf/automatic.conf configuration
@@ -19,9 +24,9 @@
     group: root
     mode: "0644"
 
-- name: Create systemd override directory for dnf-automatic-install.timer
+- name: Create systemd override directory for timer
   ansible.builtin.file:
-    path: /etc/systemd/system/dnf-automatic-install.timer.d
+    path: "/etc/systemd/system/{{ dnf_automatic_timer_unit }}.d"
     state: directory
     owner: root
     group: root
@@ -29,30 +34,20 @@
 
 - name: Deploy systemd timer override for 03:00 execution
   ansible.builtin.template:
-    src: dnf-automatic-install.timer.d-override.conf.j2
-    dest: /etc/systemd/system/dnf-automatic-install.timer.d/override.conf
+    src: timer-override.conf.j2
+    dest: "/etc/systemd/system/{{ dnf_automatic_timer_unit }}.d/override.conf"
     owner: root
     group: root
     mode: "0644"
-  register: timer_override
+  notify:
+    - Reload systemd daemon
+    - Restart dnf automatic timer
 
-- name: Reload systemd daemon if timer definition changed
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-  when: timer_override.changed
+- name: Flush handlers to trigger daemon-reload before service management
+  ansible.builtin.meta: flush_handlers
 
-- name: Disable default download/notify timers to prevent conflict
+- name: Enable and start the DNF automatic timer
   ansible.builtin.systemd_service:
-    name: "{{ item }}"
-    enabled: false
-    state: stopped
-  loop:
-    - dnf-automatic-download.timer
-    - dnf-automatic-notifyonly.timer
-  failed_when: false
-
-- name: Enable and start dnf-automatic-install.timer
-  ansible.builtin.systemd_service:
-    name: dnf-automatic-install.timer
+    name: "{{ dnf_automatic_timer_unit }}"
     enabled: true
     state: started
