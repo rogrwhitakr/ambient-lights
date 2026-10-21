@@ -1,0 +1,58 @@
+---
+- name: Ensure target host is running Fedora
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == 'Fedora'
+    fail_msg: "This playbook is only intended for Fedora systems."
+    quiet: true
+
+- name: Install dnf-automatic package
+  ansible.builtin.dnf:
+    name: dnf-automatic
+    state: present
+
+- name: Deploy /etc/dnf/automatic.conf configuration
+  ansible.builtin.template:
+    src: automatic.conf.j2
+    dest: /etc/dnf/automatic.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Create systemd override directory for dnf-automatic-install.timer
+  ansible.builtin.file:
+    path: /etc/systemd/system/dnf-automatic-install.timer.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy systemd timer override for 03:00 execution
+  ansible.builtin.template:
+    src: dnf-automatic-install.timer.d-override.conf.j2
+    dest: /etc/systemd/system/dnf-automatic-install.timer.d/override.conf
+    owner: root
+    group: root
+    mode: "0644"
+  register: timer_override
+
+- name: Reload systemd daemon if timer definition changed
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: timer_override.changed
+
+- name: Disable default download/notify timers to prevent conflict
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    enabled: false
+    state: stopped
+  loop:
+    - dnf-automatic-download.timer
+    - dnf-automatic-notifyonly.timer
+  failed_when: false
+
+- name: Enable and start dnf-automatic-install.timer
+  ansible.builtin.systemd_service:
+    name: dnf-automatic-install.timer
+    enabled: true
+    state: started

@@ -1,0 +1,19 @@
+---
+# Upgrade type: 'default' applies all available packages.
+# Options: default, security
+dnf_automatic_upgrade_type: "default"
+
+# Apply updates automatically
+dnf_automatic_apply_updates: true
+dnf_automatic_download_updates: true
+
+# Package exclusions (supports globs, e.g., kernel*, docker*)
+dnf_automatic_exclude_packages: []
+# Example:
+# dnf_automatic_exclude_packages:
+#   - "kernel*"
+#   - "glibc*"
+
+# Timer schedule (systemd Calendar format)
+dnf_automatic_timer_calendar: "*-*-* 03:00:00"
+dnf_automatic_randomized_delay_sec: "0"

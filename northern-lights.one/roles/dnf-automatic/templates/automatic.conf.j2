@@ -1,0 +1,30 @@
+# Ansible managed: Do not edit manually
+
+[commands]
+upgrade_type = {{ dnf_automatic_upgrade_type }}
+random_sleep = 0
+network_online_timeout = 60
+download_updates = {{ 'yes' if dnf_automatic_download_updates else 'no' }}
+apply_updates = {{ 'yes' if dnf_automatic_apply_updates else 'no' }}
+
+[base]
+debuglevel = 1
+{% if dnf_automatic_exclude_packages | length > 0 %}
+excludepkgs = {{ dnf_automatic_exclude_packages | join(', ') }}
+{% endif %}
+
+[emitters]
+system_name = {{ ansible_facts['fqdn'] | default(ansible_facts['nodename']) }}
+emit_via = stdio
+
+[email]
+email_from = root@localhost
+email_to = root
+email_host = localhost
+
+[command]
+
+[command_email]
+email_from = root@localhost
+email_to = root
+email_host = localhost
