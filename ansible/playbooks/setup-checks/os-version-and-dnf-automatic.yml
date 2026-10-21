@@ -52,12 +52,14 @@
             Not Installed ❌
             {% endif %}
           timer_status: >-
-            {% if timer_info.get('ActiveState') == 'active' %}
-            Active ({{ timer_info.get('UnitFileState', 'unknown') }}) 🟢
+            {% set state = timer_info.get('ActiveState', 'inactive') %}
+            {% set fstate = timer_info.get('UnitFileState', '') | trim or 'disabled' %}
+            {% if state == 'active' %}
+            Active ({{ fstate }}) ●
             {% elif timer_info.get('Id') is defined and timer_info.get('Id') != '' %}
-            {{ timer_info.get('ActiveState', 'inactive') | capitalize }} ({{ timer_info.get('UnitFileState', 'disabled') }}) 🟡
+            {{ state | capitalize }} ({{ fstate }}) ○
             {% else %}
-            Missing ⚪
+            Missing ○
             {% endif %}
           timer_next: "{{ timer_info.get('NextElapseUSecRealtime') | default('N/A', true) | trim or 'N/A' }}"
           timer_last: "{{ timer_info.get('LastTriggerUSecRealtime') | default('Never', true) | trim or 'Never' }}"
