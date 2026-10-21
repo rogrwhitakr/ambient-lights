@@ -2,6 +2,9 @@
 - name: 1. Gather facts and timer status for reachable remote hosts
   hosts: all
   gather_facts: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_pipelining: true
 
   tasks:
     - name: Gather package facts
@@ -17,16 +20,20 @@
       failed_when: false
 
     - name: Parse timer properties
-      vars:
-        # Splits the key=value pairs into a clean dictionary
-        timer_dict: "{{ ('\n' + timer_raw.stdout) | regex_findall('\n([A-Za-z0-9_]+)=(.*)') | items2dict }}"
       ansible.builtin.set_fact:
-        timer_info:
-          unit: "{{ timer_dict['Id'] | default('None') }}"
-          state: "{{ timer_dict['ActiveState'] | default('inactive') }}"
-          file_state: "{{ timer_dict['UnitFileState'] | default('disabled') }}"
-          next_run: "{{ timer_dict['NextElapseUSecRealtime'] | default('') | trim }}"
-          last_run: "{{ timer_dict['LastTriggerUSecRealtime'] | default('') | trim }}"
+        timer_info: >-
+          {%- set active_timer = {} -%}
+          {%- for block in timer_raw.stdout.split('\n\n') if block | trim != '' -%}
+            {%- set d = {} -%}
+            {%- for line in block.splitlines() if '=' in line -%}
+              {%- set parts = line.split('=', 1) -%}
+              {%- set _ = d.update({parts[0]: parts[1]}) -%}
+            {%- endfor -%}
+            {%- if d.get('ActiveState') == 'active' or active_timer == {} -%}
+              {%- set _ = active_timer.update(d) -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{ active_timer }}
 
     - name: Set host details as a fact
       ansible.builtin.set_fact:
@@ -45,15 +52,15 @@
             Not Installed ❌
             {% endif %}
           timer_status: >-
-            {% if timer_info.state == 'active' %}
-            Active ({{ timer_info.file_state }}) 🟢
-            {% elif timer_info.unit != 'None' and timer_info.unit != '' %}
-            {{ timer_info.state | capitalize }} ({{ timer_info.file_state }}) 🟡
+            {% if timer_info.get('ActiveState') == 'active' %}
+            Active ({{ timer_info.get('UnitFileState', 'unknown') }}) 🟢
+            {% elif timer_info.get('Id') is defined and timer_info.get('Id') != '' %}
+            {{ timer_info.get('ActiveState', 'inactive') | capitalize }} ({{ timer_info.get('UnitFileState', 'disabled') }}) 🟡
             {% else %}
             Missing ⚪
             {% endif %}
-          timer_next: "{{ timer_info.next_run if timer_info.next_run != '' else 'N/A' }}"
-          timer_last: "{{ timer_info.last_run if timer_info.last_run != '' else 'Never' }}"
+          timer_next: "{{ timer_info.get('NextElapseUSecRealtime') | default('N/A', true) | trim or 'N/A' }}"
+          timer_last: "{{ timer_info.get('LastTriggerUSecRealtime') | default('Never', true) | trim or 'Never' }}"
 
     - name: Save list of reachable hosts on controller
       ansible.builtin.set_fact:
@@ -68,6 +75,8 @@
 - name: 2. Build and display the table on the control node
   hosts: localhost
   gather_facts: no
+  vars:
+    ansible_python_interpreter: auto_silent
 
   tasks:
     - name: Build the reporting list from reachable hosts only
