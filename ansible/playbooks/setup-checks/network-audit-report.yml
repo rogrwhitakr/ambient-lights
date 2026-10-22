@@ -28,12 +28,40 @@
       ansible.builtin.set_fact:
         host_net_info:
           hostname: "{{ inventory_hostname }}"
-          default_ip: "{{ ansible_default_ipv4.address | default('No IPv4') }}"
-          interface: "{{ ansible_default_ipv4.interface | default('N/A') }}"
-          gateway: "{{ ansible_default_ipv4.gateway | default('N/A') }}"
-          dns_nameservers: "{{ ansible_dns.nameservers | default([]) | join(', ') | default('None', true) }}"
-          dns_domains: "{{ (ansible_dns.search | default([]) + ansible_dns.domain | default([])) | unique | join(', ') | default('None', true) }}"
-          hosts_entries: "{{ custom_hosts_summary }}"
+          default_ip: >-
+            {{
+              ansible_facts.get('default_ipv4', {}).get('address', 'No IPv4')
+            }}
+          interface: >-
+            {{
+              ansible_facts.get('default_ipv4', {}).get('interface', 'N/A')
+            }}
+          gateway: >-
+            {{
+              ansible_facts.get('default_ipv4', {}).get('gateway', 'N/A')
+            }}
+          dns_nameservers: >-
+            {{
+              ansible_facts.get('dns', {}).get('nameservers', [])
+              | join(', ')
+              | default('None', true)
+            }}
+          dns_domains: >-
+            {{
+              (
+                ansible_facts.get('dns', {}).get('search', [])
+                +
+                (
+                  [ansible_facts.get('dns', {}).get('domain')]
+                  if ansible_facts.get('dns', {}).get('domain')
+                  else []
+                )
+              )
+              | unique
+              | join(', ')
+              | default('None', true)
+            }}
+          hosts_entries: "{{ custom_hosts_summary | default('N/A', true) }}"
 
     - name: Track reachable host on localhost
       ansible.builtin.set_fact:

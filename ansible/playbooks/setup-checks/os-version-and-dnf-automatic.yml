@@ -2,9 +2,7 @@
 - name: 1. Gather facts and timer status for reachable remote hosts
   hosts: all
   gather_facts: yes
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-    ansible_ssh_pipelining: true
+  ignore_unreachable: yes
 
   tasks:
     - name: Gather package facts
