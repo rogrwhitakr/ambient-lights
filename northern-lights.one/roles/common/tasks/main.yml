@@ -24,3 +24,7 @@
 # syslog
 - name: "add logforwarding to Greylog instance"
   include_tasks: 7_syslog.yml
+
+# escalation prompt
+- name: "add network config"
+  include_tasks: 8_network.yml

@@ -1,0 +1,7 @@
+---
+- name: Fix /etc/hosts to eliminate sudo DNS lookup delays - Ensure short hostname and FQDN map to loopback
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "127.0.1.1 {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}"
+    state: present
+    insertafter: "^127\\.0\\.0\\.1"
