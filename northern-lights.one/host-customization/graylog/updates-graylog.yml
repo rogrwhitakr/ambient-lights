@@ -1,0 +1,65 @@
+---
+- name: Deploy and update Graylog stack
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    # Target directory on the remote host
+    graylog_compose_dir: "/opt/graylog"
+    graylog_compose_file: "docker-compose.yml"
+
+    # Version tracking - bump version here:
+    graylog_image: "graylog/graylog"
+    graylog_version: "7.2.1"
+
+    # Supporting components
+    graylog_mongodb_image: "mongo"
+    graylog_mongodb_version: "7.0"
+    graylog_opensearch_image: "opensearchproject/opensearch"
+    graylog_opensearch_version: "2.17.1"
+
+    # Configuration values
+    graylog_timezone: "Europe/Berlin"
+    graylog_password_secret: "!northernlights.one!"
+    graylog_root_password_sha2: "2d80b1aeb11499d659e6e970062a29c86c3e77f4ddc42ef5b4b651dbd438a020"
+
+  tasks:
+    - name: Ensure compose directory exists
+      ansible.builtin.file:
+        path: "{{ graylog_compose_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Render updated docker-compose.yml
+      ansible.builtin.template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ graylog_compose_dir }}/{{ graylog_compose_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+      register: compose_config
+
+    - name: Pre-pull new container images
+      community.docker.docker_compose_v2_pull:
+        project_src: "{{ graylog_compose_dir }}"
+        files:
+          - "{{ graylog_compose_file }}"
+        policy: always
+
+    - name: Apply compose changes and restart updated containers
+      community.docker.docker_compose_v2:
+        project_src: "{{ graylog_compose_dir }}"
+        files:
+          - "{{ graylog_compose_file }}"
+        state: present
+        # recreate: auto only restarts containers when image digest or config changed
+        recreate: auto
+
+    - name: Prune old and orphaned Docker images
+      community.docker.docker_prune:
+        images: true
+        images_filters:
+          dangling: false

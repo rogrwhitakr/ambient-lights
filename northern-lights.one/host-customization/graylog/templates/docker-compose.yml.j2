@@ -1,0 +1,93 @@
+# Ansible managed: Do not edit directly
+networks:
+  graynet:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local
+  log_data:
+    driver: local
+  graylog_data:
+    driver: local
+
+services:
+  mongodb:
+    image: {{ graylog_mongodb_image }}:{{ graylog_mongodb_version }}
+    container_name: mongodb
+    volumes:
+      - "mongo_data:/data/db"
+    networks:
+      - graynet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  opensearch:
+    image: {{ graylog_opensearch_image }}:{{ graylog_opensearch_version }}
+    container_name: opensearch
+    environment:
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx2g"
+      - "bootstrap.memory_lock=true"
+      - "discovery.type=single-node"
+      - "action.auto_create_index=false"
+      - "plugins.security.ssl.http.enabled=false"
+      - "plugins.security.disabled=true"
+      - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=SetPassw0rdL3ttersAndNumb3r5"
+    volumes:
+      - "log_data:/usr/share/opensearch/data"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9200:9200/tcp
+    networks:
+      - graynet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 20s
+      timeout: 15s
+      retries: 15
+      start_period: 120s
+
+  graylog:
+    image: {{ graylog_image }}:{{ graylog_version }}
+    container_name: graylog
+    environment:
+      GRAYLOG_PASSWORD_SECRET: "{{ graylog_password_secret }}"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "{{ graylog_root_password_sha2 }}"
+      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://graylog:9000/"
+      GRAYLOG_OPENSEARCH_HOSTS: "http://opensearch:9200"
+      GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
+      GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+      GRAYLOG_TIMEZONE: "{{ graylog_timezone }}"
+      TZ: "{{ graylog_timezone }}"
+      GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE: "6gb"
+    volumes:
+      - "graylog_data:/usr/share/graylog/data"
+    networks:
+      - graynet
+    restart: always
+    depends_on:
+      opensearch:
+        condition: service_started
+      mongodb:
+        condition: service_healthy
+    ports:
+      - 9000:9000/tcp    # Web Interface
+      - 514:514/tcp      # Syslog
+      - 514:514/udp      # Syslog
+      - 1514:1514/tcp    # Syslog
+      - 1514:1514/udp    # Syslog
+      - 12201:12201/tcp  # GELF
+      - 12201:12201/udp  # GELF
+      - 5044:5044/tcp    # Beats
