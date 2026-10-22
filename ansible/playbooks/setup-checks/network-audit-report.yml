@@ -6,6 +6,7 @@
   hosts: all
   gather_facts: yes
   ignore_unreachable: yes
+  become: false
   vars:
     ansible_timeout: 30
     ansible_become_timeout: 30
@@ -93,3 +94,25 @@
           | {{ h.hostname }} | {{ h.default_ip }} ({{ h.interface }}) | {{ h.gateway }} | {{ h.dns_nameservers }} | {{ h.dns_domains }} | {{ h.hosts_entries }} |
           {% endfor %}
       changed_when: false      
+
+    - name: Generate clean Markdown report file
+      ansible.builtin.copy:
+        dest: /tmp/network_audit_report.md
+        content: |
+          # Fleet Network Audit Report
+
+          | Host | Primary IP (Iface) | Gateway | DNS Nameservers | Search Domains | /etc/hosts Entries |
+          | :--- | :--- | :--- | :--- | :--- | :--- |
+          {% for h in report_data | default([]) %}
+          | {{ h.hostname }} | {{ h.default_ip }} ({{ h.interface }}) | {{ h.gateway }} | {{ h.dns_nameservers }} | {{ h.dns_domains }} | {{ h.hosts_entries }} |
+          {% endfor %}
+
+    - name: Print raw table to stdout
+      ansible.builtin.command:
+        cmd: cat /tmp/network_audit_report.md
+      register: table_out
+      changed_when: false
+
+    - name: Output raw table lines
+      ansible.builtin.debug:
+        var: table_out.stdout_lines      
