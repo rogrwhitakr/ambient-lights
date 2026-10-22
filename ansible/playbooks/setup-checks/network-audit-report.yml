@@ -1,8 +1,14 @@
 ---
+# ----------------------------------------------------------------------
+# PLAY 1: Gather facts on all hosts
+# ----------------------------------------------------------------------
 - name: 1. Collect networking, DNS, and /etc/hosts details
   hosts: all
   gather_facts: yes
   ignore_unreachable: yes
+  vars:
+    ansible_timeout: 30
+    ansible_become_timeout: 30
 
   tasks:
     - name: Read /etc/hosts content
@@ -28,48 +34,29 @@
       ansible.builtin.set_fact:
         host_net_info:
           hostname: "{{ inventory_hostname }}"
-          default_ip: >-
-            {{
-              ansible_facts.get('default_ipv4', {}).get('address', 'No IPv4')
-            }}
-          interface: >-
-            {{
-              ansible_facts.get('default_ipv4', {}).get('interface', 'N/A')
-            }}
-          gateway: >-
-            {{
-              ansible_facts.get('default_ipv4', {}).get('gateway', 'N/A')
-            }}
-          dns_nameservers: >-
-            {{
-              ansible_facts.get('dns', {}).get('nameservers', [])
-              | join(', ')
-              | default('None', true)
-            }}
+          default_ip: "{{ ansible_facts.get('default_ipv4', {}).get('address', 'No IPv4') }}"
+          interface: "{{ ansible_facts.get('default_ipv4', {}).get('interface', 'N/A') }}"
+          gateway: "{{ ansible_facts.get('default_ipv4', {}).get('gateway', 'N/A') }}"
+          dns_nameservers: "{{ ansible_facts.get('dns', {}).get('nameservers', []) | join(', ') | default('None', true) }}"
           dns_domains: >-
             {{
               (
                 ansible_facts.get('dns', {}).get('search', [])
                 +
-                (
-                  [ansible_facts.get('dns', {}).get('domain')]
-                  if ansible_facts.get('dns', {}).get('domain')
-                  else []
-                )
+                ([ansible_facts.get('dns', {}).get('domain')] if ansible_facts.get('dns', {}).get('domain') else [])
               )
               | unique
               | join(', ')
               | default('None', true)
             }}
-          hosts_entries: "{{ custom_hosts_summary | default('N/A', true) }}"
+          hosts_entries: "{{ custom_hosts_summary | default('None/Empty', true) }}"
 
-    - name: Track reachable host on localhost
-      ansible.builtin.set_fact:
-        reachable_hosts: "{{ hostvars['localhost']['reachable_hosts'] | default([]) + [inventory_hostname] }}"
-      delegate_to: localhost
-      delegate_facts: yes
+    # NOTICE: The race-prone "Track reachable host on localhost" task is removed entirely!
 
 
+# ----------------------------------------------------------------------
+# PLAY 2: Assemble table cleanly from hostvars
+# ----------------------------------------------------------------------
 - name: 2. Build and display the network report table on the control node
   hosts: localhost
   gather_facts: no
@@ -77,12 +64,15 @@
     ansible_python_interpreter: auto_silent
 
   tasks:
-    - name: Build report list from reachable hosts
+    - name: Build report list using native play inventory
       ansible.builtin.set_fact:
         report_data: >-
-          {{ report_data | default([]) + [hostvars[item]['host_net_info']] }}
-      loop: "{{ hostvars['localhost']['reachable_hosts'] | default([]) }}"
-      when: hostvars[item]['host_net_info'] is defined
+          {{
+            groups['all']
+            | map('extract', hostvars, 'host_net_info')
+            | select('defined')
+            | list
+          }}
 
     - name: Display formatted Markdown table
       ansible.builtin.debug:
