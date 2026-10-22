@@ -82,3 +82,14 @@
           {% for h in report_data | default([]) %}
           | {{ h.hostname }} | {{ h.default_ip }} ({{ h.interface }}) | {{ h.gateway }} | {{ h.dns_nameservers }} | {{ h.dns_domains }} | {{ h.hosts_entries }} |
           {% endfor %}
+
+    - name: Display formatted Markdown table
+      ansible.builtin.command:
+        cmd: "python3 -c 'import sys; sys.stdout.write(sys.stdin.read())'"
+        stdin: |
+          | Host | Primary IP (Iface) | Gateway | DNS Nameservers | Search Domains | /etc/hosts Entries |
+          | :--- | :--- | :--- | :--- | :--- | :--- |
+          {% for h in report_data | default([]) %}
+          | {{ h.hostname }} | {{ h.default_ip }} ({{ h.interface }}) | {{ h.gateway }} | {{ h.dns_nameservers }} | {{ h.dns_domains }} | {{ h.hosts_entries }} |
+          {% endfor %}
+      changed_when: false      
