@@ -21,10 +21,11 @@ services:
       - graynet
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
 
   opensearch:
     image: {{ graylog_opensearch_image }}:{{ graylog_opensearch_version }}

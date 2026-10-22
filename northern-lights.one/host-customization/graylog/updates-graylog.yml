@@ -55,8 +55,10 @@
         files:
           - "{{ graylog_compose_file }}"
         state: present
-        # recreate: auto only restarts containers when image digest or config changed
         recreate: auto
+        wait: true
+        wait_timeout: 300
+        timeout: 300
 
     - name: Prune old and orphaned Docker images
       community.docker.docker_prune:
