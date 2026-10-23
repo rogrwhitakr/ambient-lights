@@ -1,7 +1,17 @@
 ---
-- name: Fix /etc/hosts to eliminate sudo DNS lookup delays - Ensure short hostname and FQDN map to loopback
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    line: "127.0.1.1 {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}"
-    state: present
-    insertafter: "^127\\.0\\.0\\.1"
+- name: Rebuild /etc/hosts with structured loopback and IPv6 entries
+  ansible.builtin.copy:
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+    content: |
+      # northernlights.one
+      # ipv4
+      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+      127.0.1.1   {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}
+
+      # ipv6
+      ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+      ::1         {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}
