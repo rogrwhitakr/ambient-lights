@@ -1,13 +1,16 @@
 ---
 - name: 1. Gather facts and timer status for reachable remote hosts
   hosts: all
-  gather_facts: yes
-  ignore_unreachable: yes
+  gather_facts: true
+  ignore_unreachable: true
+  ignore_errors: true
 
   tasks:
     - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
+      become: true
+      ignore_errors: true
 
     - name: Query systemd for DNF automatic timer status and timings
       ansible.builtin.command: >
@@ -21,7 +24,8 @@
       ansible.builtin.set_fact:
         timer_info: >-
           {%- set active_timer = {} -%}
-          {%- for block in timer_raw.stdout.split('\n\n') if block | trim != '' -%}
+          {%- set raw_out = timer_raw.stdout | default('') -%}
+          {%- for block in raw_out.split('\n\n') if block | trim != '' -%}
             {%- set d = {} -%}
             {%- for line in block.splitlines() if '=' in line -%}
               {%- set parts = line.split('=', 1) -%}
@@ -32,35 +36,40 @@
             {%- endif -%}
           {%- endfor -%}
           {{ active_timer }}
+      when:
+        - timer_raw is defined
+        - timer_raw.stdout is defined
 
     - name: Set host details as a fact
       ansible.builtin.set_fact:
         host_info:
-          hostname: "{{ ansible_hostname }}"
-          os_version: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
-          kernel_version: "{{ ansible_kernel }}"
+          hostname: "{{ ansible_facts['hostname'] | default(inventory_hostname) }}"
+          os_version: "{{ ansible_facts['distribution'] | default('Unknown') }} {{ ansible_facts['distribution_version'] | default('') }}"
+          kernel_version: "{{ ansible_facts['kernel'] | default('Unknown') }}"
           dnf_pkg_status: >-
-            {% if 'dnf5-plugin-automatic' in ansible_facts.packages %}
+            {%- set pkgs = ansible_facts.packages | default({}) -%}
+            {%- if 'dnf5-plugin-automatic' in pkgs -%}
             DNF5 Plugin ✅
-            {% elif 'dnf5-automatic' in ansible_facts.packages %}
+            {%- elif 'dnf5-automatic' in pkgs -%}
             DNF5 Auto ✅
-            {% elif 'dnf-automatic' in ansible_facts.packages %}
+            {%- elif 'dnf-automatic' in pkgs -%}
             DNF4 Auto ✅
-            {% else %}
+            {%- else -%}
             Not Installed ❌
-            {% endif %}
+            {%- endif -%}
           timer_status: >-
-            {% set state = timer_info.get('ActiveState', 'inactive') %}
-            {% set fstate = timer_info.get('UnitFileState', '') | trim or 'disabled' %}
-            {% if state == 'active' %}
+            {%- set t = timer_info | default({}) -%}
+            {%- set state = t.get('ActiveState', 'inactive') -%}
+            {%- set fstate = t.get('UnitFileState', '') | trim or 'disabled' -%}
+            {%- if state == 'active' -%}
             Active ({{ fstate }}) ●
-            {% elif timer_info.get('Id') is defined and timer_info.get('Id') != '' %}
+            {%- elif t.get('Id') is defined and t.get('Id') != '' -%}
             {{ state | capitalize }} ({{ fstate }}) ○
-            {% else %}
+            {%- else -%}
             Missing ○
-            {% endif %}
-          timer_next: "{{ timer_info.get('NextElapseUSecRealtime') | default('N/A', true) | trim or 'N/A' }}"
-          timer_last: "{{ timer_info.get('LastTriggerUSecRealtime') | default('Never', true) | trim or 'Never' }}"
+            {%- endif -%}
+          timer_next: "{{ (timer_info | default({})).get('NextElapseUSecRealtime') | default('N/A', true) | trim or 'N/A' }}"
+          timer_last: "{{ (timer_info | default({})).get('LastTriggerUSecRealtime') | default('Never', true) | trim or 'Never' }}"
 
     - name: Save list of reachable hosts on controller
       ansible.builtin.set_fact:
@@ -70,28 +79,32 @@
       run_once: true
 
     - name: Clear errors so play exits successfully
-      meta: clear_host_errors
+      ansible.builtin.meta: clear_host_errors
+
 
 - name: 2. Build and display the table on the control node
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
   vars:
     ansible_python_interpreter: auto_silent
 
   tasks:
-    - name: Build the reporting list from reachable hosts only
+    - name: Build clean markdown table lines
       ansible.builtin.set_fact:
-        report_data: >-
-          {{ report_data | default([]) + [hostvars[item]['host_info']] }}
-      loop: "{{ hostvars['localhost']['reachable_hosts'] | default([]) }}"
-
-    - name: Display table on the control node
-      ansible.builtin.debug:
-        msg: >-
-          [
+        markdown_lines: >-
+          {%- set lines = [
             "| Server | OS | Kernel | Package | Timer State | Next Scheduled Run | Last Trigger |",
             "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
-            {% for h in report_data | default([]) %}
-            , "| {{ h.hostname }} | {{ h.os_version }} | {{ h.kernel_version }} | {{ h.dnf_pkg_status | trim }} | {{ h.timer_status | trim }} | {{ h.timer_next }} | {{ h.timer_last }} |"
-            {% endfor %}
-          ]
+          ] -%}
+          {%- for h in (hostvars['localhost']['reachable_hosts'] | default([])) -%}
+            {%- set info = hostvars[h].get('host_info') -%}
+            {%- if info is defined and info -%}
+              {%- set row = "| " ~ info.hostname ~ " | " ~ info.os_version ~ " | " ~ info.kernel_version ~ " | " ~ (info.dnf_pkg_status | trim) ~ " | " ~ (info.timer_status | trim) ~ " | " ~ info.timer_next ~ " | " ~ info.timer_last ~ " |" -%}
+              {%- set _ = lines.append(row) -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {{ lines }}
+
+    - name: Display report table
+      ansible.builtin.debug:
+        msg: "{{ markdown_lines | join('\n') }}"
