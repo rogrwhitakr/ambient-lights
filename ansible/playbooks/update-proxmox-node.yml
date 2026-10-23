@@ -1,29 +1,52 @@
 ---
 - name: Proxmox Cluster Sequential Update and Reboot
-  hosts: proxmox_nodes
+  hosts: all
   become: true
-  # ensures only one node is updated and rebooted at a time
   serial: 1
+
+  vars:
+    # Set to true to permit node reboots.
+    # Can be overridden via Semaphore survey or CLI: -e "reboot_allowed=true"
+    reboot_allowed: false
+
+    # If true, reboots immediately if reboot_allowed is enabled and packages changed,
+    # without waiting for a new kernel / /var/run/reboot-required flag.
+    reboot_force: false
 
   tasks:
     - name: Clean up apt cache and remove unused packages
-      apt:
-        autoremove: yes
-        purge: yes
-        update_cache: yes
+      ansible.builtin.apt:
+        autoremove: true
+        purge: true
+        update_cache: true
 
     - name: Update all packages to the latest version (dist-upgrade)
-      apt:
+      ansible.builtin.apt:
         upgrade: dist
-        force_apt_get: yes # Recommended for Proxmox to handle complex dependencies
+        force_apt_get: true
       register: upgrade_result
+
+    - name: Check if Debian / Proxmox requires a reboot (e.g. kernel upgrade)
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+        get_checksum: false
+      register: pve_reboot_required
+
+    - name: Notify if reboot is needed but was suppressed by flag
+      ansible.builtin.debug:
+        msg: "Node {{ inventory_hostname }} requires a reboot, but reboot_allowed is false. Skipping reboot."
+      when:
+        - pve_reboot_required.stat.exists or upgrade_result.changed
+        - not (reboot_allowed | bool)
 
     - name: Reboot the machine and wait for it to come back online
       ansible.builtin.reboot:
-        msg: "Rebooting node after Proxmox dist-upgrade"
-        reboot_timeout: 300 # Maximum time to wait for the reboot (5 minutes)
-        connect_timeout: 5 # Timeout for a single connection attempt
-        pre_reboot_delay: 0 # Seconds to wait before shutting down
-        post_reboot_delay: 0 # Seconds to wait after the system is up before continuing
-        test_command: whoami # Command to run on the managed host to confirm it's ready
-      when: upgrade_result.changed
+        msg: "Rebooting Proxmox node after system update"
+        reboot_timeout: 600 # 10 minutes (allows clean HA guest shutdown / migration)
+        connect_timeout: 5
+        pre_reboot_delay: 10 # Grace period for services to begin shutdown
+        post_reboot_delay: 15
+        test_command: pvecm status || whoami
+      when:
+        - reboot_allowed | bool
+        - (pve_reboot_required.stat.exists) or (reboot_force | bool and upgrade_result.changed)
