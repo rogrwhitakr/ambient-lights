@@ -1,5 +1,5 @@
 ---
-- name: Patch systems and schedule maintenance reboot
+- name: Patch and maintain DNF-based systems
   hosts: all
   become: true
   serial: "20%"
@@ -7,19 +7,17 @@
   tasks:
     - name: Ensure play runs only on DNF-managed hosts
       ansible.builtin.meta: end_host
-      when: ansible_pkg_mgr != "dnf"
+      when: ansible_facts['pkg_mgr'] not in ['dnf', 'dnf5']
 
-    - name: Upgrade all installed packages
-      ansible.builtin.dnf:
+    - name: Upgrade all installed packages (DNF / DNF5)
+      ansible.builtin.package:
         name: "*"
         state: latest
         update_cache: true
-        update_only: true
-        # Excludes postgresql packages only on database nodes:
         exclude: "{{ ['postgresql*', 'pg_*'] if 'database_nodes' in group_names else [] }}"
-      register: dnf_result
+      register: update_result
 
-    - name: Check if a reboot is needed
+    - name: Check if reboot is required
       ansible.builtin.command: needs-restarting -r
       register: reboot_check
       changed_when: false
