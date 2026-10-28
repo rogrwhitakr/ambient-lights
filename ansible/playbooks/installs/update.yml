@@ -1,13 +1,31 @@
 ---
-
-- hosts: all
-
+- name: Patch systems and schedule maintenance reboot
+  hosts: all
   become: true
+  serial: "20%"
 
   tasks:
-    - name: update via ansible.builtin.dnf
+    - name: Ensure play runs only on DNF-managed hosts
+      ansible.builtin.meta: end_host
+      when: ansible_pkg_mgr != "dnf"
+
+    - name: Upgrade all installed packages
       ansible.builtin.dnf:
         name: "*"
         state: latest
+        update_cache: true
+        update_only: true
+        # Excludes postgresql packages only on database nodes:
+        exclude: "{{ ['postgresql*', 'pg_*'] if 'database_nodes' in group_names else [] }}"
+      register: dnf_result
 
-  
+    - name: Check if a reboot is needed
+      ansible.builtin.command: needs-restarting -r
+      register: reboot_check
+      changed_when: false
+      failed_when: reboot_check.rc not in [0, 1]
+
+    - name: Schedule transient systemd reboot timer at 3:00 AM
+      ansible.builtin.command:
+        cmd: systemd-run --on-calendar="*-*-* 03:00:00" --unit=ansible-reboot systemctl reboot
+      when: reboot_check.rc == 1
