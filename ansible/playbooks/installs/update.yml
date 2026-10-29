@@ -17,13 +17,19 @@
         exclude: "{{ ['postgresql*', 'pg_*'] if 'database_nodes' in group_names else [] }}"
       register: update_result
 
+    - name: Ensure reboot check tools are present
+      ansible.builtin.package:
+        name: "{{ 'dnf5-plugins' if ansible_facts['pkg_mgr'] == 'dnf5' else 'dnf-plugins-core' }}"
+        state: present
+
     - name: Check if reboot is required
-      ansible.builtin.command: needs-restarting -r
+      ansible.builtin.command:
+        cmd: dnf needs-restarting -r
       register: reboot_check
       changed_when: false
       failed_when: reboot_check.rc not in [0, 1]
 
-    - name: Schedule transient systemd reboot timer at 3:00 AM
+    - name: Schedule one-off reboot at 3:00 AM
       ansible.builtin.command:
-        cmd: systemd-run --on-calendar="*-*-* 03:00:00" --unit=ansible-reboot systemctl reboot
+        cmd: shutdown -r 03:00 "System reboot scheduled for updates"
       when: reboot_check.rc == 1
