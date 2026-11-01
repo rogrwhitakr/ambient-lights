@@ -17,6 +17,13 @@
         exclude: "{{ ['postgresql*', 'pg_*'] if 'database_nodes' in group_names else [] }}"
       register: update_result
 
+    - name: Display updated packages
+      ansible.builtin.debug:
+        msg: "{{ update_result.results }}"
+      when:
+        - update_result.changed
+        - update_result.results is defined
+
     - name: Ensure reboot check tools are present
       ansible.builtin.package:
         name: "{{ 'dnf5-plugins' if ansible_facts['pkg_mgr'] == 'dnf5' else 'dnf-plugins-core' }}"
