@@ -1,0 +1,155 @@
+---
+- name: Deploy and update Redmine with local Git repository mirrors
+  hosts: all
+  become: true
+  vars:
+    redmine_compose_dir: /opt/redmine
+    redmine_repo_dir: /opt/repos
+    redmine_port: 8080
+    redmine_db_host: db-01
+    redmine_db_port: 5432
+    redmine_db_name: redmine
+    redmine_db_user: redmine
+    redmine_db_password: redmine
+    # Offizielles Redmine Docker-Image nutzt UID/GID 999
+    redmine_uid: 999
+    redmine_gid: 999
+
+    # Liste der GitHub-Repositories zum Spiegeln
+    github_user: rogrwhitakr
+    sync_repositories:
+      - dotfiles
+      - northern-lights
+      - ambient-lights
+      - HR
+      - documentation
+      - aurora
+      - cube-lights
+
+  tasks:
+    - name: Ensure git and docker-compose dependencies are installed
+      ansible.builtin.package:
+        name:
+          - git
+          - python3-yaml
+        state: present
+
+    - name: Ensure redmine system group exists (GID 999)
+      ansible.builtin.group:
+        name: redmine
+        gid: "{{ redmine_gid }}"
+        system: true
+        state: present
+
+    - name: Ensure redmine system user exists (UID 999)
+      ansible.builtin.user:
+        name: redmine
+        uid: "{{ redmine_uid }}"
+        group: redmine
+        home: "{{ redmine_repo_dir }}"
+        create_home: false
+        shell: /usr/sbin/nologin
+        system: true
+        state: present
+
+    - name: Create required host directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: redmine
+        group: redmine
+        mode: '0755'
+      loop:
+        - "{{ redmine_compose_dir }}"
+        - "{{ redmine_repo_dir }}"
+        - "{{ redmine_compose_dir }}/files"
+
+    - name: Template docker-compose.yml for Redmine
+      ansible.builtin.copy:
+        dest: "{{ redmine_compose_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0640'
+        content: |
+          networks:
+            rednet:
+              driver: bridge
+
+          services:
+            redmine:
+              image: redmine:latest
+              restart: always
+              ports:
+                - "{{ redmine_port }}:3000"
+              environment:
+                REDMINE_DB_POSTGRES: "{{ redmine_db_host }}"
+                REDMINE_DB_PORT: "{{ redmine_db_port }}"
+                REDMINE_DB_DATABASE: "{{ redmine_db_name }}"
+                REDMINE_DB_USERNAME: "{{ redmine_db_user }}"
+                REDMINE_DB_PASSWORD: "{{ redmine_db_password }}"
+              volumes:
+                - "{{ redmine_compose_dir }}/files:/usr/src/redmine/files"
+                - "{{ redmine_repo_dir }}:/var/repos:ro"
+              networks:
+                - rednet
+
+    - name: Pull latest Redmine image and deploy/upgrade container
+      community.docker.docker_compose_v2:
+        project_src: "{{ redmine_compose_dir }}"
+        pull: always
+        state: present
+
+    - name: Install systemd service template for repo synchronization
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/repository-sync@.service
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Fetch git mirror for %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=oneshot
+          User=redmine
+          Group=redmine
+          WorkingDirectory={{ redmine_repo_dir }}/%i.git
+          ExecStart=/usr/bin/git remote update --prune
+
+    - name: Install systemd timer template for repo synchronization
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/repository-sync@.timer
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Sync git repository %i every 5 minutes
+
+          [Timer]
+          OnBootSec=1min
+          OnUnitActiveSec=5min
+          Unit=repository-sync@%i.service
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Clone repositories as bare mirrors if not present
+      ansible.builtin.command:
+        cmd: "/usr/bin/git clone --mirror https://github.com/{{ github_user }}/{{ item }}.git {{ redmine_repo_dir }}/{{ item }}.git"
+        creates: "{{ redmine_repo_dir }}/{{ item }}.git"
+      loop: "{{ sync_repositories }}"
+      become_user: redmine
+
+    - name: Enable and start systemd timers for all repositories
+      ansible.builtin.systemd:
+        name: "repository-sync@{{ item }}.timer"
+        state: started
+        enabled: true
+      loop: "{{ sync_repositories }}"
