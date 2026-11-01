@@ -1,0 +1,119 @@
+---
+- name: Repair SeaBIOS GRUB Bootloader and Default Kernel on Fedora VMs
+  hosts: fedora_vms
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Fail early if not running Fedora
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution == 'Fedora'
+        fail_msg: "This host is not Fedora. Aborting to protect non-target machines."
+
+    - name: Identify primary boot disk
+      ansible.builtin.set_fact:
+        boot_disk: "{{ '/dev/' + (ansible_mounts | selectattr('mount', 'equalto', '/boot') | map(attribute='device') | first | regex_replace('[0-9]+$', '') | regex_replace('^/dev/', '')) if (ansible_mounts | selectattr('mount', 'equalto', '/boot') | list | length > 0) else '/dev/sda' }}"
+
+    - name: Remove orphaned UEFI boot packages
+      ansible.builtin.dnf:
+        name:
+          - "grub2-efi*"
+          - "shim*"
+        state: absent
+
+    - name: Remove unmounted /boot/efi directory artifact
+      ansible.builtin.file:
+        path: /boot/efi
+        state: absent
+
+    - name: Install BIOS GRUB packages
+      ansible.builtin.dnf:
+        name:
+          - grub2-pc
+          - grub2-tools
+          - grub2-tools-extra
+        state: present
+
+    - name: Install GRUB to BIOS Boot Partition / MBR
+      ansible.builtin.command:
+        cmd: "grub2-install {{ boot_disk }}"
+      changed_when: true
+
+    - name: Ensure GRUB BLS is enabled in /etc/default/grub
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_ENABLE_BLSCFG='
+        line: 'GRUB_ENABLE_BLSCFG=true'
+        state: present
+
+    - name: Regenerate GRUB BIOS configuration
+      ansible.builtin.command:
+        cmd: grub2-mkconfig -o /boot/grub2/grub.cfg
+      changed_when: true
+
+    - name: Reinstall current kernels to generate missing BLS entries and initramfs
+      ansible.builtin.command:
+        cmd: dnf reinstall -y kernel-core kernel-modules
+      changed_when: true
+
+    - name: Find all valid BLS entries (excluding rescue)
+      ansible.builtin.find:
+        paths: /boot/loader/entries
+        patterns: "*.conf"
+        excludes: "*rescue*"
+      register: bls_entries
+
+    - name: Verify at least one valid kernel entry exists
+      ansible.builtin.assert:
+        that:
+          - bls_entries.files | length > 0
+        fail_msg: "CRITICAL: No BLS kernel entries found in /boot/loader/entries/. Aborting before reboot."
+
+    - name: Determine the latest installed kernel BLS entry
+      ansible.builtin.shell: |
+        set -o pipefail
+        ls -1 /boot/loader/entries/*.conf | grep -v 'rescue' | sort -V | tail -n 1
+      args:
+        executable: /bin/bash
+      register: latest_entry_path
+      changed_when: false
+
+    - name: Extract entry ID
+      ansible.builtin.set_fact:
+        latest_kernel_entry: "{{ latest_entry_path.stdout | basename | regex_replace('\\.conf$', '') }}"
+
+    - name: Set latest kernel as default in grubenv
+      ansible.builtin.command:
+        cmd: "grub2-set-default {{ latest_kernel_entry }}"
+      changed_when: true
+
+    - name: Verify grub2-editenv saved_entry matches latest kernel
+      ansible.builtin.command:
+        cmd: grub2-editenv - list
+      register: grubenv_status
+      changed_when: false
+      failed_when: latest_kernel_entry not in grubenv_status.stdout
+
+    - name: Remove legacy Fedora 39 kernels if present
+      ansible.builtin.dnf:
+        name: "kernel-core-6.11.9*"
+        state: absent
+      ignore_errors: true
+
+    - name: Reboot VM and wait for it to return
+      ansible.builtin.reboot:
+        msg: "Rebooting into repaired SeaBIOS GRUB kernel"
+        reboot_timeout: 300
+        test_command: uname -r
+      register: reboot_result
+
+    - name: Display active running kernel version
+      ansible.builtin.command:
+        cmd: uname -r
+      register: active_kernel
+      changed_when: false
+
+    - name: Confirm target kernel booted successfully
+      ansible.builtin.debug:
+        msg: "Host {{ inventory_hostname }} is now running kernel: {{ active_kernel.stdout }}"        
