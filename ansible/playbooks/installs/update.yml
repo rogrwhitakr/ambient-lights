@@ -9,6 +9,32 @@
       ansible.builtin.meta: end_host
       when: ansible_facts['pkg_mgr'] not in ['dnf', 'dnf5']
 
+    # --- Duplicate Detection & Remediation ---
+    - name: Check for duplicate packages in RPM database
+      ansible.builtin.command:
+        cmd: dnf check duplicates
+      register: dnf_duplicate_check
+      changed_when: false
+      failed_when: false
+
+    - name: Remediate duplicate packages and sync system
+      when: dnf_duplicate_check.rc != 0
+      block:
+        - name: Remove duplicates via DNF4/DNF
+          ansible.builtin.shell: |
+            if command -v dnf4 >/dev/null 2>&1; then
+              dnf4 remove -y --duplicates
+            else
+              dnf remove -y --duplicates || dnf reinstall -y $(dnf repoquery --duplicates --latest-limit=1 -q)
+            fi
+          changed_when: true
+
+        - name: Run distro synchronization with cache refresh
+          ansible.builtin.command:
+            cmd: dnf distro-sync -y --refresh
+          changed_when: true
+
+    # --- System Upgrade ---
     - name: Upgrade all installed packages (DNF / DNF5)
       ansible.builtin.package:
         name: "*"
@@ -19,11 +45,12 @@
 
     - name: Display updated packages
       ansible.builtin.debug:
-        msg: "{{ update_result.results }}"
+        msg: "{{ update_result.results | to_nice_yaml }}"
       when:
         - update_result.changed
         - update_result.results is defined
 
+    # --- Reboot Verification ---
     - name: Ensure reboot check tools are present
       ansible.builtin.package:
         name: "{{ 'dnf5-plugins' if ansible_facts['pkg_mgr'] == 'dnf5' else 'dnf-plugins-core' }}"
