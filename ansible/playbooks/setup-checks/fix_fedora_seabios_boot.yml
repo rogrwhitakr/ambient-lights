@@ -1,6 +1,6 @@
 ---
 - name: Repair SeaBIOS GRUB Bootloader and Default Kernel on Fedora VMs
-  hosts: fedora_vms
+  hosts: all
   become: true
   gather_facts: true
 
@@ -26,7 +26,7 @@
       ansible.builtin.file:
         path: /boot/efi
         state: absent
-        
+
     - name: Force kernel-install layout to grub for SeaBIOS VMs
       ansible.builtin.copy:
         dest: /etc/kernel/install.conf
