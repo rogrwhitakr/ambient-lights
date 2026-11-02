@@ -26,6 +26,35 @@
       ansible.builtin.file:
         path: /boot/efi
         state: absent
+        
+    - name: Force kernel-install layout to grub for SeaBIOS VMs
+      ansible.builtin.copy:
+        dest: /etc/kernel/install.conf
+        content: |
+          layout=grub
+          initrd_generator=dracut
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Remove stale layout triggers
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /boot/loader/entries.srel
+        - "/boot/{{ ansible_machine_id }}"
+
+    - name: Run kernel-install for all installed kernels
+      ansible.builtin.shell: |
+        for kver in $(rpm -q --qf "%{version}-%{release}.%{arch}\n" kernel-core); do
+          if [ -f "/lib/modules/$kver/vmlinuz" ]; then
+            kernel-install -v add "$kver" "/lib/modules/$kver/vmlinuz"
+          fi
+        done
+      args:
+        executable: /bin/bash
+      changed_when: true
 
     - name: Install BIOS GRUB packages
       ansible.builtin.dnf:
