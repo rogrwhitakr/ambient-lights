@@ -8,24 +8,20 @@
     - name: Fail early if not running Fedora
       ansible.builtin.assert:
         that:
-          - ansible_distribution == 'Fedora'
+          - ansible_facts['distribution'] == 'Fedora'
         fail_msg: "This host is not Fedora. Aborting to protect non-target machines."
 
     - name: Identify primary boot disk
       ansible.builtin.set_fact:
-        boot_disk: "{{ '/dev/' + (ansible_mounts | selectattr('mount', 'equalto', '/boot') | map(attribute='device') | first | regex_replace('[0-9]+$', '') | regex_replace('^/dev/', '')) if (ansible_mounts | selectattr('mount', 'equalto', '/boot') | list | length > 0) else '/dev/sda' }}"
+        boot_disk: "{{ '/dev/' + (ansible_facts['mounts'] | selectattr('mount', 'equalto', '/boot') | map(attribute='device') | first | regex_replace('[0-9]+$', '') | regex_replace('^/dev/', '')) if (ansible_facts['mounts'] | selectattr('mount', 'equalto', '/boot') | list | length > 0) else '/dev/sda' }}"
 
-    - name: Remove orphaned UEFI boot packages
+    - name: Ensure BIOS GRUB packages are installed
       ansible.builtin.dnf:
         name:
-          - "grub2-efi*"
-          - "shim*"
-        state: absent
-
-    - name: Remove unmounted /boot/efi directory artifact
-      ansible.builtin.file:
-        path: /boot/efi
-        state: absent
+          - grub2-pc
+          - grub2-tools
+          - grub2-tools-extra
+        state: present
 
     - name: Force kernel-install layout to grub for SeaBIOS VMs
       ansible.builtin.copy:
@@ -37,32 +33,14 @@
         group: root
         mode: '0644'
 
-    - name: Remove stale layout triggers
+    - name: Clean up EFI layout artifacts from /boot
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
         - /boot/loader/entries.srel
-        - "/boot/{{ ansible_machine_id }}"
-
-    - name: Run kernel-install for all installed kernels
-      ansible.builtin.shell: |
-        for kver in $(rpm -q --qf "%{version}-%{release}.%{arch}\n" kernel-core); do
-          if [ -f "/lib/modules/$kver/vmlinuz" ]; then
-            kernel-install -v add "$kver" "/lib/modules/$kver/vmlinuz"
-          fi
-        done
-      args:
-        executable: /bin/bash
-      changed_when: true
-
-    - name: Install BIOS GRUB packages
-      ansible.builtin.dnf:
-        name:
-          - grub2-pc
-          - grub2-tools
-          - grub2-tools-extra
-        state: present
+        - "/boot/{{ ansible_facts['machine_id'] }}"
+        - /boot/efi
 
     - name: Install GRUB to BIOS Boot Partition / MBR
       ansible.builtin.command:
@@ -81,9 +59,15 @@
         cmd: grub2-mkconfig -o /boot/grub2/grub.cfg
       changed_when: true
 
-    - name: Reinstall current kernels to generate missing BLS entries and initramfs
-      ansible.builtin.command:
-        cmd: dnf reinstall -y kernel-core kernel-modules
+    - name: Generate BLS entries for installed kernels
+      ansible.builtin.shell: |
+        for kver in $(rpm -q --qf "%{version}-%{release}.%{arch}\n" kernel-core); do
+          if [ -f "/lib/modules/$kver/vmlinuz" ]; then
+            kernel-install -v add "$kver" "/lib/modules/$kver/vmlinuz"
+          fi
+        done
+      args:
+        executable: /bin/bash
       changed_when: true
 
     - name: Find all valid BLS entries (excluding rescue)
@@ -99,7 +83,7 @@
           - bls_entries.files | length > 0
         fail_msg: "CRITICAL: No BLS kernel entries found in /boot/loader/entries/. Aborting before reboot."
 
-    - name: Determine the latest installed kernel BLS entry
+    - name: Determine latest installed kernel BLS entry
       ansible.builtin.shell: |
         set -o pipefail
         ls -1 /boot/loader/entries/*.conf | grep -v 'rescue' | sort -V | tail -n 1
@@ -135,7 +119,6 @@
         msg: "Rebooting into repaired SeaBIOS GRUB kernel"
         reboot_timeout: 300
         test_command: uname -r
-      register: reboot_result
 
     - name: Display active running kernel version
       ansible.builtin.command:
@@ -145,4 +128,4 @@
 
     - name: Confirm target kernel booted successfully
       ansible.builtin.debug:
-        msg: "Host {{ inventory_hostname }} is now running kernel: {{ active_kernel.stdout }}"        
+        msg: "Host {{ inventory_hostname }} is now running kernel: {{ active_kernel.stdout }}"
