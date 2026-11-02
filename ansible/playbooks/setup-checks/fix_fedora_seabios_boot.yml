@@ -117,7 +117,8 @@
     - name: Reboot VM and wait for it to return
       ansible.builtin.reboot:
         msg: "Rebooting into repaired SeaBIOS GRUB kernel"
-        reboot_timeout: 300
+        pre_reboot_delay: 5
+        reboot_timeout: 600
         test_command: uname -r
 
     - name: Display active running kernel version
