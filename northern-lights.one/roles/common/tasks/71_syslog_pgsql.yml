@@ -39,14 +39,3 @@
         - { name: 'syslog_split_messages', value: 'off' }
       become_user: postgres
       notify: Reload postgresql
-
-  handlers:
-    - name: Reload rsyslog
-      ansible.builtin.systemd:
-        name: rsyslog
-        state: restarted
-
-    - name: Reload postgresql
-      ansible.builtin.systemd:
-        name: postgresql
-        state: reloaded
