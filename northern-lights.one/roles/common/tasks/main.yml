@@ -1,9 +1,9 @@
 ---
 - name: "install basics"
-  include_tasks: 1_installs.yml
+  include_tasks: 10_installs.yml
 
 - name: "harden the ssh daemon"
-  include_tasks: 2_harden-ssh.yml
+  include_tasks: 20_harden-ssh.yml
 
 # powerline (not active ATM, is slow)
 # - name: "add powerline"
@@ -11,15 +11,15 @@
 
 # bashrc
 #- name: "create a decent bashrc"
-#  include_tasks: 4_bashrc.yml
+#  include_tasks: 40_bashrc.yml
 
 # qemu guest agent
 - name: "install guest agent"
-  include_tasks: 5_virtualisation.yml
+  include_tasks: 50_virtualisation.yml
 
 # dnf automatic
 - name: "install dnf-automatic"
-  include_tasks: 6_automatic.yml
+  include_tasks: 60_automatic.yml
 
 # syslog
 - name: "add logforwarding to Greylog instance"

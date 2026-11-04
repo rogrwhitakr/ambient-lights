@@ -1,0 +1,52 @@
+---
+- name: Configure PostgreSQL syslog forwarding and rsyslog
+  block:
+    - name: Ensure PostgreSQL log directory exists for rsyslog
+      ansible.builtin.file:
+        path: /var/log/postgresql
+        state: directory
+        owner: postgres
+        group: adm
+        mode: '0750'
+
+    - name: Deploy rsyslog PostgreSQL configuration
+      ansible.builtin.copy:
+        dest: /etc/rsyslog.d/01-pgsql.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: 'rsyslogd -N1 -f %s'
+        content: |
+          # Transmitted via Ansible - Do not edit manually
+          # Directs postgresql syslog messages to dedicated local log
+          local0.* action(
+              type="omfile"
+              file="/var/log/postgresql/postgresql.log"
+              fileOwner="postgres"
+              fileGroup="adm"
+              fileCreateMode="0640"
+          )
+      notify: Reload rsyslog
+
+    - name: Configure PostgreSQL to emit logs to syslog
+      community.postgresql.postgresql_set:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+      loop:
+        - { name: 'log_destination', value: 'syslog' }
+        - { name: 'syslog_facility', value: 'LOCAL0' }
+        - { name: 'syslog_ident', value: 'postgres' }
+        - { name: 'syslog_split_messages', value: 'off' }
+      become_user: postgres
+      notify: Reload postgresql
+
+  handlers:
+    - name: Reload rsyslog
+      ansible.builtin.systemd:
+        name: rsyslog
+        state: restarted
+
+    - name: Reload postgresql
+      ansible.builtin.systemd:
+        name: postgresql
+        state: reloaded
