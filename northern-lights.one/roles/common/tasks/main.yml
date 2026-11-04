@@ -23,8 +23,12 @@
 
 # syslog
 - name: "add logforwarding to Greylog instance"
-  include_tasks: 7_syslog.yml
+  include_tasks: 70_syslog.yml
+
+- name: "add logforwarding to Greylog instance"
+  include_tasks: 71_syslog_pgsql.yml
+  when: inventory_hostname_short is match('^db-\d{2}$')
 
 # escalation prompt
 - name: "add network config"
-  include_tasks: 8_network.yml
+  include_tasks: 80_network.yml
