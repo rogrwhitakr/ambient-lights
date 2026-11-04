@@ -27,7 +27,7 @@
 
 - name: "add logforwarding to Greylog instance"
   ansible.builtin.include_tasks: 71_syslog_pgsql.yml
-  when: inventory_hostname is match('^(?i)db-\d{2}(\..*)?$')
+  when: (inventory_hostname | lower) is match('^db-\d{2}(\..*)?$')
 
 # escalation prompt
 - name: "add network config"
