@@ -1,34 +1,34 @@
 ---
 - name: "install basics"
-  include_tasks: 10_installs.yml
+  ansible.builtin.include_tasks: 10_installs.yml
 
 - name: "harden the ssh daemon"
-  include_tasks: 20_harden-ssh.yml
+  ansible.builtin.include_tasks: 20_harden-ssh.yml
 
 # powerline (not active ATM, is slow)
 # - name: "add powerline"
-#   include_tasks: 3_powerline.yml
+#   ansible.builtin.include_tasks: 3_powerline.yml
 
 # bashrc
 #- name: "create a decent bashrc"
-#  include_tasks: 40_bashrc.yml
+#  ansible.builtin.include_tasks: 40_bashrc.yml
 
 # qemu guest agent
 - name: "install guest agent"
-  include_tasks: 50_virtualisation.yml
+  ansible.builtin.include_tasks: 50_virtualisation.yml
 
 # dnf automatic
 - name: "install dnf-automatic"
-  include_tasks: 60_automatic.yml
+  ansible.builtin.include_tasks: 60_automatic.yml
 
 # syslog
 - name: "add logforwarding to Greylog instance"
-  include_tasks: 70_syslog.yml
+  ansible.builtin.include_tasks: 70_syslog.yml
 
 - name: "add logforwarding to Greylog instance"
-  include_tasks: 71_syslog_pgsql.yml
-  when: inventory_hostname_short is match('^db-\d{2}$')
+  ansible.builtin.include_tasks: 71_syslog_pgsql.yml
+  when: inventory_hostname is match('^(?i)db-\d{2}(\..*)?$')
 
 # escalation prompt
 - name: "add network config"
-  include_tasks: 80_network.yml
+  ansible.builtin.include_tasks: 80_network.yml
