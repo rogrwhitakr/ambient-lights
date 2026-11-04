@@ -26,7 +26,7 @@
               fileGroup="adm"
               fileCreateMode="0640"
           )
-      notify: Reload rsyslog
+      notify: Restart rsyslog
 
     - name: Configure PostgreSQL to emit logs to syslog
       community.postgresql.postgresql_set:
