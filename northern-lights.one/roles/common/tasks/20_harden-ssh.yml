@@ -1,40 +1,19 @@
 ---
+# roles/common/tasks/20_harden-ssh.yml
+- name: Ensure SSH drop-in directory exists
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
-  - name: "sshd_config: Limit Attempts and Methods" 
-    lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-    loop:
-      - {regexp: '^(#.*|.*)Compression(.*$)', line: 'Compression no' }
-      - {regexp: '^(#.*|.*)MaxAuthTries(.*$)', line: 'MaxAuthTries 5' }
-      - {regexp: '^(#.*|.*)ClientAliveCountMax(.*$)', line: 'ClientAliveCountMax 0' } # terminate session after
-      - {regexp: '^(#.*|.*)ClientAliveInterval(.*$)', line: 'ClientAliveInterval 1800' } # 30 mins
-      - {regexp: '^(#.*|.*)IgnoreRhosts(.*$)', line: 'IgnoreRhosts yes' } # Do Not Allow Access via rhosts
-      - {regexp: '^(#.*|.*)IgnoreUserKnownHosts(.*$)', line: 'IgnoreUserKnownHosts yes' } # Do Not Allow Access via KnownHosts
-      - {regexp: '^(#.*|.*)HostBasedAuthentication(.*$)', line: 'HostBasedAuthentication no' } # Disable Host Based Authentication
-      - {regexp: '^(#.*|.*)X11Forwarding(.*$)', line: 'X11Forwarding no' } # Disable X11Forwarding
-
-  - name: "sshd_config: Select only one authentication method, disabling others"
-    lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-    loop:
-      - {regexp: '^(#.*|.*)GSSAPIAuthentication(.*$)', line: 'GSSAPIAuthentication no' }
-      - {regexp: '^(#.*|.*)KerberosAuthentication(.*$)', line: 'KerberosAuthentication no' }
-      - {regexp: '^(#.*|.*)PubkeyAuthentication(.*$)', line: 'PubkeyAuthentication yes' }
-      - {regexp: '^PermitRootLogin(.*$)', line: 'PermitRootLogin no' }
-
-#  - name: "sshd_config: Configure settings of the ssh connection (port, listenAddress, etc...)"
-#    lineinfile:
-#      path: /etc/ssh/sshd_config
-#      regexp: "{{ item.regexp }}"
-#      line: "{{ item.line }}"
-#      validate: '/usr/sbin/sshd -t %s'
-#    loop:
-#      - {regexp: '^(#.*|.*)Protocol(.*$)', line: 'Protocol 2' } # Use only v2 Protocol
-#      - {regexp: '^(#.?|.?)Port(.*$)', line: 'Port 52525' }
-#     - {regexp: '^(#.?|.?)ListenAddress(.*$)', line: 'ListenAddress 192.168.0.*' }
-#
-# vaidate using sshd -t / -T (small / big test) -f <config file>
+- name: Deploy modern hardened sshd drop-in configuration
+  ansible.builtin.template:
+    src: sshd_hardened.conf.j2
+    dest: /etc/ssh/sshd_config.d/99-hardened.conf
+    owner: root
+    group: root
+    mode: '0600'
+    validate: '/usr/sbin/sshd -t -f %s'
+  notify: Reload sshd

@@ -1,0 +1,65 @@
+# ==============================================================================
+# Managed via Ansible - Do not edit manually!
+# OpenSSH Daemon Hardened Configuration (Modern / CIS Baseline)
+# ==============================================================================
+
+# --- Network & Connectivity ---
+Port {{ ssh_port | default(22) }}
+AddressFamily {{ ssh_address_family | default('any') }}
+{% if ssh_listen_addresses is defined %}
+{% for addr in ssh_listen_addresses %}
+ListenAddress {{ addr }}
+{% endfor %}
+{% endif %}
+
+# --- Host Keys ---
+# Restrict to Ed25519 and RSA (min 3072-bit)
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# --- Cryptography (Modern / Post-Quantum / AEAD-only) ---
+# Key Exchange Algorithms (Curve25519, NIST-P, Post-Quantum hybrid)
+KexAlgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512
+
+# Symmetric Ciphers (AEAD only; rejects CBC and legacy CTR)
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+
+# Message Authentication Codes (EtM modes only)
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+
+# --- Authentication ---
+PermitRootLogin {{ ssh_permit_root_login | default('no') }}
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+AuthenticationMethods publickey
+
+# Limit brute-force attack windows
+MaxAuthTries 3
+MaxSessions 5
+MaxStartups 10:30:100
+LoginGraceTime 30s
+
+# Disable obsolete / dangerous auth mechanisms
+HostbasedAuthentication no
+IgnoreRhosts yes
+IgnoreUserKnownHosts yes
+GSSAPIAuthentication no
+KerberosAuthentication no
+
+# --- Session & Channel Restrictions ---
+X11Forwarding no
+AllowTcpForwarding {{ ssh_allow_tcp_forwarding | default('no') }}
+AllowAgentForwarding no
+PermitUserEnvironment no
+Compression no
+
+# --- Idle Session Termination ---
+# Disconnects unresponsive clients after 15 minutes (300s * 3)
+ClientAliveInterval 300
+ClientAliveCountMax 3
+
+# --- Logging ---
+LogLevel VERBOSE
+SyslogFacility AUTH

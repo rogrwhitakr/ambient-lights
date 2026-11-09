@@ -26,3 +26,8 @@
     ansible.builtin.systemd:
       name: postgresql
       state: reloaded
+
+  - name: Reload sshd
+    ansible.builtin.systemd:
+      name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+      state: reloaded
