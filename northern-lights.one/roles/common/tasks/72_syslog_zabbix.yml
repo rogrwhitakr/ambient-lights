@@ -1,0 +1,28 @@
+---
+# roles/common/tasks/72_syslog_zabbix.yml
+- name: Ensure rsyslog has read permissions for Zabbix log folder
+  ansible.builtin.file:
+    path: /var/log/zabbixsrv
+    mode: '0755'
+    state: directory
+
+- name: Deploy rsyslog drop-in for Zabbix server log
+  ansible.builtin.copy:
+    dest: /etc/rsyslog.d/01-zabbix.conf
+    owner: root
+    group: root
+    mode: '0644'
+    validate: 'rsyslogd -N1 -f %s'
+    content: |
+      # Transmitted via Ansible - Do not edit manually
+      module(load="imfile")
+
+      input(
+          type="imfile"
+          File="/var/log/zabbixsrv/zabbix_server.log"
+          Tag="zabbix_server"
+          Facility="local1"
+          Severity="info"
+          reopenOnTruncate="on"
+      )
+    notify: Restart rsyslog
