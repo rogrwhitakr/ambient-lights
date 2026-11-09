@@ -7,15 +7,15 @@
         state: directory
         owner: postgres
         group: adm
-        mode: '0750'
+        mode: "0750"
 
     - name: Deploy rsyslog PostgreSQL configuration
       ansible.builtin.copy:
         dest: /etc/rsyslog.d/01-pgsql.conf
         owner: root
         group: root
-        mode: '0644'
-        validate: 'rsyslogd -N1 -f %s'
+        mode: "0644"
+        validate: "rsyslogd -N1 -f %s"
         content: |
           # Transmitted via Ansible - Do not edit manually
           # Directs postgresql syslog messages to dedicated local log
@@ -28,14 +28,18 @@
           )
       notify: Restart rsyslog
 
-    - name: Configure PostgreSQL to emit logs to syslog
-      community.postgresql.postgresql_set:
-        name: "{{ item.name }}"
-        value: "{{ item.value }}"
+    - name: Configure PostgreSQL syslog parameters in postgresql.auto.conf
+      ansible.builtin.lineinfile:
+        path: /var/lib/pgsql/data/postgresql.auto.conf
+        regexp: "^#?{{ item.name }}\\s*="
+        line: "{{ item.name }} = '{{ item.value }}'"
+        owner: postgres
+        group: postgres
+        mode: "0600"
+        create: true
       loop:
-        - { name: 'log_destination', value: 'syslog' }
-        - { name: 'syslog_facility', value: 'LOCAL0' }
-        - { name: 'syslog_ident', value: 'postgres' }
-        - { name: 'syslog_split_messages', value: 'off' }
-      become_user: postgres
+        - { name: "log_destination", value: "syslog" }
+        - { name: "syslog_facility", value: "LOCAL0" }
+        - { name: "syslog_ident", value: "postgres" }
+        - { name: "syslog_split_messages", value: "off" }
       notify: Reload postgresql
