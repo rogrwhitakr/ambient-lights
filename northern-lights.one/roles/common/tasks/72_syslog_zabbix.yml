@@ -12,7 +12,7 @@
     owner: root
     group: root
     mode: '0644'
-    validate: 'rsyslogd -N1 -f %s'
+    validate: 'rsyslogd -N1 -f /etc/rsyslog.conf'
     content: |
       # Transmitted via Ansible - Do not edit manually
       module(load="imfile")
