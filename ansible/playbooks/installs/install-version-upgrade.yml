@@ -5,7 +5,7 @@
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    target_release: 44
+    target_release: 45
 
   tasks:
   - name: install python3-libdnf5
