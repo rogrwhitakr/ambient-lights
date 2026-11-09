@@ -25,4 +25,4 @@
           Severity="info"
           reopenOnTruncate="on"
       )
-    notify: Restart rsyslog
+  notify: Restart rsyslog
