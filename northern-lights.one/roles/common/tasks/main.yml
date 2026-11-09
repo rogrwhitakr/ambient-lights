@@ -28,6 +28,10 @@
 - name: "add logforwarding to Greylog instance"
   ansible.builtin.include_tasks: 71_syslog_pgsql.yml
   when: (inventory_hostname | lower) is match('^db-\d{2}(\..*)?$')
+  
+- name: Add log forwarding for Zabbix server instance
+  ansible.builtin.include_tasks: 72_syslog_zabbix.yml
+  when: (inventory_hostname | lower) is match('^zabbix(\..*)?$')
 
 # escalation prompt
 - name: "add network config"
