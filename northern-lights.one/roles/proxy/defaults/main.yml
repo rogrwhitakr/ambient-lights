@@ -1,2 +1,28 @@
 ---
-# defaults file for proxy
+caddy_email: "hostmaster@northern-lights.one"
+caddy_use_staging: false
+
+# Default snippet applied to entries
+caddy_common_snippet: |
+  header {
+      X-Frame-Options "SAMEORIGIN"
+      Strict-Transport-Security max-age=31536000;
+      X-Robots-Tag none
+      -Server
+  }
+  log {
+      output stdout
+      format console
+      level DEBUG
+  }
+  encode gzip
+
+# Dynamic proxy entries
+caddy_proxy_hosts:
+  - domain: "http://cve-check.northern-lights.one"
+    upstream: "cve-check.fritz.box:9392"
+  - domain: "http://graylog.northern-lights.one"
+    upstream: "graylog.fritz.box:9000"
+  - domain: "http://photos.northern-lights.one"
+    upstream: "photos.fritz.box:2283"
+    custom_directives: []

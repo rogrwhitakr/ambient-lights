@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+{
+{% if caddy_email is defined and caddy_email %}
+    email {{ caddy_email }}
+{% endif %}
+{% if caddy_use_staging | default(false) %}
+    acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+{% endif %}
+}
+
+(common) {
+{{ caddy_common_snippet | indent(4, first=True) }}
+}
+
+{% for host in caddy_proxy_hosts %}
+{{ host.domain }} {
+    import common
+{% if host.custom_directives is defined %}
+    {% for directive in host.custom_directives %}
+    {{ directive }}
+    {% endfor %}
+{% endif %}
+    reverse_proxy {{ host.upstream }}
+}
+
+{% endfor %}

@@ -1,2 +1,43 @@
 ---
-# tasks file for proxy
+- name: Install Caddy on Fedora
+  ansible.builtin.dnf:
+    name: caddy
+    state: present
+    update_cache: true
+
+- name: Install Caddy (OS-agnostic package manager)
+  ansible.builtin.package:
+    name: caddy
+    state: present
+
+- name: Deploy Caddyfile configuration
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
+    validate: 'caddy validate --config %s'
+  notify: Reload caddy
+
+- name: Ensure Caddy is enabled and running
+  ansible.builtin.systemd:
+    name: caddy
+    state: started
+    enabled: true
+
+- name: Allow HTTP and HTTPS through firewalld
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop:
+    - http
+    - https
+
+- name: Allow Caddy / web server network connections (SELinux)
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true    
