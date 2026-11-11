@@ -2,8 +2,9 @@
 - name: "install basics"
   ansible.builtin.include_tasks: 10_installs.yml
 
-- name: "harden the ssh daemon"
-  ansible.builtin.include_tasks: 20_harden-ssh.yml
+# skipping for now
+#- name: "harden the ssh daemon"
+#  ansible.builtin.include_tasks: 20_harden-ssh.yml
 
 # powerline (not active ATM, is slow)
 # - name: "add powerline"

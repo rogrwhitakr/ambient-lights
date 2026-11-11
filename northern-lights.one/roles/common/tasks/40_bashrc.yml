@@ -1,19 +1,25 @@
 ---
-- name: "download script for custom bashrc profile"
-  get_url:
-    url: "https://raw.githubusercontent.com/rogrwhitakr/northern-lights/master/script/setup-profile-on-new-box.bash"
-    dest: "/home/{{ ansible_user }}/profile-setup.bash"
-    mode: 740
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-
-- name: Run the script
-  become_user: "{{ ansible_user }}"
-  ansible.builtin.script: "/home/{{ ansible_user }}/profile-setup.bash"
-  args:
-    creates: "/home/{{ ansible_user }}/.bashrc.d"
-
-- name: remove script
+# roles/common/tasks/40_bashrc.yml
+- name: Ensure /etc/profile.d directory exists
   ansible.builtin.file:
-    path: "/home/{{ ansible_user }}/profile-setup.bash"
+    path: /etc/profile.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy custom profile.d scripts for all users
+  ansible.builtin.copy:
+    src: profile.d/
+    dest: /etc/profile.d/
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Clean up legacy home directory scripts
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: absent
+  loop:
+    - "/home/{{ ansible_user }}/profile-setup.bash"
+    - "/home/{{ ansible_user }}/.bashrc.d"

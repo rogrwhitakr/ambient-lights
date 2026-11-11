@@ -1,0 +1,28 @@
+# /etc/profile.d/custom_profile.sh
+# Managed via Ansible - Do not edit manually
+
+# Return early if not running interactively (prevents scp/sftp/rsync breakage)
+[[ $- != *i* ]] && return
+
+# --- History Configuration ---
+export HISTSIZE=50000
+export HISTFILESIZE=100000
+export HISTCONTROL=ignoreboth:erasedups
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+shopt -s histappend
+
+# --- Helpful Aliases ---
+alias ll='ls -alF --color=auto'
+alias la='ls -A --color=auto'
+alias l='ls -CF --color=auto'
+alias grep='grep --color=auto'
+alias df='df -h'
+alias free='free -m'
+
+# --- Colored Prompt (PS1) ---
+# Highlights root in red and standard users in cyan
+if [ "$EUID" -eq 0 ]; then
+    PS1='\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\# '
+else
+    PS1='\[\033[01;36m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+fi
