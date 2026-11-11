@@ -1,5 +1,5 @@
 ---
-- name: Perform Fedora system upgrade to release 44
+- name: Perform Fedora system upgrade to release 45
   hosts: all
   become: true
 
